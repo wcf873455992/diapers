@@ -1,0 +1,499 @@
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE AHT10
+OBJECT MODULE PLACED IN .\Object\AHT10.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE user\AHT10.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24
+                    -l01p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\AHT10.lst) TABS(2) OBJECT(.\
+                    -Object\AHT10.obj)
+
+line level    source
+
+   1          /*******************************************/
+   2          /*@°æÈ¨ËùÓÐ£º¹ãÖÝ°ÂËÉµç×ÓÓÐÏÞ¹«Ë¾          */
+   3          /*@×÷Õß£ºÎÂÊª¶È´«¸ÐÆ÷ÊÂÒµ²¿                */
+   4          /*@°æ±¾£ºV1.2                              */
+   5          /*******************************************/
+   6          /*******************************************/
+   7          /*@°æ±¾ËµÃ÷£º                              */
+   8          /*@°æ±¾ºÅ£ºV1.2 ÐÞ¸ÄACÃüÁîµÄ²ÎÊý¡£         */
+   9          /*@°æ±¾ºÅ£ºV1.1 Ôö¼ÓÐ£×¼Êä³öÊ¹ÄÜ¼ì²â¡£     */
+  10          /*@°æ±¾ºÅ£ºV1.0 ×î³õ°æ±¾¡£                 */
+  11          /*******************************************/
+  12          
+  13          #include "hal_delay.h"
+  14          #include "AHT10.h"
+  15          
+  16          AHT10VALUE AHT10Value;
+  17          
+  18          
+  19          
+  20          void flash_P00()
+  21          {
+  22   1          P00 = LOW;
+  23   1          delay_ms(500);
+  24   1          P00 = HIGH;
+  25   1      }
+  26          void SDA_Pin_Output_High(void)   //½«P15ÅäÖÃÎªÊä³ö £¬ ²¢ÉèÖÃÎª¸ßµçÆ½£¬ P15×÷ÎªI2CµÄSDA
+  27          {
+  28   1          P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
+  29   1          SDA = HIGH;
+  30   1          //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
+  31   1          //Gpio_SetIO(1,5,1);
+  32   1      }
+  33          
+  34          void SDA_Pin_Output_Low(void)  //½«P15ÅäÖÃÎªÊä³ö  ²¢ÉèÖÃÎªµÍµçÆ½
+  35          {
+  36   1          P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
+  37   1          SDA = LOW;
+  38   1          //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
+  39   1          //Gpio_SetIO(1,5,0);
+  40   1      }
+  41          
+  42          void SDA_Pin_IN_FLOATING(void)  //SDAÅäÖÃÎªÐü¸¡ÊäÈë
+  43          {
+  44   1          P1DIR |= 0x20;     //ÅäÖÃP1.5ÎªÊäÈë
+  45   1          //Gpio_InitIO(1, 5, GpioDirIn);
+  46   1      }
+  47          
+  48          
+  49          
+  50          void SCL_Pin_Output_High(void) //SCLÊä³ö¸ßµçÆ½£¬P14×÷ÎªI2CµÄSCL
+  51          {
+  52   1          //Gpio_SetIO(1, 4, 1);
+  53   1          P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 2   
+
+  54   1          SCL = HIGH;
+  55   1      }
+  56          
+  57          void SCL_Pin_Output_Low(void) //SCLÊä³öµÍµçÆ½
+  58          {
+  59   1          //Gpio_SetIO(1, 4, 0);
+  60   1          P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
+  61   1          SCL = LOW;
+  62   1      }
+  63          
+  64          void Init_I2C_Sensor_Port(void) //³õÊ¼»¯I2C½Ó¿Ú
+  65          {
+  66   1      
+  67   1          //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//½«P15ÅäÖÃÎª¿ªÂ©Êä³ö  ²¢ÉèÖÃÎª¸ßµçÆ½
+  68   1          //Gpio_SetIO(1,5,1);
+  69   1          P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
+  70   1          SCL = HIGH;
+  71   1      
+  72   1          //Gpio_InitIOExt(1,4,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//½«P14ÅäÖÃÎª¿ªÂ©Êä³ö  ²¢ÉèÖÃÎª¸ßµçÆ½
+  73   1          //Gpio_SetIO(1,4,1);
+  74   1          P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
+  75   1          SDA = HIGH;
+  76   1      }
+  77          
+  78          
+  79          void I2C_Start(void)     //I2CÖ÷»ú·¢ËÍSTARTÐÅºÅ
+  80          {
+  81   1          SDA_Pin_Output_High();
+  82   1          //SensorDelay_us(8);
+  83   1          delay_us(8);
+  84   1          SCL_Pin_Output_High();
+  85   1          //SensorDelay_us(8);
+  86   1          delay_us(8);
+  87   1          SDA_Pin_Output_Low();
+  88   1          //SensorDelay_us(8);
+  89   1          delay_us(8);
+  90   1          SCL_Pin_Output_Low();
+  91   1          //SensorDelay_us(8);
+  92   1          delay_us(8);
+  93   1      }
+  94          
+  95          
+  96          void ZSSC_I2C_WR_Byte(uint8_t Byte) //ÍùAHT10Ð´Ò»¸ö×Ö½Ú
+  97          {
+  98   1          uint8_t Data, N, i;
+  99   1          Data = Byte;
+ 100   1          i = 0x80;
+ 101   1          for(N = 0; N < 8; N++)
+ 102   1          {
+ 103   2              SCL_Pin_Output_Low();
+ 104   2      
+ 105   2              //Delay_3us();
+ 106   2              delay_us(3);
+ 107   2              if(i & Data)
+ 108   2              {
+ 109   3                  SDA_Pin_Output_High();
+ 110   3              }
+ 111   2              else
+ 112   2              {
+ 113   3                  SDA_Pin_Output_Low();
+ 114   3              }
+ 115   2      
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 3   
+
+ 116   2              SCL_Pin_Output_High();
+ 117   2              //Delay_3us();
+ 118   2              delay_us(3);
+ 119   2      
+ 120   2              Data <<= 1;
+ 121   2      
+ 122   2          }
+ 123   1          SCL_Pin_Output_Low();
+ 124   1          //SensorDelay_us(8);
+ 125   1          delay_us(8);
+ 126   1          SDA_Pin_IN_FLOATING();
+ 127   1          //SensorDelay_us(8);
+ 128   1          delay_us(8);
+ 129   1      }
+ 130          
+ 131          
+ 132          uint8_t ZSSC_I2C_RD_Byte(void)//´ÓAHT10¶ÁÈ¡Ò»¸ö×Ö½Ú
+ 133          {
+ 134   1          uint8_t Byte, i, a;
+ 135   1          Byte = 0;
+ 136   1          SCL_Pin_Output_Low();
+ 137   1          SDA_Pin_IN_FLOATING();
+ 138   1          //SensorDelay_us(8);
+ 139   1          delay_us(8);
+ 140   1          for(i = 0; i < 8; i++)
+ 141   1          {
+ 142   2              SCL_Pin_Output_High();
+ 143   2              //Delay_1us();
+ 144   2              delay_us(1);
+ 145   2              a = 0;
+ 146   2              //if(Gpio_GetIO(1,5))a=1;
+ 147   2              if(SDA)a = 1;
+ 148   2              Byte = (Byte << 1) | a;
+ 149   2              SCL_Pin_Output_Low();
+ 150   2              //Delay_1us();
+ 151   2              delay_us(8);
+ 152   2          }
+ 153   1          SDA_Pin_IN_FLOATING();
+ 154   1          //SensorDelay_us(8);
+ 155   1          delay_us(8);
+ 156   1          return Byte;
+ 157   1      }
+ 158          
+ 159          
+ 160          uint8_t Receive_ACK(void)   //¿´AHT10ÊÇ·ñÓÐ»Ø¸´ACK
+ 161          {
+ 162   1          uint16_t CNT;
+ 163   1          CNT = 0;
+ 164   1          SCL_Pin_Output_Low();
+ 165   1          SDA_Pin_IN_FLOATING();
+ 166   1          //SensorDelay_us(8);
+ 167   1          delay_us(8);
+ 168   1          SCL_Pin_Output_High();
+ 169   1          //SensorDelay_us(8);
+ 170   1          delay_us(8);
+ 171   1          //while((Gpio_GetIO(1,5))  && CNT < 100)
+ 172   1      
+ 173   1          while((SDA)  && CNT < 100)
+ 174   1              CNT++;
+ 175   1          if(CNT == 100)
+ 176   1          {
+ 177   2              return 0;
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 4   
+
+ 178   2          }
+ 179   1          SCL_Pin_Output_Low();
+ 180   1          //SensorDelay_us(8);
+ 181   1          delay_us(8);
+ 182   1          return 1;
+ 183   1      }
+ 184          
+ 185          void Send_ACK(void)     //Ö÷»ú»Ø¸´ACKÐÅºÅ
+ 186          {
+ 187   1          SCL_Pin_Output_Low();
+ 188   1          //SensorDelay_us(8);
+ 189   1          delay_us(8);
+ 190   1          SDA_Pin_Output_Low();
+ 191   1          //SensorDelay_us(8);
+ 192   1          delay_us(8);
+ 193   1          SCL_Pin_Output_High();
+ 194   1          //SensorDelay_us(8);
+ 195   1          delay_us(8);
+ 196   1          SCL_Pin_Output_Low();
+ 197   1          //SensorDelay_us(8);
+ 198   1          delay_us(8);
+ 199   1          SDA_Pin_IN_FLOATING();
+ 200   1          //SensorDelay_us(8);
+ 201   1          delay_us(8);
+ 202   1      }
+ 203          
+ 204          void Send_NOT_ACK(void) //Ö÷»ú²»»Ø¸´ACK
+ 205          {
+ 206   1          SCL_Pin_Output_Low();
+ 207   1          //SensorDelay_us(8);
+ 208   1          delay_us(8);
+ 209   1          SDA_Pin_Output_High();
+ 210   1          //SensorDelay_us(8);
+ 211   1          delay_us(8);
+ 212   1          SCL_Pin_Output_High();
+ 213   1          //SensorDelay_us(8);
+ 214   1          delay_us(8);
+ 215   1          SCL_Pin_Output_Low();
+ 216   1          //SensorDelay_us(8);
+ 217   1          delay_us(8);
+ 218   1          SDA_Pin_Output_Low();
+ 219   1          //SensorDelay_us(8);
+ 220   1          delay_us(8);
+ 221   1      }
+ 222          
+ 223          void Stop_I2C(void)   //Ò»ÌõÐ­Òé½áÊø
+ 224          {
+ 225   1          SDA_Pin_Output_Low();
+ 226   1          //SensorDelay_us(8);
+ 227   1          delay_us(8);
+ 228   1          SCL_Pin_Output_High();
+ 229   1          //SensorDelay_us(8);
+ 230   1          delay_us(8);
+ 231   1          SDA_Pin_Output_High();
+ 232   1          //SensorDelay_us(8);
+ 233   1          delay_us(8);
+ 234   1      }
+ 235          
+ 236          uint8_t JH_Read_Status(void)//¶ÁÈ¡AHT10µÄ×´Ì¬¼Ä´æÆ÷
+ 237          {
+ 238   1      
+ 239   1          uint8_t Byte_first;
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 5   
+
+ 240   1          I2C_Start();
+ 241   1          ZSSC_I2C_WR_Byte(0x71);
+ 242   1          Receive_ACK();
+ 243   1          Byte_first = ZSSC_I2C_RD_Byte();
+ 244   1      
+ 245   1      
+ 246   1          Send_NOT_ACK();
+ 247   1          Stop_I2C();
+ 248   1      
+ 249   1      
+ 250   1          return Byte_first;
+ 251   1      }
+ 252          
+ 253          uint8_t JH_Read_Cal_Enable(void)  //²éÑ¯cal enableÎ»ÓÐÃ»ÓÐÊ¹ÄÜ£¿
+ 254          {
+ 255   1          uint8_t val = 0;//ret = 0,
+ 256   1      
+ 257   1          val = JH_Read_Status();
+ 258   1          if((val & 0x68) == 0x08) //ÅÐ¶ÏNORÄ£Ê½ºÍÐ£×¼Êä³öÊÇ·ñÓÐÐ§
+ 259   1              return 1;
+ 260   1          else  return 0;
+ 261   1      }
+ 262          
+ 263          
+ 264          
+ 265          void JH_SendAC(void) //ÏòAHT10·¢ËÍACÃüÁî
+ 266          {
+ 267   1      
+ 268   1          I2C_Start();
+ 269   1          ZSSC_I2C_WR_Byte(0x70);
+ 270   1          Receive_ACK();
+ 271   1          ZSSC_I2C_WR_Byte(0xac);
+ 272   1          Receive_ACK();
+ 273   1          ZSSC_I2C_WR_Byte(0x33);
+ 274   1          Receive_ACK();
+ 275   1          ZSSC_I2C_WR_Byte(0x00);
+ 276   1          Receive_ACK();
+ 277   1          Stop_I2C();
+ 278   1      
+ 279   1      }
+ 280          
+ 281          void JH_Send_BA(void)//ÏòAHT10·¢ËÍBAÃüÁî
+ 282          {
+ 283   1      
+ 284   1      
+ 285   1          I2C_Start();
+ 286   1          ZSSC_I2C_WR_Byte(0x70);
+ 287   1          Receive_ACK();
+ 288   1          ZSSC_I2C_WR_Byte(0xba);
+ 289   1          Receive_ACK();
+ 290   1          Stop_I2C();
+ 291   1      
+ 292   1      
+ 293   1      }
+ 294          
+ 295          void Read_AHT10() //¶ÁÈ¡AHT10µÄÎÂ¶ÈºÍÊª¶ÈÊý¾Ý
+ 296          {
+ 297   1          volatile uint8_t  Byte_1th = 0;
+ 298   1          volatile uint8_t  Byte_2th = 0;
+ 299   1          volatile uint8_t  Byte_3th = 0;
+ 300   1          volatile uint8_t  Byte_4th = 0;
+ 301   1          volatile uint8_t  Byte_5th = 0;
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 6   
+
+ 302   1          volatile uint8_t  Byte_6th = 0;
+ 303   1          uint32_t RetuData = 0;
+ 304   1          volatile int   temp = 0;
+ 305   1          uint16_t cnt = 0;
+ 306   1      
+ 307   1      
+ 308   1          while(JH_Read_Cal_Enable() == 0) //µÈµ½Ð£×¼Êä³öÊ¹ÄÜÎ»Îª1£¬²Å¶ÁÈ¡¡£
+ 309   1          {
+ 310   2              AHT10_Init();//Èç¹ûÎª0ÔÙÊ¹ÄÜÒ»´Î
+ 311   2              delay_ms(30);
+ 312   2          }
+ 313   1      
+ 314   1          JH_SendAC();//ÏòAHT10·¢ËÍACÃüÁî
+ 315   1          delay_ms(75);//µÈ´ý75ms
+ 316   1          cnt = 0;
+ 317   1          while(((JH_Read_Status() & 0x80) == 0x80)) //µÈ´ýÃ¦×´Ì¬½áÊø
+ 318   1          {
+ 319   2              //SensorDelay_us(1508);
+ 320   2              delay_us(1508);
+ 321   2              if(cnt++ >= 100)
+ 322   2              {
+ 323   3                  break;
+ 324   3              }
+ 325   2          }
+ 326   1          I2C_Start();
+ 327   1      
+ 328   1          ZSSC_I2C_WR_Byte(0x71);//0x70+1   0x70ÎªÉè±¸µØÖ· 1Îª·½ÏòÎ»
+ 329   1          Receive_ACK();
+ 330   1          Byte_1th = ZSSC_I2C_RD_Byte();//×´Ì¬×Ö
+ 331   1          Send_ACK();
+ 332   1          Byte_2th = ZSSC_I2C_RD_Byte();//Êª¶È×Ö½Ú
+ 333   1          Send_ACK();
+ 334   1          Byte_3th = ZSSC_I2C_RD_Byte();//Êª¶È×Ö½Ú
+ 335   1          Send_ACK();
+ 336   1          Byte_4th = ZSSC_I2C_RD_Byte();//¸ß4Î»ÎªÊª¶È  µÍ4Î»ÎªÎÂ¶È
+ 337   1          Send_ACK();
+ 338   1          Byte_5th = ZSSC_I2C_RD_Byte();//ÎÂ¶È×Ö½Ú
+ 339   1          Send_ACK();
+ 340   1          Byte_6th = ZSSC_I2C_RD_Byte();//ÎÂ¶È×Ö½Ú
+ 341   1          Send_NOT_ACK();
+ 342   1          Stop_I2C();
+ 343   1      
+ 344   1          RetuData = (RetuData | Byte_2th) << 8;
+ 345   1          RetuData = (RetuData | Byte_3th) << 8;
+ 346   1          RetuData = (RetuData | Byte_4th);
+ 347   1          RetuData = RetuData >> 4;
+ 348   1      
+ 349   1          temp = (RetuData * 1000 / 1024 / 1024); //¼ÆËãµÃµ½Êª¶ÈÖµ£¨·Å´óÁË10±¶,Èç¹ûc1=523£¬±íÊ¾ÏÖÔÚÊª¶ÈÎª52.3%£©
+ 350   1          AHT10Value.humy = temp;
+ 351   1          AHT10Value.humyH = temp / 100 ;
+ 352   1          AHT10Value.humyL = temp % 100 / 10;
+ 353   1          AHT10Value.humyD = temp % 100 % 10;
+ 354   1      
+ 355   1          RetuData = 0;
+ 356   1          RetuData = (RetuData | Byte_4th) << 8;
+ 357   1          RetuData = (RetuData | Byte_5th) << 8;
+ 358   1          RetuData = (RetuData | Byte_6th);
+ 359   1          RetuData = RetuData & 0xfffff;
+ 360   1      
+ 361   1          temp = (RetuData * 2000 / 1024 / 1024 - 500); //¼ÆËãµÃµ½ÎÂ¶ÈÖµ£¨·Å´óÁË10±¶£¬Èç¹ût1=245£¬±íÊ¾ÏÖÔÚÎÂ¶ÈÎª
+             -24.5¡æ£©
+ 362   1          AHT10Value.temp = temp;
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 7   
+
+ 363   1          AHT10Value.tempH = temp / 100 ;
+ 364   1          AHT10Value.tempL = temp % 100 / 10;
+ 365   1          AHT10Value.tempD = temp % 100 % 10;
+ 366   1      }
+ 367          
+ 368          
+ 369          uint8_t AHT10_Init(void)   //³õÊ¼»¯AHT10
+ 370          {
+ 371   1          uint8_t count;
+ 372   1      
+ 373   1          Init_I2C_Sensor_Port();
+ 374   1          //SensorDelay_us(11038);
+ 375   1          delay_us(11038);
+ 376   1      
+ 377   1          I2C_Start();
+ 378   1          ZSSC_I2C_WR_Byte(0x70);
+ 379   1          Receive_ACK();
+ 380   1          ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 381   1          Receive_ACK();
+ 382   1          ZSSC_I2C_WR_Byte(0x08);
+ 383   1          Receive_ACK();
+ 384   1          ZSSC_I2C_WR_Byte(0x00);
+ 385   1          Receive_ACK();
+ 386   1          Stop_I2C();
+ 387   1      
+ 388   1          delay_ms(500);//ÑÓÊ±0.5S
+ 389   1          while(JH_Read_Cal_Enable() == 0) //ÐèÒªµÈ´ý×´Ì¬×ÖstatusµÄBit[3]=1Ê±²ÅÈ¥¶ÁÊý¾Ý¡£Èç¹ûBit[3]²»µÈÓÚ1 £¬·¢È
+             -í¼þ¸´Î»0xBA¸øAHT10£¬ÔÙÖØÐÂ³õÊ¼»¯AHT10£¬Ö±ÖÁBit[3]=1
+ 390   1          {
+ 391   2      
+ 392   2              JH_Send_BA();  //¸´Î»
+ 393   2              delay_ms(100);
+ 394   2              //SensorDelay_us(11038);
+ 395   2              delay_us(11038);
+ 396   2      
+ 397   2              I2C_Start();
+ 398   2              ZSSC_I2C_WR_Byte(0x70);
+ 399   2              Receive_ACK();
+ 400   2              ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 401   2              Receive_ACK();
+ 402   2              ZSSC_I2C_WR_Byte(0x08);
+ 403   2              Receive_ACK();
+ 404   2              ZSSC_I2C_WR_Byte(0x00);
+ 405   2              Receive_ACK();
+ 406   2              Stop_I2C();
+ 407   2              count++;
+ 408   2              if(count >= 10)return 0;
+ 409   2              delay_ms(500);
+ 410   2          }
+ 411   1          return 1;
+ 412   1      }
+ 413          
+ 414          void AHT10_test(void)
+ 415          {
+ 416   1          uint8_t temp[5];
+ 417   1          uint8_t humidity[5];
+ 418   1          static uint8_t ret = 0;
+ 419   1      
+ 420   1          //  memset(temp, 0, 5);
+ 421   1          //memset(humidity, 0, 5);
+ 422   1          temp[2] = '.';
+ 423   1          humidity[2] = '.';
+C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 8   
+
+ 424   1          if (ret == 0)
+ 425   1          {
+ 426   2              ret = AHT10_Init(); //³õÊ¼»¯
+ 427   2              if(ret == 0)
+ 428   2              {
+ 429   3                  //PutString("AHT10³õÊ¼»¯Ê§°Ü\r\n");
+ 430   3                  while(1);
+ 431   3              }
+ 432   2              //PutString("AHT³õÊ¼»¯³É¹¦\r\n");
+ 433   2          }
+ 434   1          //while(1)
+ 435   1          {
+ 436   2      
+ 437   2              //DisableIrq(); //ÓÉÓÚÊÇÄ£ÄâI2C,Îª¶ÁÈ¡Êý¾Ý¸ü×¼È· £¬¶ÁÈ¡Ö®Ç°½ûÖ¹ÖÐ¶Ï
+ 438   2              Read_AHT10();  //¶ÁÈ¡ÎÂ¶ÈºÍÊª¶È £¬ ¿É¼ä¸ô1.5S¶ÁÒ»´Î
+ 439   2              //EnableIrq(); //»Ö¸´ÖÐ¶Ï
+ 440   2      
+ 441   2              temp[0] = AHT10Value.tempH + 0x30;
+ 442   2              temp[1] = AHT10Value.tempL + 0x30;
+ 443   2              temp[3] = AHT10Value.tempD + 0x30;
+ 444   2              humidity[0] = AHT10Value.humyH + 0x30;
+ 445   2              humidity[1] = AHT10Value.humyL + 0x30;
+ 446   2              humidity[3] = AHT10Value.humyD + 0x30;
+ 447   2      
+ 448   2              /*   PutString("AHT10-ÎÂ¶È:");
+ 449   2                 PutString(temp);
+ 450   2                 PutString("    ");
+ 451   2                 PutString("Êª¶È:");
+ 452   2                 PutString(humidity);
+ 453   2                 PutString("\r\n");
+ 454   2                  */
+ 455   2              delay_ms(1500); //ÑÓÊ±1.5S
+ 456   2              //Îª¶ÁÈ¡µÄÊý¾Ý¸üÎÈ¶¨£¬»¹¿ÉÒÔÊ¹ÓÃÆ½¾ùÖµÂË²¨»òÕß´°¿ÚÂË²¨£¬»òÕßÇ°Ãæ¶ÁÈ¡µÄÖµÓëºóÃæµÄÖµÏà²î²»ÄÜÌ«´ó¡£
+ 457   2          }
+ 458   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1576    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =     11      35
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

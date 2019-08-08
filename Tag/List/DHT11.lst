@@ -1,0 +1,170 @@
+C51 COMPILER V9.52.0.0   DHT11                                                             08/08/2019 23:32:03 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE DHT11
+OBJECT MODULE PLACED IN .\Object\DHT11.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE user\DHT11.C COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24
+                    -l01p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\DHT11.lst) TABS(2) OBJECT(.\
+                    -Object\DHT11.obj)
+
+line level    source
+
+   1          #include <reg24le1.h>
+   2          #include "DHT11.H" 
+   3          #include "hal_delay.h"
+   4          #include <string.h>
+   5          
+   6          #define DATA_PIN P02
+   7          
+   8          //温湿度定义
+   9          uint8_t U8FLAG,uchartemp;
+  10          uint8_t u8T_data_H,u8T_data_L,u8RH_data_H,u8RH_data_L,u8checkdata;
+  11          uint8_t u8T_data_H_temp,u8T_data_L_temp,u8RH_data_H_temp,uRH_data_L_temp,u8checkdata_temp;
+  12          uint8_t ucharcomdata;
+  13          
+  14          DHT11VALUE DHT11Value;
+  15          /******************************************************************************
+  16           * 描  述 : 1 us延时
+  17           * 入  参 : 无
+  18           * 返回值 : 无
+  19           *****************************************************************************/
+  20          /*void Delay_us() 
+  21          {
+  22            #pragma ASM
+  23              asm("nop");
+  24              asm("nop");
+  25              asm("nop");
+  26              asm("nop");
+  27              asm("nop");    
+  28              asm("nop");
+  29              asm("nop");
+  30              asm("nop");    
+  31              asm("nop"); 
+  32            #pragma ENDASM
+  33          }
+  34          */
+  35          /******************************************************************************
+  36           * 描  述 : 10 us延时
+  37           * 入  参 : 无
+  38           * 返回值 : 无
+  39           *****************************************************************************/
+  40          void Delay_10us() 
+  41          {
+  42   1        delay_us(1);
+  43   1        delay_us(1);
+  44   1        delay_us(1);
+  45   1        delay_us(1);
+  46   1        delay_us(1);
+  47   1        delay_us(1);
+  48   1        delay_us(1);
+  49   1        delay_us(1);
+  50   1        delay_us(1);
+  51   1        delay_us(1);   
+  52   1      }
+  53          
+C51 COMPILER V9.52.0.0   DHT11                                                             08/08/2019 23:32:03 PAGE 2   
+
+  54          /******************************************************************************
+  55           * 描  述 : Ds18b20写操作：写入1个字节
+  56           * 入  参 : 无
+  57           * 返回值 : 无
+  58           *****************************************************************************/
+  59          //温湿度传感
+  60          void COM(void)    // 温湿写入
+  61          {     
+  62   1          uint8_t i;         
+  63   1          for(i=0;i<8;i++)    
+  64   1          {
+  65   2              U8FLAG=2; 
+  66   2              while((!DATA_PIN)&&U8FLAG++);
+  67   2              Delay_10us();
+  68   2              Delay_10us();
+  69   2              Delay_10us();
+  70   2              uchartemp=0;
+  71   2              if(DATA_PIN)uchartemp=1;
+  72   2              U8FLAG=2;
+  73   2              while((DATA_PIN)&&U8FLAG++);   
+  74   2              if(U8FLAG==1)break;    
+  75   2              ucharcomdata<<=1;
+  76   2              ucharcomdata|=uchartemp; 
+  77   2          }    
+  78   1      }
+  79          
+  80          /******************************************************************************
+  81           * 描  述 : Ds18b20写操作：写入1个字节
+  82           * 入  参 : 无
+  83           * 返回值 : 无
+  84           *****************************************************************************/
+  85          void DHT11(void)   //温湿传感启动
+  86          {
+  87   1          PIN_DATA_OUT
+  88   1          DATA_PIN=0;
+  89   1          delay_ms(19);  //>18MS
+  90   1          DATA_PIN=1; 
+  91   1          PIN_DATA_IN;  //配置P0.2为输入
+  92   1          Delay_10us();
+  93   1          Delay_10us();                        
+  94   1          Delay_10us();
+  95   1          Delay_10us();  
+  96   1          if(!DATA_PIN) 
+  97   1          {
+  98   2              U8FLAG=2; 
+  99   2              while((!DATA_PIN)&&U8FLAG++);
+ 100   2              U8FLAG=2;
+ 101   2              while((DATA_PIN)&&U8FLAG++); 
+ 102   2              COM();
+ 103   2              u8RH_data_H_temp=ucharcomdata;
+ 104   2              COM();
+ 105   2              uRH_data_L_temp=ucharcomdata;
+ 106   2              COM();
+ 107   2              u8T_data_H_temp=ucharcomdata;
+ 108   2              COM();
+ 109   2              u8T_data_L_temp=ucharcomdata;
+ 110   2              COM();
+ 111   2              u8checkdata_temp=ucharcomdata;
+ 112   2              DATA_PIN=1; 
+ 113   2              uchartemp=(u8T_data_H_temp+u8T_data_L_temp+u8RH_data_H_temp+uRH_data_L_temp);
+ 114   2              if(uchartemp==u8checkdata_temp)
+ 115   2              {
+C51 COMPILER V9.52.0.0   DHT11                                                             08/08/2019 23:32:03 PAGE 3   
+
+ 116   3                  u8RH_data_H=u8RH_data_H_temp;
+ 117   3                  u8RH_data_L=uRH_data_L_temp;
+ 118   3                  u8T_data_H=u8T_data_H_temp;
+ 119   3                  u8T_data_L=u8T_data_L_temp;
+ 120   3                  u8checkdata=u8checkdata_temp;
+ 121   3              }
+ 122   2              DHT11Value.tempH = u8T_data_H/10; 
+ 123   2              DHT11Value.tempL = u8T_data_H%10;
+ 124   2              DHT11Value.tempD = u8T_data_L%10;
+ 125   2              
+ 126   2              DHT11Value.humyH = u8RH_data_H/10; 
+ 127   2              DHT11Value.humyL = u8RH_data_H%10; 
+ 128   2              DHT11Value.humyD = u8RH_data_L%10;        
+ 129   2          } 
+ 130   1          else //没用成功读取，返回0
+ 131   1          {
+ 132   2              DHT11Value.tempH = 0; 
+ 133   2              DHT11Value.tempL = 0;
+ 134   2              
+ 135   2              DHT11Value.humyH = 0; 
+ 136   2              DHT11Value.humyL = 0;  
+ 137   2          } 
+ 138   1          
+ 139   1          PIN_DATA_OUT; //配置P0.7为输出 
+ 140   1      }
+ 141          /*********************************END FILE*************************************/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    435    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =     20       1
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
