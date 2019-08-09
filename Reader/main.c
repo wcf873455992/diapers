@@ -270,14 +270,14 @@ void Uart_PackAndRepDat(void)
             UARTSendbuf[4 * tagnum + 10]  = ID_Buf[i][3];
             UARTSendbuf[4 * tagnum + 11] = ID_Buf[i][4];
 						*/
-					  UARTSendbuf[PAYLOAD_LEN * tagnum + 8]  = ID_Buf[i][1];
-            UARTSendbuf[PAYLOAD_LEN * tagnum + 9]  = ID_Buf[i][2];
-            UARTSendbuf[PAYLOAD_LEN * tagnum + 10]  = ID_Buf[i][3];
-            UARTSendbuf[PAYLOAD_LEN * tagnum + 11] = ID_Buf[i][4];
-					  UARTSendbuf[PAYLOAD_LEN * tagnum + 12]  = ID_Buf[i][5];
-            UARTSendbuf[PAYLOAD_LEN * tagnum + 13]  = ID_Buf[i][6];
-            UARTSendbuf[PAYLOAD_LEN * tagnum + 14]  = ID_Buf[i][7];
-            UARTSendbuf[PAYLOAD_LEN * tagnum + 15] = ID_Buf[i][8];
+					  UARTSendbuf[PAYLOAD_LEN * tagnum + 8]  = ID_Buf[i][1];//IDH
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 9]  = ID_Buf[i][2];//IDL
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 10]  = ID_Buf[i][3];//电压整数
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 11] = ID_Buf[i][4];//电压小数
+					  UARTSendbuf[PAYLOAD_LEN * tagnum + 12]  = ID_Buf[i][5];//温度整数
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 13]  = ID_Buf[i][6];//温度小数
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 14]  = ID_Buf[i][7];//湿度整数
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 15] = ID_Buf[i][8];//湿度小数
             ID_Buf[i][0] = 2;
             tagnum++;
             RepFlag = true;

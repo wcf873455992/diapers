@@ -46,6 +46,7 @@
 #include "user/AHT10.h"
 #include "user/DHT11.h"
 #include "user/led.h"
+#include "user/key.h"
 
 /*-------------------管脚定义--------------------------------------------------*/
 #define  D1    P00  // 开发板上的指示灯D1
@@ -280,10 +281,11 @@ void main()
 
     TagInfo.id.id16 = TAG_ID;
     IoInit();
-		led_init();
+	led_init();
+	key_init();
     mcu_init();
     adc_init();
-		AHT10_Init();		
+	AHT10_Init();		
     RfCofig();
 	
 #ifdef DEBUG_UART
@@ -297,22 +299,22 @@ void main()
     hal_wdog_init(WDT_TIME);//配置看门狗超时时间2s，使能看门狗
 #endif
     PutString("reset\r\n");    
-		led_flash(led2);
+	led_flash(led2);
 		
-		CellVoltage();	
-		AHT10();
-		Send_data();
+	CellVoltage();	
+	AHT10();
+	Send_data();
 		
     while(1)
     {
 #ifdef  USE_WDT
-        hal_wdog_restart(); //喂狗
+		hal_wdog_restart(); //喂狗
 #endif
         second++;
         if(second <= MINUTE) //未到1分钟
-        {		
-#ifdef 			DEBUG_LED
-						//led_flash(led1);
+        {
+#ifdef	DEBUG_LED
+			//led_flash(led1);
 #endif
             PWRDWN = 0x04;    // 进入寄存器维持低功耗模式
             PWRDWN = 0x00;
@@ -321,16 +323,16 @@ void main()
         {
             second = 0;
             minute++;					
-#ifdef 			DEBUG_LED
-					led_flash(led1);
+#ifdef	DEBUG_LED
+			led_flash(led1);
 #endif
-					  AHT10();
-            if(minute == 3 * HOUR)  //启动后执行一次AD检测，以后，每2小时检测一次
+			AHT10();
+            if(minute == 3 * HOUR)  //每3小时检测一次
             {
-               CellVoltage();
-							minute = 0;
+				CellVoltage();
+				minute = 0;
             }
-						Send_data();
+			Send_data();
         }
     }
 }

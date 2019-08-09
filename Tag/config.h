@@ -63,10 +63,10 @@ typedef struct Tag_Information
     uint8_t   CellVoltageH;	  // 电池电压个位//高字节
     uint8_t   CellVoltageL;		// 高4位电池电压小数点后第1位
 															// 低4位电池电压小数点后第2位
-		uint8_t		tempH;	//高4位温度十位，低4位温度个位
-		uint8_t		tempL;	//温度小数位
-		uint8_t		humyH;	//高4位湿度十位，低4位湿度个位
-		uint8_t		humyL;	//湿度小数位
+	uint8_t		tempH;	//高4位温度十位，低4位温度个位
+	uint8_t		tempL;	//温度小数位
+	uint8_t		humyH;	//高4位湿度十位，低4位湿度个位
+	uint8_t		humyL;	//湿度小数位
 
 } TagInformation;
 

@@ -26,7 +26,7 @@
 #define FRAME_SEC_HEAD      0xCC
 
 #define REP_ID_INFO         0x20
-#define ID_OVERTIME         10   //ID缓存超时时间
+#define ID_OVERTIME         1  //ID缓存超时时间
 
 /*
 ** 看门狗超时时间计算
