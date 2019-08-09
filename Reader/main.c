@@ -213,12 +213,8 @@ void PutString(char *s) {
  * 返回值 : 无
  *******************************************************************************************************/
 void Uart_PackAndRepDat(void) {
-    xdata uint8_t i, tagnum = 0, fcs;
+    xdata uint8_t i,j, tagnum = 0, fcs;
     uint8_t	temp[5], humy[5], id[5];
-
-    //	memset(temp, 0, 5);
-    //memset(humy, 0, 5);
-    //memset(id, 0, 5);
 
     RepFlag = false;
 
@@ -234,14 +230,12 @@ void Uart_PackAndRepDat(void) {
     UARTSendbuf[2] = DEST_ADDR;     // DA
     UARTSendbuf[3] = READER_ADDR;   // SA
 
-    for(i = 0; i < MAX_TAG_BUFNUM; i++) {
-        if(ID_Buf[i][0] == TAG_NEED_REP) {
-            /*UARTSendbuf[4 * tagnum + 8]  = ID_Buf[i][1];
-            UARTSendbuf[4 * tagnum + 9]  = ID_Buf[i][2];
-            UARTSendbuf[4 * tagnum + 10]  = ID_Buf[i][3];
-            UARTSendbuf[4 * tagnum + 11] = ID_Buf[i][4];
-            			*/
-            UARTSendbuf[PAYLOAD_LEN * tagnum + 8]  = ID_Buf[i][1];//IDH
+	for(i = 0; i < MAX_TAG_BUFNUM; i++) {
+		if(ID_Buf[i][0] == TAG_NEED_REP) {
+			for(j = 0; j < PAYLOAD_LEN; j++){
+				UARTSendbuf[PAYLOAD_LEN * tagnum + 8 +j]  = ID_Buf[i][1+j];//IDH
+			}
+			/*
             UARTSendbuf[PAYLOAD_LEN * tagnum + 9]  = ID_Buf[i][2];//IDL
             UARTSendbuf[PAYLOAD_LEN * tagnum + 10]  = ID_Buf[i][3];//电压整数
             UARTSendbuf[PAYLOAD_LEN * tagnum + 11] = ID_Buf[i][4];//电压小数
@@ -249,6 +243,7 @@ void Uart_PackAndRepDat(void) {
             UARTSendbuf[PAYLOAD_LEN * tagnum + 13]  = ID_Buf[i][6];//温度小数
             UARTSendbuf[PAYLOAD_LEN * tagnum + 14]  = ID_Buf[i][7];//湿度整数
             UARTSendbuf[PAYLOAD_LEN * tagnum + 15] = ID_Buf[i][8];//湿度小数
+			*/
             ID_Buf[i][0] = 2;
             tagnum++;
             RepFlag = true;
@@ -268,10 +263,6 @@ void Uart_PackAndRepDat(void) {
     UARTSendbuf[UARTSendbuf[4] + 2] = (256 - fcs) % 256;
     for(i = 0; i < (UARTSendbuf[4] + 3); i++)  hal_uart_putchar(UARTSendbuf[i] );
 
-    //PutString(temp);
-    //PutString(humy);
-    //hal_uart_putchar('\r');
-    //hal_uart_putchar('\n');
 }
 /*******************************************************************************************************
  * 描  述 : 主函数
