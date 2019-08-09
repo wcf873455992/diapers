@@ -1,5 +1,5 @@
-#ifndef __led_H__
-#define __led_H__
+#ifndef __key_H__
+#define __key_H__
 #include <stdint.h>
 #include "config.h"
 

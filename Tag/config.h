@@ -10,20 +10,25 @@
 /******************************************************************************/
 /* 调试信息*/
 
-#define  DEBUG_LED    1
-#define  DEBUG_UART   1
+#define  DEBUG_LED    
+//#define  DEBUG_UART   
 
 /******************************************************************************/
 /* Tag 参数  */
 #define  TAG_ID          1000	    // ID
 #define  TAG_CH          50	      // 信道
-#define  TAG_TIME        32768U	  // 休眠时间：1000ms
+
+#if 1
+	#define  TAG_TIME        2*32768U	  // 休眠时间：2*1000ms
+#else
+	#define  TAG_TIME        327U	  // 休眠时间：10ms 测试用
+#endif
 
 #define  MAX_TX_PAYLOAD  10//6        // 无线发送数据长度
 #define  TAG_ID_LEN      2        // ID字节数
 #define  ADC_TIME        7200U      // ADC检测时间间隔
 
-#define MINUTE		5//60//1分钟
+#define MINUTE		30//30=1分钟
 #define HOUR		60
 /******************************************************************************/
 /* Watchdog*/
@@ -33,8 +38,8 @@
 **  所以：最小看门狗超时周期 = 7.8125ms
 **        最大看门狗超时周期 = 512s
 */
-#define USE_WDT   0//1
-#define WDT_TIME  256  //2S
+//#define USE_WDT   1//
+#define WDT_TIME  256  //小于休眠2S时间重启
 
 
 /******************************************************************************/

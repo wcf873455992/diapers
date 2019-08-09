@@ -15,12 +15,12 @@ void led_flash(uint8_t led){
 	switch(led){
 		case led1:
 				LED1 = ON;
-				delay_us(200);
+				delay_us(100);
 				LED1 = OFF;
 			break;
 		case led2:
 				LED2	=	ON;
-				delay_us(200);
+				delay_us(100);
 				LED2 = OFF;
 			break;
 		default:

@@ -267,76 +267,161 @@ void	Send_data(){
 		radio_busy = true;
 		while(radio_busy)		    //等待操作完成
 		;
+		led_flash(led1);
+}
+/*******************************************************************************************************
+ * 描  述 : 获取上一次低功耗模式，并通过串口打印
+ * 入  参 : 无
+ * 返回值 : 无
+ *******************************************************************************************************/
+void GetPrintLastPWM(void)
+{
+    uint8_t PowrMode;
+
+    PowrMode = PWRDWN & 0x07;
+
+    switch(PowrMode)
+    {
+    case 0x00:
+        PutString("Last mode:Power Off!");
+        break;
+    case 0x01:
+        PutString("Last mode:Deep Sleep!");
+        break;
+    case 0x02:
+        PutString("Last mode:Memory Retention, Timer Off!");
+        break;
+    case 0x03:
+        PutString("Last mode:Memory Retention, Timer On!");
+        break;
+    case 0x04:
+        PutString("Last mode:Register Retention!");
+        break;
+    default  :
+        PutString("Error Or Reserved!");
+        break;
+    }
+}
+/*******************************************************************************************************
+ * 描  述 : 设置唤醒PIN
+ * 入  参 : 无
+ * 返回值 : 无
+ *******************************************************************************************************/
+void SetWakeUpPin(void)
+{
+    OPMCON = 0x04;             /* 开锁，低电平唤醒          */
+    WUOPC0 = 0x00;             /* P0唤醒的引脚设置：无      */
+    WUOPC1 = 0x04;             /* P1唤醒的引脚设置：P12     */
+
+    P1DIR |= 0x04;             /* P12初始化为输入I/O口      */
+    P12   = 1;                 /* P12初始化为高电平         */
 }
 /*******************************************************************************************************
  * 描  述 : 主函数
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void main()
-{
-    uint8_t RfReceLen, i, second = 0;
-    xdata   uint32_t  loopCount = ADC_TIME - 1;
-    uint32_t	minute = 0;
 
-    TagInfo.id.id16 = TAG_ID;
-    IoInit();
+
+#define  DEEPSLEEP        1  // 深度睡眠
+#define  MEMRET_TIMEOFF   2	 // 存储器维持，定时器关闭
+#define  MEMRET_TIMEON    3	 // 存储器维持，定时器开启
+#define  REGRET           4	 // 寄存器维持
+/*******************************************************************************************************
+ * 描  述 : 设置nRF24LE1低功耗模式
+ * 入  参 : mode:低功耗模式
+ * 返回值 : 无
+ *******************************************************************************************************/
+void SetPowrDownMode(uint8_t mode)
+{
+    uint8_t PowrMode;
+
+    switch(mode)
+    {
+    case DEEPSLEEP  :     // 深度睡眠，唤醒后复位
+        PowrMode = 0x01;
+        break;
+    case MEMRET_TIMEOFF : // 存储器维持，定时器关闭，唤醒后复位
+        PowrMode = 0x02;
+        break;
+    case MEMRET_TIMEON:	  // 存储器维持，定时器开启，唤醒后复位
+        PowrMode = 0x03;
+        break;
+    case REGRET :         // 寄存器维持
+        PowrMode = 0x04;
+        break;
+    default         :	   //运行
+        PowrMode = 0x00;
+        break;
+    }
+
+    if(PowrMode == 0x01)hal_clk_set_16m_source(HAL_CLK_RCOSC16M); // 进入到DEEPSLEEP前一定要启用RC时钟源
+    if((PowrMode == 0x01) || (PowrMode == 0x02) || (PowrMode == 0x03))OPMCON |= 0x02;	 // 这3种低功耗模式唤醒后nRF24LE1会复位，所以要锁定IO
+
+    PWRDWN = PowrMode;
+    PWRDWN = 0x00;  // Clear power down
+}
+
+void main(void)
+{
+	uint8_t RfReceLen, second = 0;
+    uint32_t	minute = 0;
+	
+	TagInfo.id.id16 = TAG_ID;
+    IoInit();      //配置IO
+    SetWakeUpPin(); //设置唤醒管脚	
 	led_init();
 	key_init();
-    mcu_init();
+    mcu_init();		
     adc_init();
 	AHT10_Init();		
     RfCofig();
-	
-#ifdef DEBUG_UART
-    hal_uart_init(UART_BAUD_57K6);  //初始化UART，波特率57600
+#ifdef DEBUG_UART 	
+    hal_uart_init(UART_BAUD_57K6); // 初始化UART0
     while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
-        ;
+      ;
 #endif
-    //EA = 1;             //使能全局中断
-	
-#ifdef  USE_WDT
+#if USE_WDT
     hal_wdog_init(WDT_TIME);//配置看门狗超时时间2s，使能看门狗
 #endif
-    PutString("reset\r\n");    
-	led_flash(led2);
-		
+    PutString("Program starting...\r\n");
+    GetPrintLastPWM();	
 	CellVoltage();	
 	AHT10();
 	Send_data();
-		
     while(1)
     {
-#ifdef  USE_WDT
+
+#if USE_WDT
 		hal_wdog_restart(); //喂狗
 #endif
-        second++;
-        if(second <= MINUTE) //未到1分钟
-        {
-#ifdef	DEBUG_LED
-			//led_flash(led1);
-#endif
-            PWRDWN = 0x04;    // 进入寄存器维持低功耗模式
-            PWRDWN = 0x00;
-        }
-        else
-        {
-            second = 0;
-            minute++;					
-#ifdef	DEBUG_LED
-			led_flash(led1);
-#endif
-			AHT10();
-            if(minute == 3 * HOUR)  //每3小时检测一次
-            {
-				CellVoltage();
+        if(KEY1 == 0){
+			delay_ms(100);
+			if(KEY1 == 0){
+				second = 0;
 				minute = 0;
+				CellVoltage();	
+				AHT10();
+				Send_data();
+			}
+        }
+        if(second <= MINUTE){ //一分钟        
+            second++;
+            SetPowrDownMode(REGRET);
+            PutString("into REGRET\n");
+        }else{
+            second = 0;
+            minute++;
+            if(minute == 24*HOUR)
+            {
+                PutString("into DEEPSLEEP\n");
+                SetPowrDownMode(DEEPSLEEP);
             }
+			AHT10();
 			Send_data();
         }
     }
 }
-
 /*******************************************************************************************************
  * 描  述 : 无线中断服务函数
  * 入  参 : 无
