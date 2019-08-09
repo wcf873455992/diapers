@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   MAIN                                                                  08/09/2019 10:47:58 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  08/09/2019 16:39:57 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
@@ -57,350 +57,356 @@ line level    source
   45          
   46          #include "user/AHT10.h"
   47          #include "user/DHT11.h"
-  48          /*-------------------管脚定义--------------------------------------------------*/
-  49          #define  D1    P00  // 开发板上的指示灯D1
-  50          #define  D2    P01  // 开发板上的指示灯D2
-  51          #define  S2    P12  // 开发板上的按键S2
-  52          #define  S3    P13  // 开发板上的按键S3
-C51 COMPILER V9.54   MAIN                                                                  08/09/2019 10:47:58 PAGE 2   
+  48          #include "user/led.h"
+  49          
+  50          /*-------------------管脚定义--------------------------------------------------*/
+  51          #define  D1    P00  // 开发板上的指示灯D1
+  52          #define  D2    P01  // 开发板上的指示灯D2
+C51 COMPILER V9.54   MAIN                                                                  08/09/2019 16:39:57 PAGE 2   
 
-  53          #define  ADC   P06
-  54          
-  55          
+  53          #define  S2    P12  // 开发板上的按键S2
+  54          #define  S3    P13  // 开发板上的按键S3
+  55          #define  ADC   P06
   56          
-  57          /*******************************************************************************************************
-  58           * 变量定义
-  59           *******************************************************************************************************/
-  60          xdata bool  radio_busy;
-  61          xdata uint8_t  TxPayload[32];
-  62          xdata uint8_t  RxPayload[32];
-  63          uint16_t PipeAndLen;
-  64          uint8_t  TX_ADDRESS[5]  = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7}; // TX address
-  65          
-  66          xdata TagInformation TagInfo;
+  57          
+  58          
+  59          /*******************************************************************************************************
+  60           * 变量定义
+  61           *******************************************************************************************************/
+  62          xdata bool  radio_busy;
+  63          xdata uint8_t  TxPayload[32];
+  64          xdata uint8_t  RxPayload[32];
+  65          uint16_t PipeAndLen;
+  66          uint8_t  TX_ADDRESS[5]  = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7}; // TX address
   67          
-  68          
-  69          /*******************************************************************************************************
-  70           * 描  述 : 初始化IO
-  71           * 入  参 : 无
-  72           * 返回值 : 无
-  73           *******************************************************************************************************/
-  74          void IoInit(void)
-  75          {
-  76   1          P0DIR = 0x00;
-  77   1          P1DIR = 0x00;
-  78   1      }
-  79          #ifdef DEBUG_UART
-  80          /*******************************************************************************************************
-  81           * 描  述 : 串口输出字符
-  82           * 入  参 : 无
-  83           * 返回值 : 无
-  84           *******************************************************************************************************/
-  85          void uart_sendchar(uint8_t dat)
-  86          {
-  87   1          S0BUF = dat;
-  88   1          while(!TI0);
-  89   1          TI0 = 0;
-  90   1      }
-  91          #endif
-  92          /*******************************************************************************************************
-  93           * 描  述 : 串口输出字符串
-  94           * 入  参 : 无
-  95           * 返回值 : 无
-  96           *******************************************************************************************************/
-  97          void PutString(char *s)
-  98          {
-  99   1        #ifdef DEBUG_UART
- 100   1          while(*s != 0)
- 101   1              uart_sendchar(*s++);
- 102   1          delay_ms(100);
- 103   1          #endif
- 104   1      }
- 105          /*********************************************************************************************************
- 106          ** 描  述:  adc初始化
- 107          ** 入  参:  NONE
- 108          ** 返回值:  NONE
- 109          *********************************************************************************************************/
- 110          void adc_init(void)
- 111          {
- 112   1          hal_adc_set_input_channel(HAL_INP_VDD1_3);          //设置通道 检测1/3 VDD电压
- 113   1          hal_adc_set_reference(HAL_ADC_REF_INT);             //设置参考电压 内部1.22V
- 114   1          hal_adc_set_input_mode(HAL_ADC_SINGLE);             //单端输入
-C51 COMPILER V9.54   MAIN                                                                  08/09/2019 10:47:58 PAGE 3   
+  68          xdata TagInformation TagInfo;
+  69          
+  70          
+  71          /*******************************************************************************************************
+  72           * 描  述 : 初始化IO
+  73           * 入  参 : 无
+  74           * 返回值 : 无
+  75           *******************************************************************************************************/
+  76          void IoInit(void)
+  77          {
+  78   1          P0DIR = 0x00;
+  79   1          P1DIR = 0x00;
+  80   1      }
+  81          #ifdef DEBUG_UART
+  82          /*******************************************************************************************************
+  83           * 描  述 : 串口输出字符
+  84           * 入  参 : 无
+  85           * 返回值 : 无
+  86           *******************************************************************************************************/
+  87          void uart_sendchar(uint8_t dat)
+  88          {
+  89   1          S0BUF = dat;
+  90   1          while(!TI0);
+  91   1          TI0 = 0;
+  92   1      }
+  93          #endif
+  94          /*******************************************************************************************************
+  95           * 描  述 : 串口输出字符串
+  96           * 入  参 : 无
+  97           * 返回值 : 无
+  98           *******************************************************************************************************/
+  99          void PutString(char *s)
+ 100          {
+ 101   1        #ifdef DEBUG_UART
+ 102   1          while(*s != 0)
+ 103   1              uart_sendchar(*s++);
+ 104   1          //delay_ms(1);
+ 105   1          #endif
+ 106   1      }
+ 107          /*********************************************************************************************************
+ 108          ** 描  述:  adc初始化
+ 109          ** 入  参:  NONE
+ 110          ** 返回值:  NONE
+ 111          *********************************************************************************************************/
+ 112          void adc_init(void)
+ 113          {
+ 114   1          hal_adc_set_input_channel(HAL_INP_VDD1_3);          //设置通道 检测1/3 VDD电压
+C51 COMPILER V9.54   MAIN                                                                  08/09/2019 16:39:57 PAGE 3   
 
- 115   1          hal_adc_set_conversion_mode(HAL_ADC_SINGLE_STEP);   //单次采样模式
- 116   1          hal_adc_set_sampling_rate(HAL_ADC_2KSPS);           //采样速率为  2ksps
- 117   1          hal_adc_set_resolution(HAL_ADC_RES_12BIT);          //12位ADC
- 118   1          hal_adc_set_data_just(HAL_ADC_JUST_RIGHT);          //数据右对齐
- 119   1      }
- 120          
- 121          /*******************************************************************************************************
- 122           * 描  述 : 设置休眠时间
- 123           * 入  参 : period:休眠时间
- 124           * 返回值 : 无
- 125           *******************************************************************************************************/
- 126          void set_timer_period(uint16_t period)
- 127          {
- 128   1          if((period < 10) && (period > 65536))period = 32768;
- 129   1      
- 130   1          hal_rtc_start(false);
- 131   1          hal_rtc_start(true);
- 132   1          hal_rtc_set_compare_value(period - 1);
- 133   1      }
- 134          
- 135          /*******************************************************************************************************
- 136           * 描  述 : 配置无线参数
- 137           * 入  参 : 无
- 138           * 返回值 : 无
- 139           *******************************************************************************************************/
- 140          void RfCofig(void)
- 141          {
- 142   1          RFCKEN = 1;      //使能RF时钟
- 143   1      
- 144   1          hal_nrf_close_pipe(HAL_NRF_ALL);           //先关闭所有的通道.
- 145   1          hal_nrf_open_pipe(HAL_NRF_PIPE0, false);    //再打开通道0.
- 146   1      
- 147   1          hal_nrf_set_operation_mode(HAL_NRF_PTX);    // 模式：发送
- 148   1          hal_nrf_set_rf_channel(TAG_CH);             // RF信道：50。接收和发送必须处于同一信道
- 149   1          hal_nrf_set_datarate(HAL_NRF_250KBPS);      // RF速率：250KBPS
- 150   1          hal_nrf_set_output_power(HAL_NRF_0DBM);     // 功率：0DBM
- 151   1          hal_nrf_set_crc_mode(HAL_NRF_CRC_16BIT);    //设置CRC校验：16位CRC。必须和接收设备一致。
- 152   1          hal_nrf_set_address(HAL_NRF_TX, TX_ADDRESS); //设置发射机地址
- 153   1          hal_nrf_set_auto_retr(0, 1500);                //自动重发:0
- 154   1      
- 155   1          hal_nrf_set_power_mode(HAL_NRF_PWR_UP);         //发射机上电
- 156   1          RF = 1;       //使能无线中断
- 157   1          EA = 1;      // 使能全局中断
- 158   1      }
- 159          
- 160          /*******************************************************************************************************
- 161           * 描  述 : 时钟和RTC唤醒配置
- 162           * 入  参 : 无
- 163           * 返回值 : 无
- 164           *******************************************************************************************************/
- 165          void mcu_init(void)
- 166          {
- 167   1          hal_rtc_start(false);
- 168   1          hal_clklf_set_source(HAL_CLKLF_RCOSC32K);           // Use 32.768KHz的时钟源为内部RC
- 169   1      
- 170   1          hal_rtc_set_compare_mode(HAL_RTC_COMPARE_MODE_0);   // Use 32 KHz timer mode 0
- 171   1          set_timer_period(TAG_TIME);                         // Set the RTC2 time，card sleep time
- 172   1          hal_clk_set_16m_source(HAL_CLK_XOSC16M);            // Always run on 16MHz crystal oscillator
- 173   1          hal_clk_regret_xosc16m_on(0);                       // Keep XOSC16M off in register retention
- 174   1      
- 175   1          hal_rtc_start(true);
+ 115   1          hal_adc_set_reference(HAL_ADC_REF_INT);             //设置参考电压 内部1.22V
+ 116   1          hal_adc_set_input_mode(HAL_ADC_SINGLE);             //单端输入
+ 117   1          hal_adc_set_conversion_mode(HAL_ADC_SINGLE_STEP);   //单次采样模式
+ 118   1          hal_adc_set_sampling_rate(HAL_ADC_2KSPS);           //采样速率为  2ksps
+ 119   1          hal_adc_set_resolution(HAL_ADC_RES_12BIT);          //12位ADC
+ 120   1          hal_adc_set_data_just(HAL_ADC_JUST_RIGHT);          //数据右对齐
+ 121   1      }
+ 122          
+ 123          /*******************************************************************************************************
+ 124           * 描  述 : 设置休眠时间
+ 125           * 入  参 : period:休眠时间
+ 126           * 返回值 : 无
+ 127           *******************************************************************************************************/
+ 128          void set_timer_period(uint16_t period)
+ 129          {
+ 130   1          if((period < 10) && (period > 65536))period = 32768;
+ 131   1      
+ 132   1          hal_rtc_start(false);
+ 133   1          hal_rtc_start(true);
+ 134   1          hal_rtc_set_compare_value(period - 1);
+ 135   1      }
+ 136          
+ 137          /*******************************************************************************************************
+ 138           * 描  述 : 配置无线参数
+ 139           * 入  参 : 无
+ 140           * 返回值 : 无
+ 141           *******************************************************************************************************/
+ 142          void RfCofig(void)
+ 143          {
+ 144   1          RFCKEN = 1;      //使能RF时钟
+ 145   1      
+ 146   1          hal_nrf_close_pipe(HAL_NRF_ALL);           //先关闭所有的通道.
+ 147   1          hal_nrf_open_pipe(HAL_NRF_PIPE0, false);    //再打开通道0.
+ 148   1      
+ 149   1          hal_nrf_set_operation_mode(HAL_NRF_PTX);    // 模式：发送
+ 150   1          hal_nrf_set_rf_channel(TAG_CH);             // RF信道：50。接收和发送必须处于同一信道
+ 151   1          hal_nrf_set_datarate(HAL_NRF_250KBPS);      // RF速率：250KBPS
+ 152   1          hal_nrf_set_output_power(HAL_NRF_0DBM);     // 功率：0DBM
+ 153   1          hal_nrf_set_crc_mode(HAL_NRF_CRC_16BIT);    //设置CRC校验：16位CRC。必须和接收设备一致。
+ 154   1          hal_nrf_set_address(HAL_NRF_TX, TX_ADDRESS); //设置发射机地址
+ 155   1          hal_nrf_set_auto_retr(0, 1500);                //自动重发:0
+ 156   1      
+ 157   1          hal_nrf_set_power_mode(HAL_NRF_PWR_UP);         //发射机上电
+ 158   1          RF = 1;       //使能无线中断
+ 159   1          EA = 1;      // 使能全局中断
+ 160   1      }
+ 161          
+ 162          /*******************************************************************************************************
+ 163           * 描  述 : 时钟和RTC唤醒配置
+ 164           * 入  参 : 无
+ 165           * 返回值 : 无
+ 166           *******************************************************************************************************/
+ 167          void mcu_init(void)
+ 168          {
+ 169   1          hal_rtc_start(false);
+ 170   1          hal_clklf_set_source(HAL_CLKLF_RCOSC32K);           // Use 32.768KHz的时钟源为内部RC
+ 171   1      
+ 172   1          hal_rtc_set_compare_mode(HAL_RTC_COMPARE_MODE_0);   // Use 32 KHz timer mode 0
+ 173   1          set_timer_period(TAG_TIME);                         // Set the RTC2 time，card sleep time
+ 174   1          hal_clk_set_16m_source(HAL_CLK_XOSC16M);            // Always run on 16MHz crystal oscillator
+ 175   1          hal_clk_regret_xosc16m_on(0);                       // Keep XOSC16M off in register retention
  176   1      
-C51 COMPILER V9.54   MAIN                                                                  08/09/2019 10:47:58 PAGE 4   
+C51 COMPILER V9.54   MAIN                                                                  08/09/2019 16:39:57 PAGE 4   
 
- 177   1          while((CLKLFCTRL & 0x80) == 0x80);                  // Wait for the 32kHz to startup (change phase)
- 178   1          while((CLKLFCTRL & 0x80) != 0x80);
- 179   1      }
- 180          
- 181          /*******************************************************************************************************
- 182           * 描  述 : 组装数据
- 183           * 入  参 : 无
- 184           * 返回值 : 无
- 185           *******************************************************************************************************/
- 186          void Assemble_Data(void)
- 187          {
- 188   1          xdata uint8_t fcs = 0, i;
- 189   1      
- 190   1      
- 191   1          TxPayload[0] = 0x1E;
- 192   1          TxPayload[1] = TagInfo.id.id8[0];  //IDL
- 193   1          TxPayload[2] = TagInfo.id.id8[1];  //IDH
- 194   1          TxPayload[3] = TagInfo.CellVoltageH;
- 195   1          TxPayload[4] = TagInfo.CellVoltageL;
- 196   1          for(i = 0; i < (MAX_TX_PAYLOAD - 1); i++)fcs += TxPayload[i];
- 197   1      
- 198   1          TxPayload[MAX_TX_PAYLOAD - 1] = (256 - fcs) % 256;
- 199   1      }
- 200          void CellVoltage(){
- 201   1        hal_adc_start();           //启动ADC
- 202   1        while( hal_adc_busy())     //等待ADC转换结束
- 203   1        ;
- 204   1        TagInfo.CellVoltageH = hal_adc_read_MSB(); //读取ADC采样值
- 205   1        TagInfo.CellVoltageL = hal_adc_read_LSB();
+ 177   1          hal_rtc_start(true);
+ 178   1      
+ 179   1          while((CLKLFCTRL & 0x80) == 0x80);                  // Wait for the 32kHz to startup (change phase)
+ 180   1          while((CLKLFCTRL & 0x80) != 0x80);
+ 181   1      }
+ 182          
+ 183          /*******************************************************************************************************
+ 184           * 描  述 : 组装数据
+ 185           * 入  参 : 无
+ 186           * 返回值 : 无
+ 187           *******************************************************************************************************/
+ 188          void Assemble_Data(void)
+ 189          {
+ 190   1          xdata uint8_t fcs = 0, i;
+ 191   1      
+ 192   1      
+ 193   1          TxPayload[0] = 0x1E;
+ 194   1          TxPayload[1] = TagInfo.id.id8[0];  //IDL
+ 195   1          TxPayload[2] = TagInfo.id.id8[1];  //IDH
+ 196   1          TxPayload[3] = TagInfo.CellVoltageH;
+ 197   1          TxPayload[4] = TagInfo.CellVoltageL;
+ 198   1          TxPayload[5] = TagInfo.tempH;
+ 199   1          TxPayload[6] = TagInfo.tempL;
+ 200   1          TxPayload[7] = TagInfo.humyH;
+ 201   1          TxPayload[8] = TagInfo.humyL;
+ 202   1        
+ 203   1          for(i = 0; i < (MAX_TX_PAYLOAD - 1); i++)fcs += TxPayload[i];
+ 204   1      
+ 205   1          TxPayload[MAX_TX_PAYLOAD - 1] = (256 - fcs) % 256;
  206   1      }
- 207          
- 208          void AHT10(void)
- 209          {
- 210   1          uint8_t temp[5];
- 211   1          uint8_t humidity[5];
- 212   1          static uint8_t ret = 0;
- 213   1      
- 214   1          memset(temp, 0, 5);
- 215   1          memset(humidity, 0, 5);
- 216   1          temp[2] = '.';
- 217   1          humidity[2] = '.';
- 218   1          if (ret == 0)
- 219   1          {
- 220   2              ret = AHT10_Init(); //初始化
- 221   2              if(ret == 0)
- 222   2              {
- 223   3                  PutString("AHT10初始化失败\r\n");
- 224   3                  while(1);
- 225   3              }
- 226   2              PutString("AHT初始化成功\r\n");
- 227   2          }
- 228   1          //while(1)
- 229   1          {
- 230   2      
- 231   2              //DisableIrq(); //由于是模拟I2C,为读取数据更准确 ，读取之前禁止中断
- 232   2              Read_AHT10();  //读取温度和湿度 ， 可间隔1.5S读一次
- 233   2              //EnableIrq(); //恢复中断
- 234   2      
- 235   2              temp[0] = AHT10Value.tempH + 0x30;
- 236   2              temp[1] = AHT10Value.tempL + 0x30;
- 237   2              temp[3] = AHT10Value.tempD + 0x30;
- 238   2              humidity[0] = AHT10Value.humyH + 0x30;
-C51 COMPILER V9.54   MAIN                                                                  08/09/2019 10:47:58 PAGE 5   
+ 207          void CellVoltage(){
+ 208   1        uint32_t  ad_value = 0,temp=0;
+ 209   1        hal_adc_start();           //启动ADC
+ 210   1        while( hal_adc_busy())     //等待ADC转换结束
+ 211   1        ; 
+ 212   1        TagInfo.CellVoltageH = hal_adc_read_MSB(); //读取ADC采样值
+ 213   1        TagInfo.CellVoltageL = hal_adc_read_LSB();
+ 214   1        ad_value = (ad_value|hal_adc_read_MSB())<<8;
+ 215   1        ad_value = ad_value|hal_adc_read_LSB();
+ 216   1        temp = ad_value*1.2*3*100/4096; //电压扩大100倍
+ 217   1        TagInfo.CellVoltageH = temp/100;//
+ 218   1        TagInfo.CellVoltageL = ((temp%100/10)<<4)|(temp%100%10);
+ 219   1      }
+ 220          
+ 221          void AHT10(void)
+ 222          {
+ 223   1          uint8_t temp[5];
+ 224   1          uint8_t humidity[5];
+ 225   1      
+ 226   1          memset(temp, 0, 5);
+ 227   1          memset(humidity, 0, 5);
+ 228   1          temp[2] = '.';
+ 229   1          humidity[2] = '.';
+ 230   1      
+ 231   1          //while(1)
+ 232   1          {
+ 233   2      
+ 234   2              //DisableIrq(); //由于是模拟I2C,为读取数据更准确 ，读取之前禁止中断
+ 235   2              Read_AHT10();  //读取温度和湿度 ， 可间隔1.5S读一次
+ 236   2              //EnableIrq(); //恢复中断
+ 237   2      
+ 238   2              TagInfo.tempH = AHT10Value.tempH ;
+C51 COMPILER V9.54   MAIN                                                                  08/09/2019 16:39:57 PAGE 5   
 
- 239   2              humidity[1] = AHT10Value.humyL + 0x30;
- 240   2              humidity[3] = AHT10Value.humyD + 0x30;
- 241   2      
- 242   2              /**/   
- 243   2            PutString("AHT10-温度:");
- 244   2                 PutString(temp);
- 245   2                 PutString("    ");
- 246   2                 PutString("湿度:");
- 247   2                 PutString(humidity);
- 248   2                 PutString("\r\n");
- 249   2                  
- 250   2              //delay_ms(1500); //延时1.5S
- 251   2              //为读取的数据更稳定，还可以使用平均值滤波或者窗口滤波，或者前面读取的值与后面的值相差不能太大。
- 252   2          }
- 253   1      }
- 254          /*******************************************************************************************************
- 255           * 描  述 : 主函数
- 256           * 入  参 : 无
- 257           * 返回值 : 无
- 258           *******************************************************************************************************/
- 259          void main()
- 260          {
- 261   1          uint8_t RfReceLen, i, second = 0;
- 262   1          xdata   uint32_t  loopCount = ADC_TIME - 1;
- 263   1          uint32_t  minute = 0;
+ 239   2              TagInfo.tempL = AHT10Value.tempL ;
+ 240   2              TagInfo.humyH = AHT10Value.humyH ;
+ 241   2              TagInfo.humyL = AHT10Value.humyL ;
+ 242   2              
+ 243   2              temp[0] = (AHT10Value.tempH>>4) + 0x30;
+ 244   2              temp[1] = (AHT10Value.tempH&0x0f) + 0x30;
+ 245   2              temp[3] = (AHT10Value.tempL>>4) + 0x30;
+ 246   2              humidity[0] = (TagInfo.humyH>>4) + 0x30;
+ 247   2              humidity[1] = (TagInfo.humyH&0x0f) + 0x30;
+ 248   2              humidity[3] = (TagInfo.humyL>>4) + 0x30;
+ 249   2                       
+ 250   2            PutString("AHT10-温度:");
+ 251   2                 PutString(temp);
+ 252   2                 PutString("    ");
+ 253   2                 PutString("湿度:");
+ 254   2                 PutString(humidity);
+ 255   2                 PutString("\r\n");
+ 256   2             /**/     
+ 257   2              //delay_ms(1500); //延时1.5S
+ 258   2              //为读取的数据更稳定，还可以使用平均值滤波或者窗口滤波，或者前面读取的值与后面的值相差不能太大。
+ 259   2          }
+ 260   1      }
+ 261          void  Send_data(){
+ 262   1          Assemble_Data();  // 数据打包
+ 263   1          hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
  264   1      
- 265   1          TagInfo.id.id16 = TAG_ID;
- 266   1      
- 267   1          IoInit();
- 268   1          mcu_init();
- 269   1      
- 270   1      #ifdef DEBUG_UART
- 271   1          hal_uart_init(UART_BAUD_57K6);  //初始化UART，波特率57600
- 272   1          while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
- 273   1              ;
- 274   1      #endif
- 275   1          //EA = 1;             //使能全局中断
- 276   1          adc_init();
- 277   1          CellVoltage();
- 278   1          RfCofig();
- 279   1      
- 280   1      #ifdef  USE_WDT
- 281   1          hal_wdog_init(WDT_TIME);//配置看门狗超时时间2s，使能看门狗
- 282   1      #endif
- 283   1          PutString("reset\r\n");
- 284   1          for(i = 0; i < 10; i++)  //指示灯闪烁5次，指示nEF24LE1启动
- 285   1          {
- 286   2              D1 = ~D1;
- 287   2              delay_ms(120);
- 288   2          }
- 289   1          //AHT10();
- 290   1          while(1)
- 291   1          {
- 292   2      #ifdef  USE_WDT
- 293   2              hal_wdog_restart(); //喂狗
- 294   2      #endif
- 295   2              second++;
- 296   2              if(second <= MINUTE) //未到1分钟
- 297   2              {   
- 298   3      #ifdef      DEBUG_LED
- 299   3                  D1 = ~D1;
- 300   3      #endif
-C51 COMPILER V9.54   MAIN                                                                  08/09/2019 10:47:58 PAGE 6   
+ 265   1          CE_PULSE();             //无线发射数据
+ 266   1          radio_busy = true;
+ 267   1          while(radio_busy)       //等待操作完成
+ 268   1          ;
+ 269   1      }
+ 270          /*******************************************************************************************************
+ 271           * 描  述 : 主函数
+ 272           * 入  参 : 无
+ 273           * 返回值 : 无
+ 274           *******************************************************************************************************/
+ 275          void main()
+ 276          {
+ 277   1          uint8_t RfReceLen, i, second = 0;
+ 278   1          xdata   uint32_t  loopCount = ADC_TIME - 1;
+ 279   1          uint32_t  minute = 0;
+ 280   1      
+ 281   1          TagInfo.id.id16 = TAG_ID;
+ 282   1          IoInit();
+ 283   1          led_init();
+ 284   1          mcu_init();
+ 285   1          adc_init();
+ 286   1          AHT10_Init();   
+ 287   1          RfCofig();
+ 288   1        
+ 289   1      #ifdef DEBUG_UART
+ 290   1          hal_uart_init(UART_BAUD_57K6);  //初始化UART，波特率57600
+ 291   1          while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
+ 292   1              ;
+ 293   1      #endif
+ 294   1          //EA = 1;             //使能全局中断
+ 295   1        
+ 296   1      #ifdef  USE_WDT
+ 297   1          hal_wdog_init(WDT_TIME);//配置看门狗超时时间2s，使能看门狗
+ 298   1      #endif
+ 299   1          PutString("reset\r\n");    
+ 300   1          led_flash(led2);
+C51 COMPILER V9.54   MAIN                                                                  08/09/2019 16:39:57 PAGE 6   
 
- 301   3                //AHT10();
- 302   3                  //if(loopCount <= MINUTE){//未到1分钟
- 303   3                  PutString("into sleep...\r\n");
- 304   3                  PWRDWN = 0x04;    // 进入寄存器维持低功耗模式
- 305   3                  PWRDWN = 0x00;
- 306   3      
- 307   3              }
- 308   2              else
- 309   2              {
- 310   3                AHT10();
- 311   3                  second = 0;
- 312   3                  minute++;
- 313   3                  PutString("1 minute to send data\r\n");
- 314   3      
- 315   3                  if(minute == 3 * HOUR)  //启动后执行一次AD检测，以后，每2小时检测一次
- 316   3                  {
- 317   4                     CellVoltage();
- 318   4                  }
- 319   3      #ifdef      DEBUG_LED
- 320   3                  D1 = ~D1;
- 321   3      #endif
- 322   3                  Assemble_Data();  // 数据打包
- 323   3                  hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
- 324   3      
- 325   3                  CE_PULSE();             //无线发射数据
- 326   3                  radio_busy = true;
- 327   3                  while(radio_busy)       //等待操作完成
- 328   3                      ;
- 329   3              }
- 330   2          }
- 331   1      }
-*** WARNING C280 IN LINE 261 OF main.c: 'RfReceLen': unreferenced local variable
- 332          
- 333          /*******************************************************************************************************
- 334           * 描  述 : 无线中断服务函数
- 335           * 入  参 : 无
- 336           * 返回值 : 无
- 337           *******************************************************************************************************/
- 338          void rf_irq() interrupt INTERRUPT_RFIRQ
- 339          {
- 340   1          uint8_t  irq_flags;
- 341   1      
- 342   1          irq_flags = hal_nrf_get_clear_irq_flags(); //读取并清除无线中断标志
- 343   1      
- 344   1          if(irq_flags & (1 << HAL_NRF_RX_DR)) //接收到数据?
- 345   1          {
- 346   2      
- 347   2              while(!hal_nrf_rx_fifo_empty())// Read payload
- 348   2              {
- 349   3                  PipeAndLen = hal_nrf_read_rx_payload(RxPayload);//读取数据
- 350   3              }
- 351   2              radio_busy = false;
- 352   2          }
- 353   1      
- 354   1          if(irq_flags & ((1 << HAL_NRF_TX_DS)))      // transimmter finish
- 355   1          {
+ 301   1          
+ 302   1          CellVoltage();  
+ 303   1          AHT10();
+ 304   1          Send_data();
+ 305   1          
+ 306   1          while(1)
+ 307   1          {
+ 308   2      #ifdef  USE_WDT
+ 309   2              hal_wdog_restart(); //喂狗
+ 310   2      #endif
+ 311   2              second++;
+ 312   2              if(second <= MINUTE) //未到1分钟
+ 313   2              {   
+ 314   3      #ifdef      DEBUG_LED
+ 315   3                  //led_flash(led1);
+ 316   3      #endif
+ 317   3                  PWRDWN = 0x04;    // 进入寄存器维持低功耗模式
+ 318   3                  PWRDWN = 0x00;
+ 319   3              }
+ 320   2              else
+ 321   2              {
+ 322   3                  second = 0;
+ 323   3                  minute++;         
+ 324   3      #ifdef      DEBUG_LED
+ 325   3                led_flash(led1);
+ 326   3      #endif
+ 327   3                  AHT10();
+ 328   3                  if(minute == 3 * HOUR)  //启动后执行一次AD检测，以后，每2小时检测一次
+ 329   3                  {
+ 330   4                     CellVoltage();
+ 331   4                    minute = 0;
+ 332   4                  }
+ 333   3                  Send_data();
+ 334   3              }
+ 335   2          }
+ 336   1      }
+*** WARNING C280 IN LINE 277 OF main.c: 'RfReceLen': unreferenced local variable
+*** WARNING C280 IN LINE 277 OF main.c: 'i': unreferenced local variable
+ 337          
+ 338          /*******************************************************************************************************
+ 339           * 描  述 : 无线中断服务函数
+ 340           * 入  参 : 无
+ 341           * 返回值 : 无
+ 342           *******************************************************************************************************/
+ 343          void rf_irq() interrupt INTERRUPT_RFIRQ
+ 344          {
+ 345   1          uint8_t  irq_flags;
+ 346   1      
+ 347   1          irq_flags = hal_nrf_get_clear_irq_flags(); //读取并清除无线中断标志
+ 348   1      
+ 349   1          if(irq_flags & (1 << HAL_NRF_RX_DR)) //接收到数据?
+ 350   1          {
+ 351   2      
+ 352   2              while(!hal_nrf_rx_fifo_empty())// Read payload
+ 353   2              {
+ 354   3                  PipeAndLen = hal_nrf_read_rx_payload(RxPayload);//读取数据
+ 355   3              }
  356   2              radio_busy = false;
  357   2          }
  358   1      
- 359   1          if(irq_flags & ((1 << HAL_NRF_MAX_RT)))     // re-transimmter
+ 359   1          if(irq_flags & ((1 << HAL_NRF_TX_DS)))      // transimmter finish
  360   1          {
- 361   2              radio_busy = false;
-C51 COMPILER V9.54   MAIN                                                                  08/09/2019 10:47:58 PAGE 7   
+C51 COMPILER V9.54   MAIN                                                                  08/09/2019 16:39:57 PAGE 7   
 
- 362   2              hal_nrf_flush_tx();
- 363   2          }
- 364   1      }
- 365          /********************************************END FILE*****************************************************
+ 361   2              radio_busy = false;
+ 362   2          }
+ 363   1      
+ 364   1          if(irq_flags & ((1 << HAL_NRF_MAX_RT)))     // re-transimmter
+ 365   1          {
+ 366   2              radio_busy = false;
+ 367   2              hal_nrf_flush_tx();
+ 368   2          }
+ 369   1      }
+ 370          /********************************************END FILE*****************************************************
              -/
- 366          
+ 371          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    991    ----
-   CONSTANT SIZE    =    108    ----
-   XDATA SIZE       =     69       6
-   PDATA SIZE       =      8      24
+   CODE SIZE        =   1288    ----
+   CONSTANT SIZE    =     34    ----
+   XDATA SIZE       =     73       6
+   PDATA SIZE       =      7      32
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 1   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE AHT10
@@ -62,7 +62,7 @@ line level    source
   51          {
   52   1          //Gpio_SetIO(1, 4, 1);
   53   1          P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 2   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 2   
 
   54   1          SCL = HIGH;
   55   1      }
@@ -126,7 +126,7 @@ line level    source
  113   3                  SDA_Pin_Output_Low();
  114   3              }
  115   2      
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 3   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 3   
 
  116   2              SCL_Pin_Output_High();
  117   2              //Delay_3us();
@@ -190,7 +190,7 @@ line level    source
  175   1          if(CNT == 100)
  176   1          {
  177   2              return 0;
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 4   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 4   
 
  178   2          }
  179   1          SCL_Pin_Output_Low();
@@ -254,7 +254,7 @@ line level    source
  237          {
  238   1      
  239   1          uint8_t Byte_first;
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 5   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 5   
 
  240   1          I2C_Start();
  241   1          ZSSC_I2C_WR_Byte(0x71);
@@ -318,7 +318,7 @@ line level    source
  299   1          volatile uint8_t  Byte_3th = 0;
  300   1          volatile uint8_t  Byte_4th = 0;
  301   1          volatile uint8_t  Byte_5th = 0;
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 6   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 6   
 
  302   1          volatile uint8_t  Byte_6th = 0;
  303   1          uint32_t RetuData = 0;
@@ -368,128 +368,122 @@ line level    source
  347   1          RetuData = RetuData >> 4;
  348   1      
  349   1          temp = (RetuData * 1000 / 1024 / 1024); //¼ÆËãµÃµ½Êª¶ÈÖµ£¨·Å´óÁË10±¶,Èç¹ûc1=523£¬±íÊ¾ÏÖÔÚÊª¶ÈÎª52.3%£©
- 350   1          AHT10Value.humy = temp;
- 351   1          AHT10Value.humyH = temp / 100 ;
- 352   1          AHT10Value.humyL = temp % 100 / 10;
- 353   1          AHT10Value.humyD = temp % 100 % 10;
- 354   1      
- 355   1          RetuData = 0;
- 356   1          RetuData = (RetuData | Byte_4th) << 8;
- 357   1          RetuData = (RetuData | Byte_5th) << 8;
- 358   1          RetuData = (RetuData | Byte_6th);
- 359   1          RetuData = RetuData & 0xfffff;
- 360   1      
- 361   1          temp = (RetuData * 2000 / 1024 / 1024 - 500); //¼ÆËãµÃµ½ÎÂ¶ÈÖµ£¨·Å´óÁË10±¶£¬Èç¹ût1=245£¬±íÊ¾ÏÖÔÚÎÂ¶ÈÎª
+ 350   1          AHT10Value.humyH = (temp / 100)<<4|(temp % 100 / 10) ;
+ 351   1          AHT10Value.humyL = temp % 100 % 10<<4;
+ 352   1      
+ 353   1          RetuData = 0;
+ 354   1          RetuData = (RetuData | Byte_4th) << 8;
+ 355   1          RetuData = (RetuData | Byte_5th) << 8;
+ 356   1          RetuData = (RetuData | Byte_6th);
+ 357   1          RetuData = RetuData & 0xfffff;
+ 358   1      
+ 359   1          temp = (RetuData * 2000 / 1024 / 1024 - 500); //¼ÆËãµÃµ½ÎÂ¶ÈÖµ£¨·Å´óÁË10±¶£¬Èç¹ût1=245£¬±íÊ¾ÏÖÔÚÎÂ¶ÈÎª
              -24.5¡æ£©
- 362   1          AHT10Value.temp = temp;
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 7   
+ 360   1          AHT10Value.tempH = ((temp / 100)<<4)|(temp % 100 / 10) ;
+ 361   1          AHT10Value.tempL = temp % 100 % 10<<4;
+ 362   1      }
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 7   
 
- 363   1          AHT10Value.tempH = temp / 100 ;
- 364   1          AHT10Value.tempL = temp % 100 / 10;
- 365   1          AHT10Value.tempD = temp % 100 % 10;
- 366   1      }
- 367          
- 368          
- 369          uint8_t AHT10_Init(void)   //³õÊ¼»¯AHT10
- 370          {
- 371   1          uint8_t count;
+ 363          
+ 364          
+ 365          uint8_t AHT10_Init(void)   //³õÊ¼»¯AHT10
+ 366          {
+ 367   1          uint8_t count;
+ 368   1      
+ 369   1          Init_I2C_Sensor_Port();
+ 370   1          //SensorDelay_us(11038);
+ 371   1          delay_us(11038);
  372   1      
- 373   1          Init_I2C_Sensor_Port();
- 374   1          //SensorDelay_us(11038);
- 375   1          delay_us(11038);
- 376   1      
- 377   1          I2C_Start();
- 378   1          ZSSC_I2C_WR_Byte(0x70);
+ 373   1          I2C_Start();
+ 374   1          ZSSC_I2C_WR_Byte(0x70);
+ 375   1          Receive_ACK();
+ 376   1          ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 377   1          Receive_ACK();
+ 378   1          ZSSC_I2C_WR_Byte(0x08);
  379   1          Receive_ACK();
- 380   1          ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 380   1          ZSSC_I2C_WR_Byte(0x00);
  381   1          Receive_ACK();
- 382   1          ZSSC_I2C_WR_Byte(0x08);
- 383   1          Receive_ACK();
- 384   1          ZSSC_I2C_WR_Byte(0x00);
- 385   1          Receive_ACK();
- 386   1          Stop_I2C();
- 387   1      
- 388   1          delay_ms(500);//ÑÓÊ±0.5S
- 389   1          while(JH_Read_Cal_Enable() == 0) //ÐèÒªµÈ´ý×´Ì¬×ÖstatusµÄBit[3]=1Ê±²ÅÈ¥¶ÁÊý¾Ý¡£Èç¹ûBit[3]²»µÈÓÚ1 £¬·¢È
+ 382   1          Stop_I2C();
+ 383   1      
+ 384   1          delay_ms(500);//ÑÓÊ±0.5S
+ 385   1          while(JH_Read_Cal_Enable() == 0) //ÐèÒªµÈ´ý×´Ì¬×ÖstatusµÄBit[3]=1Ê±²ÅÈ¥¶ÁÊý¾Ý¡£Èç¹ûBit[3]²»µÈÓÚ1 £¬·¢È
              -í¼þ¸´Î»0xBA¸øAHT10£¬ÔÙÖØÐÂ³õÊ¼»¯AHT10£¬Ö±ÖÁBit[3]=1
- 390   1          {
- 391   2      
- 392   2              JH_Send_BA();  //¸´Î»
- 393   2              delay_ms(100);
- 394   2              //SensorDelay_us(11038);
- 395   2              delay_us(11038);
- 396   2      
- 397   2              I2C_Start();
- 398   2              ZSSC_I2C_WR_Byte(0x70);
+ 386   1          {
+ 387   2      
+ 388   2              JH_Send_BA();  //¸´Î»
+ 389   2              delay_ms(100);
+ 390   2              //SensorDelay_us(11038);
+ 391   2              delay_us(11038);
+ 392   2      
+ 393   2              I2C_Start();
+ 394   2              ZSSC_I2C_WR_Byte(0x70);
+ 395   2              Receive_ACK();
+ 396   2              ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 397   2              Receive_ACK();
+ 398   2              ZSSC_I2C_WR_Byte(0x08);
  399   2              Receive_ACK();
- 400   2              ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 400   2              ZSSC_I2C_WR_Byte(0x00);
  401   2              Receive_ACK();
- 402   2              ZSSC_I2C_WR_Byte(0x08);
- 403   2              Receive_ACK();
- 404   2              ZSSC_I2C_WR_Byte(0x00);
- 405   2              Receive_ACK();
- 406   2              Stop_I2C();
- 407   2              count++;
- 408   2              if(count >= 10)return 0;
- 409   2              delay_ms(500);
- 410   2          }
- 411   1          return 1;
- 412   1      }
- 413          
- 414          void AHT10_test(void)
- 415          {
- 416   1          uint8_t temp[5];
- 417   1          uint8_t humidity[5];
- 418   1          static uint8_t ret = 0;
- 419   1      
- 420   1          //  memset(temp, 0, 5);
- 421   1          //memset(humidity, 0, 5);
- 422   1          temp[2] = '.';
- 423   1          humidity[2] = '.';
-C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 8   
+ 402   2              Stop_I2C();
+ 403   2              count++;
+ 404   2              if(count >= 10)return 0;
+ 405   2              delay_ms(500);
+ 406   2          }
+ 407   1          return 1;
+ 408   1      }
+ 409          
+ 410          void AHT10_test(void)
+ 411          {
+ 412   1          uint8_t temp[5];
+ 413   1          uint8_t humidity[5];
+ 414   1          static uint8_t ret = 0;
+ 415   1      
+ 416   1          //  memset(temp, 0, 5);
+ 417   1          //memset(humidity, 0, 5);
+ 418   1          temp[2] = '.';
+ 419   1          humidity[2] = '.';
+ 420   1          if (ret == 0)
+ 421   1          {
+ 422   2              ret = AHT10_Init(); //³õÊ¼»¯
+ 423   2              if(ret == 0)
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 16:39:57 PAGE 8   
 
- 424   1          if (ret == 0)
- 425   1          {
- 426   2              ret = AHT10_Init(); //³õÊ¼»¯
- 427   2              if(ret == 0)
- 428   2              {
- 429   3                  //PutString("AHT10³õÊ¼»¯Ê§°Ü\r\n");
- 430   3                  while(1);
- 431   3              }
- 432   2              //PutString("AHT³õÊ¼»¯³É¹¦\r\n");
- 433   2          }
- 434   1          //while(1)
- 435   1          {
+ 424   2              {
+ 425   3                  //PutString("AHT10³õÊ¼»¯Ê§°Ü\r\n");
+ 426   3                  while(1);
+ 427   3              }
+ 428   2              //PutString("AHT³õÊ¼»¯³É¹¦\r\n");
+ 429   2          }
+ 430   1          //while(1)
+ 431   1          {
+ 432   2      
+ 433   2              //DisableIrq(); //ÓÉÓÚÊÇÄ£ÄâI2C,Îª¶ÁÈ¡Êý¾Ý¸ü×¼È· £¬¶ÁÈ¡Ö®Ç°½ûÖ¹ÖÐ¶Ï
+ 434   2              Read_AHT10();  //¶ÁÈ¡ÎÂ¶ÈºÍÊª¶È £¬ ¿É¼ä¸ô1.5S¶ÁÒ»´Î
+ 435   2              //EnableIrq(); //»Ö¸´ÖÐ¶Ï
  436   2      
- 437   2              //DisableIrq(); //ÓÉÓÚÊÇÄ£ÄâI2C,Îª¶ÁÈ¡Êý¾Ý¸ü×¼È· £¬¶ÁÈ¡Ö®Ç°½ûÖ¹ÖÐ¶Ï
- 438   2              Read_AHT10();  //¶ÁÈ¡ÎÂ¶ÈºÍÊª¶È £¬ ¿É¼ä¸ô1.5S¶ÁÒ»´Î
- 439   2              //EnableIrq(); //»Ö¸´ÖÐ¶Ï
- 440   2      
- 441   2              temp[0] = AHT10Value.tempH + 0x30;
- 442   2              temp[1] = AHT10Value.tempL + 0x30;
- 443   2              temp[3] = AHT10Value.tempD + 0x30;
- 444   2              humidity[0] = AHT10Value.humyH + 0x30;
- 445   2              humidity[1] = AHT10Value.humyL + 0x30;
- 446   2              humidity[3] = AHT10Value.humyD + 0x30;
- 447   2      
- 448   2              /*   PutString("AHT10-ÎÂ¶È:");
- 449   2                 PutString(temp);
- 450   2                 PutString("    ");
- 451   2                 PutString("Êª¶È:");
- 452   2                 PutString(humidity);
- 453   2                 PutString("\r\n");
- 454   2                  */
- 455   2              delay_ms(1500); //ÑÓÊ±1.5S
- 456   2              //Îª¶ÁÈ¡µÄÊý¾Ý¸üÎÈ¶¨£¬»¹¿ÉÒÔÊ¹ÓÃÆ½¾ùÖµÂË²¨»òÕß´°¿ÚÂË²¨£¬»òÕßÇ°Ãæ¶ÁÈ¡µÄÖµÓëºóÃæµÄÖµÏà²î²»ÄÜÌ«´ó¡£
- 457   2          }
- 458   1      }
+ 437   2              temp[0] = AHT10Value.tempH  ;
+ 438   2              temp[1] = AHT10Value.tempL ;
+ 439   2              humidity[0] = AHT10Value.humyH;
+ 440   2              humidity[1] = AHT10Value.humyL;
+ 441   2      
+ 442   2              /*   PutString("AHT10-ÎÂ¶È:");
+ 443   2                 PutString(temp);
+ 444   2                 PutString("    ");
+ 445   2                 PutString("Êª¶È:");
+ 446   2                 PutString(humidity);
+ 447   2                 PutString("\r\n");
+ 448   2                  */
+ 449   2              delay_ms(1500); //ÑÓÊ±1.5S
+ 450   2              //Îª¶ÁÈ¡µÄÊý¾Ý¸üÎÈ¶¨£¬»¹¿ÉÒÔÊ¹ÓÃÆ½¾ùÖµÂË²¨»òÕß´°¿ÚÂË²¨£¬»òÕßÇ°Ãæ¶ÁÈ¡µÄÖµÓëºóÃæµÄÖµÏà²î²»ÄÜÌ«´ó¡£
+ 451   2          }
+ 452   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1576    ----
+   CODE SIZE        =   1552    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
-   PDATA SIZE       =     11      35
+   PDATA SIZE       =      5      35
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

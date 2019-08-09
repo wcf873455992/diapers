@@ -10,16 +10,10 @@
 
 typedef struct AHT10_VALUE
 {
-    uint8_t  tempH;  //温度高字节（十位）
-    uint8_t  tempL;  //温度低位节（个位）
-    uint8_t	 tempD;//温度小数位
-    //uint8_t	 tempD2;//温度小数位
-    uint8_t  humyH;   //湿度高字节（十位）
-    uint8_t  humyL;  //湿度高字节（个位）
-    uint8_t	 humyD;		//湿度小数位
-    //uint8_t	 humyD2;		//湿度小数位
-    int	temp;
-    int humy;
+    uint8_t  tempH;  //温度高4位十位，第四位个位
+    uint8_t  tempL;  //温度小数位
+    uint8_t  humyH;   //湿度高4位十位，第四位个位
+    uint8_t  humyL;  //湿度小数位
 
 } AHT10VALUE;
 

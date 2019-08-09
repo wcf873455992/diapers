@@ -347,10 +347,8 @@ void Read_AHT10() //读取AHT10的温度和湿度数据
     RetuData = RetuData >> 4;
 
     temp = (RetuData * 1000 / 1024 / 1024); //计算得到湿度值（放大了10倍,如果c1=523，表示现在湿度为52.3%）
-    AHT10Value.humy = temp;
-    AHT10Value.humyH = temp / 100 ;
-    AHT10Value.humyL = temp % 100 / 10;
-    AHT10Value.humyD = temp % 100 % 10;
+    AHT10Value.humyH = (temp / 100)<<4|(temp % 100 / 10) ;
+    AHT10Value.humyL = temp % 100 % 10<<4;
 
     RetuData = 0;
     RetuData = (RetuData | Byte_4th) << 8;
@@ -359,10 +357,8 @@ void Read_AHT10() //读取AHT10的温度和湿度数据
     RetuData = RetuData & 0xfffff;
 
     temp = (RetuData * 2000 / 1024 / 1024 - 500); //计算得到温度值（放大了10倍，如果t1=245，表示现在温度为24.5℃）
-    AHT10Value.temp = temp;
-    AHT10Value.tempH = temp / 100 ;
-    AHT10Value.tempL = temp % 100 / 10;
-    AHT10Value.tempD = temp % 100 % 10;
+    AHT10Value.tempH = ((temp / 100)<<4)|(temp % 100 / 10) ;
+    AHT10Value.tempL = temp % 100 % 10<<4;
 }
 
 
@@ -438,12 +434,10 @@ void AHT10_test(void)
         Read_AHT10();  //读取温度和湿度 ， 可间隔1.5S读一次
         //EnableIrq(); //恢复中断
 
-        temp[0] = AHT10Value.tempH + 0x30;
-        temp[1] = AHT10Value.tempL + 0x30;
-        temp[3] = AHT10Value.tempD + 0x30;
-        humidity[0] = AHT10Value.humyH + 0x30;
-        humidity[1] = AHT10Value.humyL + 0x30;
-        humidity[3] = AHT10Value.humyD + 0x30;
+        temp[0] = AHT10Value.tempH  ;
+        temp[1] = AHT10Value.tempL ;
+        humidity[0] = AHT10Value.humyH;
+        humidity[1] = AHT10Value.humyL;
 
         /*	 PutString("AHT10-温度:");
         	 PutString(temp);

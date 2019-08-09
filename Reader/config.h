@@ -4,8 +4,8 @@
 /* Reader parm  */
 #define  READER_ADDR       0x01	 // READER地址
 #define  READER_CH         50	   // 信道
-#define  RX_PAYLOAD_LEN    6     // 接收数据长度
-
+#define  RX_PAYLOAD_LEN    10//6     // 接收数据长度
+#define  PAYLOAD_LEN (RX_PAYLOAD_LEN-2)//接收数据有效长度，去头和校验位
 
 
 

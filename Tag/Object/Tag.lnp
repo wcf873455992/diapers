@@ -1,6 +1,7 @@
 ".\Object\main.obj",
 ".\Object\AHT10.obj",
 ".\Object\DHT11.obj",
+".\Object\led.obj",
 ".\Object\hal_delay.obj",
 ".\Object\hal_clk.obj",
 ".\Object\hal_rtc.obj",

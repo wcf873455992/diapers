@@ -45,6 +45,8 @@
 
 #include "user/AHT10.h"
 #include "user/DHT11.h"
+#include "user/led.h"
+
 /*-------------------管脚定义--------------------------------------------------*/
 #define  D1    P00  // 开发板上的指示灯D1
 #define  D2    P01  // 开发板上的指示灯D2
@@ -99,7 +101,7 @@ void PutString(char *s)
 	#ifdef DEBUG_UART
     while(*s != 0)
         uart_sendchar(*s++);
-    delay_ms(100);
+    //delay_ms(1);
 		#endif
 }
 /*********************************************************************************************************
@@ -193,38 +195,39 @@ void Assemble_Data(void)
     TxPayload[2] = TagInfo.id.id8[1];  //IDH
     TxPayload[3] = TagInfo.CellVoltageH;
     TxPayload[4] = TagInfo.CellVoltageL;
+    TxPayload[5] = TagInfo.tempH;
+    TxPayload[6] = TagInfo.tempL;
+    TxPayload[7] = TagInfo.humyH;
+    TxPayload[8] = TagInfo.humyL;
+	
     for(i = 0; i < (MAX_TX_PAYLOAD - 1); i++)fcs += TxPayload[i];
 
     TxPayload[MAX_TX_PAYLOAD - 1] = (256 - fcs) % 256;
 }
 void CellVoltage(){
+	uint32_t	ad_value = 0,temp=0;
 	hal_adc_start();           //启动ADC
 	while( hal_adc_busy())     //等待ADC转换结束
-	;
+	;	
 	TagInfo.CellVoltageH = hal_adc_read_MSB(); //读取ADC采样值
 	TagInfo.CellVoltageL = hal_adc_read_LSB();
+	ad_value = (ad_value|hal_adc_read_MSB())<<8;
+	ad_value = ad_value|hal_adc_read_LSB();
+	temp = ad_value*1.2*3*100/4096; //电压扩大100倍
+	TagInfo.CellVoltageH = temp/100;//
+	TagInfo.CellVoltageL = ((temp%100/10)<<4)|(temp%100%10);
 }
 
 void AHT10(void)
 {
     uint8_t temp[5];
     uint8_t humidity[5];
-    static uint8_t ret = 0;
 
     memset(temp, 0, 5);
     memset(humidity, 0, 5);
     temp[2] = '.';
     humidity[2] = '.';
-    if (ret == 0)
-    {
-        ret = AHT10_Init(); //初始化
-        if(ret == 0)
-        {
-            PutString("AHT10初始化失败\r\n");
-            while(1);
-        }
-        PutString("AHT初始化成功\r\n");
-    }
+
     //while(1)
     {
 
@@ -232,24 +235,37 @@ void AHT10(void)
         Read_AHT10();  //读取温度和湿度 ， 可间隔1.5S读一次
         //EnableIrq(); //恢复中断
 
-        temp[0] = AHT10Value.tempH + 0x30;
-        temp[1] = AHT10Value.tempL + 0x30;
-        temp[3] = AHT10Value.tempD + 0x30;
-        humidity[0] = AHT10Value.humyH + 0x30;
-        humidity[1] = AHT10Value.humyL + 0x30;
-        humidity[3] = AHT10Value.humyD + 0x30;
-
-        /**/	 
+				TagInfo.tempH = AHT10Value.tempH ;
+        TagInfo.tempL = AHT10Value.tempL ;
+        TagInfo.humyH = AHT10Value.humyH ;
+        TagInfo.humyL = AHT10Value.humyL ;
+				
+        temp[0] = (AHT10Value.tempH>>4) + 0x30;
+        temp[1] = (AHT10Value.tempH&0x0f) + 0x30;
+        temp[3] = (AHT10Value.tempL>>4) + 0x30;
+        humidity[0] = (TagInfo.humyH>>4) + 0x30;
+        humidity[1] = (TagInfo.humyH&0x0f) + 0x30;
+        humidity[3] = (TagInfo.humyL>>4) + 0x30;
+			        	 
 			PutString("AHT10-温度:");
         	 PutString(temp);
         	 PutString("    ");
         	 PutString("湿度:");
         	 PutString(humidity);
         	 PutString("\r\n");
-        		
+       /**/ 		
         //delay_ms(1500); //延时1.5S
         //为读取的数据更稳定，还可以使用平均值滤波或者窗口滤波，或者前面读取的值与后面的值相差不能太大。
     }
+}
+void	Send_data(){
+		Assemble_Data();  // 数据打包
+		hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
+
+		CE_PULSE();	            //无线发射数据
+		radio_busy = true;
+		while(radio_busy)		    //等待操作完成
+		;
 }
 /*******************************************************************************************************
  * 描  述 : 主函数
@@ -263,30 +279,30 @@ void main()
     uint32_t	minute = 0;
 
     TagInfo.id.id16 = TAG_ID;
-
     IoInit();
+		led_init();
     mcu_init();
-
+    adc_init();
+		AHT10_Init();		
+    RfCofig();
+	
 #ifdef DEBUG_UART
     hal_uart_init(UART_BAUD_57K6);  //初始化UART，波特率57600
     while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
         ;
 #endif
     //EA = 1;             //使能全局中断
-    adc_init();
-		CellVoltage();
-    RfCofig();
-
+	
 #ifdef  USE_WDT
     hal_wdog_init(WDT_TIME);//配置看门狗超时时间2s，使能看门狗
 #endif
-    PutString("reset\r\n");
-    for(i = 0; i < 10; i++)	 //指示灯闪烁5次，指示nEF24LE1启动
-    {
-        D1 = ~D1;
-        delay_ms(120);
-    }
-		//AHT10();
+    PutString("reset\r\n");    
+		led_flash(led2);
+		
+		CellVoltage();	
+		AHT10();
+		Send_data();
+		
     while(1)
     {
 #ifdef  USE_WDT
@@ -296,36 +312,25 @@ void main()
         if(second <= MINUTE) //未到1分钟
         {		
 #ifdef 			DEBUG_LED
-						D1 = ~D1;
+						//led_flash(led1);
 #endif
-					//AHT10();
-            //if(loopCount <= MINUTE){//未到1分钟
-            PutString("into sleep...\r\n");
             PWRDWN = 0x04;    // 进入寄存器维持低功耗模式
             PWRDWN = 0x00;
-
         }
         else
         {
-					AHT10();
             second = 0;
-            minute++;
-            PutString("1 minute to send data\r\n");
-
+            minute++;					
+#ifdef 			DEBUG_LED
+					led_flash(led1);
+#endif
+					  AHT10();
             if(minute == 3 * HOUR)  //启动后执行一次AD检测，以后，每2小时检测一次
             {
                CellVoltage();
+							minute = 0;
             }
-#ifdef 			DEBUG_LED
-						D1 = ~D1;
-#endif
-            Assemble_Data();  // 数据打包
-            hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
-
-            CE_PULSE();	            //无线发射数据
-            radio_busy = true;
-            while(radio_busy)		    //等待操作完成
-                ;
+						Send_data();
         }
     }
 }

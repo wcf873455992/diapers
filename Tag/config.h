@@ -1,6 +1,12 @@
 #ifndef CONFIG_H__
 #define CONFIG_H__
 
+#define IKMSIK 1
+#define DIAPER 2
+
+#define BOARD IKMSIK
+#define	TRUE	1
+#define FALSE	0
 /******************************************************************************/
 /* 调试信息*/
 
@@ -13,11 +19,11 @@
 #define  TAG_CH          50	      // 信道
 #define  TAG_TIME        32768U	  // 休眠时间：1000ms
 
-#define  MAX_TX_PAYLOAD  6        // 无线发送数据长度
+#define  MAX_TX_PAYLOAD  10//6        // 无线发送数据长度
 #define  TAG_ID_LEN      2        // ID字节数
 #define  ADC_TIME        7200U      // ADC检测时间间隔
 
-#define MINUTE		60//1分钟
+#define MINUTE		5//60//1分钟
 #define HOUR		60
 /******************************************************************************/
 /* Watchdog*/
@@ -54,8 +60,13 @@ typedef struct Tag_Information
         uint8_t id8[2];
     } id;
 
-    uint8_t   CellVoltageH;	  // 电池电压高字节
-    uint8_t   CellVoltageL;		// 电池电压低字节
+    uint8_t   CellVoltageH;	  // 电池电压个位//高字节
+    uint8_t   CellVoltageL;		// 高4位电池电压小数点后第1位
+															// 低4位电池电压小数点后第2位
+		uint8_t		tempH;	//高4位温度十位，低4位温度个位
+		uint8_t		tempL;	//温度小数位
+		uint8_t		humyH;	//高4位湿度十位，低4位湿度个位
+		uint8_t		humyL;	//湿度小数位
 
 } TagInformation;
 

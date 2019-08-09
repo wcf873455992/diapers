@@ -58,13 +58,17 @@ xdata ReaderInformation ReaderInfo;
 
 xdata bool  RepFlag = false;
 xdata uint8_t dest_addr;
-xdata uint8_t UARTSendbuf[MAX_REP_IDNUM * 5 + 10];
-xdata uint8_t ID_Buf[MAX_TAG_BUFNUM][5];
-xdata uint8_t ID_BufTmp[6];// CMD IDH IDL VH VL
+//xdata uint8_t UARTSendbuf[MAX_REP_IDNUM * 5 + 10];
+//xdata uint8_t ID_Buf[MAX_TAG_BUFNUM][5];
+//xdata uint8_t ID_BufTmp[6];// CMD IDH IDL VH VL
+
+xdata uint8_t UARTSendbuf[MAX_REP_IDNUM * 11 + 10];
+xdata uint8_t ID_Buf[MAX_TAG_BUFNUM][11];
+xdata uint8_t ID_BufTmp[12];// CMD IDH IDL VH VL
 
 /******** ID_Buf数据格式  ******************
-字节    1      2     3    4   5
-      计时器  IDH   IDL  VH  VL
+字节    1      2     3    4   5		6				7				8				9				10			11		12
+      计时器  IDH   IDL  VH  VL	tempH		tempL		tempD		humyH		humyL		humyD
 *******************************************/
 xdata uint8_t TimeCount = 0;
 xdata uint8_t SecondFlag = 0;
@@ -206,6 +210,28 @@ void ID_Inbuf(void)
 }
 
 /*******************************************************************************************************
+ * 描  述 : 串口输出字符
+ * 入  参 : 无
+ * 返回值 : 无
+ *******************************************************************************************************/
+void uart_sendchar(uint8_t dat)
+{
+    S0BUF = dat;
+    while(!TI0);
+    TI0 = 0;
+}
+/*******************************************************************************************************
+ * 描  述 : 串口输出字符串
+ * 入  参 : 无
+ * 返回值 : 无
+ *******************************************************************************************************/
+void PutString(char *s)
+{
+    while(*s != 0)
+        uart_sendchar(*s++);
+    //delay_ms(1);
+}
+/*******************************************************************************************************
  * 描  述 : UART上报数据打包
  * 入  参 : 无
  * 返回值 : 无
@@ -213,7 +239,12 @@ void ID_Inbuf(void)
 void Uart_PackAndRepDat(void)
 {
     xdata uint8_t i, tagnum = 0, fcs;
-
+	uint8_t	temp[5],humy[5],id[5];
+	
+//	memset(temp, 0, 5);
+	//memset(humy, 0, 5);
+	//memset(id, 0, 5);
+	
     RepFlag = false;
 
     for(i = 0; i < MAX_TAG_BUFNUM; i++)
@@ -234,10 +265,19 @@ void Uart_PackAndRepDat(void)
     {
         if(ID_Buf[i][0] == TAG_NEED_REP)
         {
-            UARTSendbuf[4 * tagnum + 8]  = ID_Buf[i][1];
+            /*UARTSendbuf[4 * tagnum + 8]  = ID_Buf[i][1];
             UARTSendbuf[4 * tagnum + 9]  = ID_Buf[i][2];
             UARTSendbuf[4 * tagnum + 10]  = ID_Buf[i][3];
             UARTSendbuf[4 * tagnum + 11] = ID_Buf[i][4];
+						*/
+					  UARTSendbuf[PAYLOAD_LEN * tagnum + 8]  = ID_Buf[i][1];
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 9]  = ID_Buf[i][2];
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 10]  = ID_Buf[i][3];
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 11] = ID_Buf[i][4];
+					  UARTSendbuf[PAYLOAD_LEN * tagnum + 12]  = ID_Buf[i][5];
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 13]  = ID_Buf[i][6];
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 14]  = ID_Buf[i][7];
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 15] = ID_Buf[i][8];
             ID_Buf[i][0] = 2;
             tagnum++;
             RepFlag = true;
@@ -246,7 +286,8 @@ void Uart_PackAndRepDat(void)
     }
     UartSN++;
     if(UartSN == 0xFF)UartSN = 1;
-    UARTSendbuf[4] = tagnum * 4 + 6;  // 长度
+    //UARTSendbuf[4] = tagnum * 4 + 6;  // 长度
+    UARTSendbuf[4] = tagnum * PAYLOAD_LEN + 6;  // 长度
     UARTSendbuf[5] = UartSN;          // 流水号
     UARTSendbuf[6] = REP_ID_INFO;     // 命令
     UARTSendbuf[7] = tagnum;          // TAG数量
@@ -254,7 +295,12 @@ void Uart_PackAndRepDat(void)
     fcs = 0;
     for(i = 0; i < UARTSendbuf[4]; i++)fcs = fcs + UARTSendbuf[i + 2];
     UARTSendbuf[UARTSendbuf[4] + 2] = (256 - fcs) % 256;
-    for(i = 0; i < (UARTSendbuf[4] + 3); i++)  hal_uart_putchar(UARTSendbuf[i]);
+    for(i = 0; i < (UARTSendbuf[4] + 3); i++)  hal_uart_putchar(UARTSendbuf[i] );
+    
+		//PutString(temp);		
+		//PutString(humy);
+		//hal_uart_putchar('\r');
+		//hal_uart_putchar('\n');
 }
 /*******************************************************************************************************
  * 描  述 : 主函数
@@ -322,9 +368,12 @@ void rf_irq() interrupt INTERRUPT_RFIRQ
         {
             PipeAndLen = hal_nrf_read_rx_payload(RxPayload);
 
-            if((PipeAndLen & 0xFF) == RX_PAYLOAD_LEN) //检查长度是否为6
+            if((PipeAndLen & 0xFF) == RX_PAYLOAD_LEN) //检查长度是否为12//6
             {
-                if(((RxPayload[0] + RxPayload[1] + RxPayload[2] + RxPayload[3] + RxPayload[4] + RxPayload[5]) % 256) == 0x00) //校验正确
+                if(((RxPayload[0] + RxPayload[1] + RxPayload[2] + RxPayload[3] + RxPayload[4] + RxPayload[5]+
+									RxPayload[6] + RxPayload[7] + RxPayload[8] + RxPayload[9]
+									
+								) % 256) == 0x00) //校验正确
                 {
                     for(i = 0; i < (RX_PAYLOAD_LEN - 1); i++)ID_BufTmp[i]	= RxPayload[i];
                     RF_Recv_Flag = true;
