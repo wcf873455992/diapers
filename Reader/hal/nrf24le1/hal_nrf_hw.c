@@ -22,11 +22,9 @@
 #include <stdint.h>
 #include "hal_nrf.h"
 
-uint8_t hal_nrf_rw(uint8_t value)
-{
+uint8_t hal_nrf_rw(uint8_t value) {
     SPIRDAT = value;
-    while(!(SPIRSTAT & (uint8_t)0x02U)) // wait for byte transfer finished
-    {
+    while(!(SPIRSTAT & (uint8_t)0x02U)) { // wait for byte transfer finished
     }
     return SPIRDAT;             // return SPI read value
 }

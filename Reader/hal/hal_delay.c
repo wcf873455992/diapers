@@ -34,29 +34,23 @@
 #warning Not tested properly for IAR.
 #endif
 
-void delay_us(uint16_t us)
-{
-    do
-    {
+void delay_us(uint16_t us) {
+    do {
         _nop_();
         _nop_();
         _nop_();
         _nop_();
         _nop_();
-    }
-    while (--us);
+    } while (--us);
 }
 
-void delay_ms(uint16_t ms)
-{
-    do
-    {
+void delay_ms(uint16_t ms) {
+    do {
         delay_us(250);
         delay_us(250);
         delay_us(250);
         delay_us(250);
-    }
-    while (--ms);
+    } while (--ms);
 }
 
 /** @} */

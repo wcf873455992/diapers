@@ -18,8 +18,7 @@
 #include "nrf24le1.h"
 #include "hal_flash.h"
 
-void hal_flash_page_erase(uint8_t pn)
-{
+void hal_flash_page_erase(uint8_t pn) {
     // Save interrupt enable state and disable interrupts:
     F0 = EA;
     EA = 0;
@@ -41,8 +40,7 @@ void hal_flash_page_erase(uint8_t pn)
     EA = F0; // Restore interrupt enable state
 }
 
-void hal_flash_byte_write(uint16_t a, uint8_t b)
-{
+void hal_flash_byte_write(uint16_t a, uint8_t b) {
     static uint8_t xdata *pb;
 
     // Save interrupt enable state and disable interrupts:
@@ -67,8 +65,7 @@ void hal_flash_byte_write(uint16_t a, uint8_t b)
     EA = F0; // Restore interrupt enable state
 }
 
-void hal_flash_bytes_write(uint16_t a, const uint8_t *p, uint16_t n)
-{
+void hal_flash_bytes_write(uint16_t a, const uint8_t *p, uint16_t n) {
     static uint8_t xdata *pb;
 
     // Save interrupt enable state and disable interrupts:
@@ -82,8 +79,7 @@ void hal_flash_bytes_write(uint16_t a, const uint8_t *p, uint16_t n)
     // "self timed"; the CPU will halt until the operation is
     // finished:
     pb = (uint8_t xdata *)a;
-    while(n--)
-    {
+    while(n--) {
         *pb++ = *p++;
         //
         // When running from XDATA RAM we need to wait for the operation to
@@ -97,17 +93,14 @@ void hal_flash_bytes_write(uint16_t a, const uint8_t *p, uint16_t n)
     EA = F0; // Restore interrupt enable state
 }
 
-uint8_t hal_flash_byte_read(uint16_t a)
-{
+uint8_t hal_flash_byte_read(uint16_t a) {
     uint8_t xdata *pb = (uint8_t xdata *)a;
     return *pb;
 }
 
-void hal_flash_bytes_read(uint16_t a, uint8_t *p, uint16_t n)
-{
+void hal_flash_bytes_read(uint16_t a, uint8_t *p, uint16_t n) {
     uint8_t xdata *pb = (uint8_t xdata *)a;
-    while(n--)
-    {
+    while(n--) {
         *p = *pb;
         pb++;
         p++;

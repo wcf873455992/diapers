@@ -18,22 +18,19 @@
 #include "nrf24le1.h"
 #include "hal_pof.h"
 
-void hal_pof_enable(bool enable)
-{
+void hal_pof_enable(bool enable) {
     if(enable)
         POFCON |= 0x80;
     else
         POFCON &= ~0x80;
 }
 
-void hal_pof_set_threshold(hal_pof_threshold_t threshold)
-{
+void hal_pof_set_threshold(hal_pof_threshold_t threshold) {
     POFCON &= ~0x60;
     POFCON |= ((uint8_t)threshold & 0x60);
 }
 
-bool hal_pof_warning(void)
-{
+bool hal_pof_warning(void) {
     if(POFCON & 0x10)
         return true;
     else

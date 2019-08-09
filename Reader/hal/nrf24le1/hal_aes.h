@@ -43,8 +43,7 @@ Must be defined in order to enable the function aes_get_dec_key()
 #define _AES_ENABLE_GET_DEC_KEY_
 
 /* Function parameter defines*/
-typedef enum
-{
+typedef enum {
     CBC,
     CFB,
     OFB,

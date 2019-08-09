@@ -38,8 +38,7 @@
 /** Available Baud rates.
  * The input argument of hal_uart_init must be defined in this @c enum
  */
-typedef enum
-{
+typedef enum {
     UART_BAUD_600,      ///< 600 baud
     UART_BAUD_1K2,      ///< 1200 baud
     UART_BAUD_2K4,      ///< 2400 baud

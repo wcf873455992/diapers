@@ -33,8 +33,7 @@
 /** An enum describing the input channel of the analog comparator.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ANCMP_INP_AIN0   = HAL_INP_AIN0,
     HAL_ANCMP_INP_AIN1   = HAL_INP_AIN1,
     HAL_ANCMP_INP_AIN2   = HAL_INP_AIN2,
@@ -54,8 +53,7 @@ typedef enum
 /** An enum describing the reference of the analog comparator.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ANCMP_NON_INVERTING = 0x00,  /**< Non-inverting output polarity */
     HAL_ANCMP_INVERTING     = 0x01   /**< Inverting output polarity */
 } hal_ancmp_pol_t;
@@ -63,8 +61,7 @@ typedef enum
 /** An enum describing the reference of the analog comparator.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ANCMP_REF_SCALE_25  = 0x00,      /**< Reference voltage scaling (25%) */
     HAL_ANCMP_REF_SCALE_50  = 0x01,      /**< Reference voltage scaling (50%) */
     HAL_ANCMP_REF_SCALE_75  = 0x02,      /**< Reference voltage scaling (75%) */
@@ -74,8 +71,7 @@ typedef enum
 /** An enum describing the reference of the analog comparator.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ANCMP_REF_VDD = 0x00,            /**< VDD as reference */
     HAL_ANCMP_REF_EXT = 0x01             /**< External reference */
 } hal_ancmp_ref_t;

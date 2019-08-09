@@ -95,8 +95,7 @@
 /** An enum describing the ADC's input channel.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_INP_AIN0   = HAL_INP_AIN0,
     HAL_ADC_INP_AIN1   = HAL_INP_AIN1,
     HAL_ADC_INP_AIN2   = HAL_INP_AIN2,
@@ -118,8 +117,7 @@ typedef enum
 /** An enum describing the ADC's reference.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_REF_INT  = 0x00,    /**< Internal 1.22V reference */
     HAL_ADC_REF_VDD  = 0x01,    /**< VDD as reference */
     HAL_ADC_REF_AIN3 = 0x02,    /**< External reference on AIN3 */
@@ -129,8 +127,7 @@ typedef enum
 /** An enum describing the ADC's single ended or differential mode.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_SINGLE    = 0x00,   /**< Single ended mode */
     HAL_ADC_DIFF_AIN2 = 0x01,   /**< Differential with AIN2 as inv. input */
     HAL_ADC_DIFF_AIN6 = 0x02    /**< Differential with AIN6 as inv. input */
@@ -139,8 +136,7 @@ typedef enum
 /** An enum describing the ADC's conversion mode.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_SINGLE_STEP = 0x00, /**< Single step conversion */
     HAL_ADC_CONTINOUS   = 0x01  /**< Cont. conversion, def. sampling rate */
 } hal_adc_conversion_mode_t;
@@ -148,8 +144,7 @@ typedef enum
 /** An enum describing the ADC's sampling rate (Continuous conversion).
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_2KSPS  = 0x00,      /**< ADC sampling rate = 2kbps */
     HAL_ADC_4KSPS  = 0x01,      /**< ADC sampling rate = 4kbps */
     HAL_ADC_8KSPS  = 0x02,      /**< ADC sampling rate = 8kbps */
@@ -159,8 +154,7 @@ typedef enum
 /** An enum describing the ADC's power down delay (Single step conversion).
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_PDD_0US  = 0x00,    /**< ADC power down delay = 0us */
     HAL_ADC_PDD_6US  = 0x01,    /**< ADC power down delay = 6us */
     HAL_ADC_PDD_24US = 0x02,    /**< ADC power down delay = 24us */
@@ -170,8 +164,7 @@ typedef enum
 /** An enum describing the ADC's input acquisition window.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_AQW_075US = 0x00,   /**< Input acquisition window = 0.75us */
     HAL_ADC_AQW_3US   = 0x01,   /**< Input acquisition window = 3us */
     HAL_ADC_AQW_12US  = 0x02,   /**< Input acquisition window = 12us */
@@ -181,8 +174,7 @@ typedef enum
 /** An enum describing the ADC's resolution.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_RES_6BIT  = 0x00,   /**< ADC resolution set to 6 bit */
     HAL_ADC_RES_8BIT  = 0x01,   /**< ADC resolution set to 8 bit */
     HAL_ADC_RES_10BIT = 0x02,   /**< ADC resolution set to 10 bit */
@@ -192,8 +184,7 @@ typedef enum
 /** An enum describing the position of output data.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_JUST_LEFT  = 0x00,/**< Left justified data */
     HAL_ADC_JUST_RIGHT = 0x01/**< Right justified data */
 } hal_adc_data_just_t;
@@ -201,8 +192,7 @@ typedef enum
 /** An enum describing the ADC's resolution.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_ADC_FLOW_NONE  = 0x00,   /**< No overflow or underflow */
     HAL_ADC_FLOW_OVER  = 0x01,   /**< Overflow */
     HAL_ADC_FLOW_UNDER = 0x02,   /**< Underflow */

@@ -31,8 +31,7 @@
 /** An enum used for different POF thresholds.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_POF_THRESHOLD_2_1V = 0x00,
     HAL_POF_THRESHOLD_2_3V = 0x20,
     HAL_POF_THRESHOLD_2_5V = 0x40,

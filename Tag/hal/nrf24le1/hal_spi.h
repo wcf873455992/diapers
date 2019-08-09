@@ -38,8 +38,7 @@
 /** Available SPI clock divide factors
  * The input argument of hal_spi_master_init must be defined in this @c enum
  */
-typedef enum
-{
+typedef enum {
     SPI_CLK_DIV2,        /**< CPU clock/2 */
     SPI_CLK_DIV4,        /**< CPU clock/4 */
     SPI_CLK_DIV8,        /**< CPU clock/8 */
@@ -52,8 +51,7 @@ typedef enum
 /** SPI data order (bit wise per byte) on serial output and input
  * The input argument of hal_spi_master_init must be defined in this @c enum
  */
-typedef enum
-{
+typedef enum {
     HAL_SPI_LSB_MSB,      /**< LSBit first, MSBit last */
     HAL_SPI_MSB_LSB       /**< MSBit first, LSBit last */
 } hal_spi_byte_order_t;
@@ -61,8 +59,7 @@ typedef enum
 /** SPI operating modes.
  * The input argument of hal_spi_master_init must be defined in this @c enum
  */
-typedef enum
-{
+typedef enum {
     HAL_SPI_MODE_0,       /**< MSCK/SSCK is active high, sample on leading edge of MSCK/SSCK */
     HAL_SPI_MODE_1,       /**< MSCK/SSCK is active high, sample on trailing edge of MSCK/SSCK */
     HAL_SPI_MODE_2,       /**< MSCK/SSCK is active low, sample on leading edge of MSCK/SSCK */

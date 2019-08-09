@@ -78,8 +78,7 @@ This file is radio-chip dependent, and are included with the hal_nrf.h
 /** An enum describing the radio's irq sources.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_MAX_RT = 4,     /**< Max retries interrupt */
     HAL_NRF_TX_DS,          /**< TX data sent interrupt */
     HAL_NRF_RX_DR           /**< RX data received interrupt */
@@ -89,8 +88,7 @@ typedef enum
 /** An enum describing the radio's power mode.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_PTX,            /**< Primary TX operation */
     HAL_NRF_PRX             /**< Primary RX operation */
 } hal_nrf_operation_mode_t;
@@ -98,8 +96,7 @@ typedef enum
 /** An enum describing the radio's power mode.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_PWR_DOWN,       /**< Device power-down */
     HAL_NRF_PWR_UP          /**< Device power-up */
 } hal_nrf_pwr_mode_t;
@@ -107,8 +104,7 @@ typedef enum
 /** An enum describing the radio's output power mode's.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_18DBM,          /**< Output power set to -18dBm */
     HAL_NRF_12DBM,          /**< Output power set to -12dBm */
     HAL_NRF_6DBM,           /**< Output power set to -6dBm  */
@@ -118,8 +114,7 @@ typedef enum
 /** An enum describing the radio's on-air datarate.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_1MBPS,          /**< Datarate set to 1 Mbps  */
     HAL_NRF_2MBPS,          /**< Datarate set to 2 Mbps  */
     HAL_NRF_250KBPS         /**< Datarate set to 250 kbps*/
@@ -128,8 +123,7 @@ typedef enum
 /** An enum describing the radio's CRC mode.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_CRC_OFF,    /**< CRC check disabled */
     HAL_NRF_CRC_8BIT,   /**< CRC check set to 8-bit */
     HAL_NRF_CRC_16BIT   /**< CRC check set to 16-bit */
@@ -138,8 +132,7 @@ typedef enum
 /** An enum describing the read/write payload command.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_TX_PLOAD = 7,   /**< TX payload definition */
     HAL_NRF_RX_PLOAD,        /**< RX payload definition */
     HAL_NRF_ACK_PLOAD
@@ -167,8 +160,7 @@ typedef enum
 /** An enum describing the nRF24L01 pipe addresses and TX address.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_PIPE0 = 0,          /**< Select pipe0 */
     HAL_NRF_PIPE1,              /**< Select pipe1 */
     HAL_NRF_PIPE2,              /**< Select pipe2 */
@@ -184,8 +176,7 @@ typedef enum
 /** An enum describing the radio's address width.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_NRF_AW_3BYTES = 3,      /**< Set address width to 3 bytes */
     HAL_NRF_AW_4BYTES,          /**< Set address width to 4 bytes */
     HAL_NRF_AW_5BYTES           /**< Set address width to 5 bytes */

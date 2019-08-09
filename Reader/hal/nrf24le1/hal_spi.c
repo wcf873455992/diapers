@@ -19,11 +19,9 @@
 #include "hal_spi.h"
 #include "nordic_common.h"
 
-void hal_spi_master_init(hal_spi_clkdivider_t ck, hal_spi_mode_t mode, hal_spi_byte_order_t bo)
-{
+void hal_spi_master_init(hal_spi_clkdivider_t ck, hal_spi_mode_t mode, hal_spi_byte_order_t bo) {
     SPIMCON0 = 0;                           // Default register settings
-    switch (ck)                             // Set desired clock divider
-    {
+    switch (ck) {                           // Set desired clock divider
     case SPI_CLK_DIV2:
         SPIMCON0 |= (0x00 << 4);
         break;
@@ -44,8 +42,7 @@ void hal_spi_master_init(hal_spi_clkdivider_t ck, hal_spi_mode_t mode, hal_spi_b
         SPIMCON0 |= (0x05 << 4);
         break;
     }
-    switch(mode)                            // Set desired mode
-    {
+    switch(mode) {                          // Set desired mode
     case HAL_SPI_MODE_0:
         SPIMCON0 |= (0x00 << 1);
         break;
@@ -60,31 +57,27 @@ void hal_spi_master_init(hal_spi_clkdivider_t ck, hal_spi_mode_t mode, hal_spi_b
         break;
     }
 
-    if(bo == HAL_SPI_LSB_MSB)               // Set desired data order
-    {
+    if(bo == HAL_SPI_LSB_MSB) {             // Set desired data order
         SPIMCON0 |= BIT_3;
     }
 
     SPIMCON0 |= BIT_0;                      // Enable SPI master
 }
 
-uint8_t hal_spi_master_read_write(uint8_t pLoad)
-{
+uint8_t hal_spi_master_read_write(uint8_t pLoad) {
     SPIMDAT = pLoad ;                       // Write data to SPI master
     while(!(SPIMSTAT & 0x04))               // Wait for data available in rx_fifo
         ;
     return SPIMDAT;                         // Return data register
 }
 
-void hal_spi_slave_init(hal_spi_mode_t mode, hal_spi_byte_order_t byte_order)
-{
+void hal_spi_slave_init(hal_spi_mode_t mode, hal_spi_byte_order_t byte_order) {
     uint8_t temp;
     SPISCON0 = 0xF0; //default register settings
     I3FR = 1;
     INTEXP |= 0x01; //gate SPI slave interrupt to INT3
 
-    switch(mode)
-    {
+    switch(mode) {
     case 0:
         SPISCON0 |= 0;
         break;
@@ -106,8 +99,7 @@ void hal_spi_slave_init(hal_spi_mode_t mode, hal_spi_byte_order_t byte_order)
         temp = SPISDAT;	//flush rx fifo
 }
 
-uint8_t hal_spi_slave_rw(uint8_t pLoad)
-{
+uint8_t hal_spi_slave_rw(uint8_t pLoad) {
     hal_spi_slave_preload(pLoad);
     return hal_spi_slave_read();
 
@@ -115,19 +107,14 @@ uint8_t hal_spi_slave_rw(uint8_t pLoad)
 
 uint8_t sstat_shadow = 0;
 
-bool hal_spi_slave_csn_high()
-{
+bool hal_spi_slave_csn_high() {
     static bool csn_high = true;
     sstat_shadow |= SPISSTAT;
 
-    if(sstat_shadow & 0x20)
-    {
+    if(sstat_shadow & 0x20) {
         csn_high = true;
-    }
-    else
-    {
-        if(sstat_shadow & 0x10)
-        {
+    } else {
+        if(sstat_shadow & 0x10) {
             csn_high = false;
         }
     }
@@ -136,24 +123,18 @@ bool hal_spi_slave_csn_high()
     return csn_high;
 }
 
-bool spi_slave_data_ready()
-{
+bool spi_slave_data_ready() {
     sstat_shadow |= SPISSTAT;
 
-    if(sstat_shadow & 0x01)
-    {
+    if(sstat_shadow & 0x01) {
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
 
-uint8_t hal_spi_slave_read()
-{
-    while(!(sstat_shadow & 0x01))
-    {
+uint8_t hal_spi_slave_read() {
+    while(!(sstat_shadow & 0x01)) {
         sstat_shadow |= SPISSTAT;
     }
     sstat_shadow &= ~0x01;
@@ -161,7 +142,6 @@ uint8_t hal_spi_slave_read()
     return SPISDAT;
 }
 
-void hal_spi_slave_preload(uint8_t pLoad)
-{
+void hal_spi_slave_preload(uint8_t pLoad) {
     SPISDAT = pLoad;
 }

@@ -22,8 +22,7 @@
 #include "nordic_common.h"
 #include "hal_wdog.h"
 
-void hal_wdog_init(uint16_t start_value)
-{
+void hal_wdog_init(uint16_t start_value) {
 #ifdef __C51__
     WDSV = LSB(start_value);      // Write the 8 LSB to the WD counter
     WDSV = MSB(start_value);      // Write the 8 MSB to the WD counter
@@ -35,8 +34,7 @@ void hal_wdog_init(uint16_t start_value)
 #endif
 }
 
-void hal_wdog_restart(void)
-{
+void hal_wdog_restart(void) {
     uint8_t wd_msb, wd_lsb;
 
 #ifdef __C51__

@@ -31,8 +31,7 @@
 /** An enum describing the possible system clock inputs.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_CLK_XOSC16_OR_RCOSC16 = 0,
     HAL_CLK_PAD_XC1 = 1
 } hal_clk_input_t;
@@ -40,8 +39,7 @@ typedef enum
 /** An enum used for selecting which 16MHz clocks to run.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_CLK_XOSC16M_AND_RCOSC16M = 0,
     HAL_CLK_RCOSC16M = 1,
     HAL_CLK_XOSC16M = 2
@@ -50,8 +48,7 @@ typedef enum
 /** An enum describing the possible internal (system) clock frequencies.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_CLK_16MHZ = 0,
     HAL_CLK_8MHZ = 1,
     HAL_CLK_4MHZ = 2,
@@ -65,8 +62,7 @@ typedef enum
 /** An enum describing the possible 32khz clock (clklf) sources.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_CLKLF_XOSC32K = 0,
     HAL_CLKLF_RCOSC32K = 1,
     HAL_CLKLF_XOSC16M_SYNTH = 2,

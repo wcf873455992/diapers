@@ -22,39 +22,31 @@
 #include "nordic_common.h"
 #include "hal_ancmp.h"
 
-void hal_ancmp_set_polarity(hal_ancmp_pol_t polarity)
-{
+void hal_ancmp_set_polarity(hal_ancmp_pol_t polarity) {
     // Update "polarity" bit
     COMPCON = (COMPCON & 0xEF) | (((uint8_t)polarity << 4) & ~0xEF);
 }
 
-void hal_ancmp_set_ref_voltage_scale(hal_ancmp_ref_scale_t scale)
-{
+void hal_ancmp_set_ref_voltage_scale(hal_ancmp_ref_scale_t scale) {
     // Update "refscale" bits
     COMPCON = (COMPCON & 0xF3) | (((uint8_t)scale << 2) & ~0xF3);
 }
 
-void hal_ancmp_set_reference(hal_ancmp_ref_t ref)
-{
+void hal_ancmp_set_reference(hal_ancmp_ref_t ref) {
     // Update "cmpref" bit
     COMPCON = (COMPCON & 0xFD) | (((uint8_t)ref << 1) & ~0xFD);
 }
 
-void hal_ancmp_set_input_channel(hal_ancmp_input_channel_t chsel)
-{
+void hal_ancmp_set_input_channel(hal_ancmp_input_channel_t chsel) {
     hal_adc_input_channel_t channel;
     channel = (hal_adc_input_channel_t)chsel;
     hal_adc_set_input_channel(channel);
 }
 
-void hal_ancmp_enable(bool en)
-{
-    if(en)
-    {
+void hal_ancmp_enable(bool en) {
+    if(en) {
         COMPCON = COMPCON | BIT_0;                // Set "enable" bit
-    }
-    else
-    {
+    } else {
         COMPCON = COMPCON & ~BIT_0;               // Clear "enable" bit
     }
 }

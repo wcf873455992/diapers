@@ -39,8 +39,7 @@
 /* 调试信息 */
 #define  DEBUG_LED    1
 //#define  DEBUG_UART   1
-typedef struct Reader_Information
-{
+typedef struct Reader_Information {
     uint8_t   addr;     // 接收器地址
     uint8_t   pwr;	    // 发射功率
     uint8_t   ch;		    // 信道

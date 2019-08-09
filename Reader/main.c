@@ -86,8 +86,7 @@ uint8_t Calculate_Fcs(uint8_t *buf);
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void IoInit(void)
-{
+void IoInit(void) {
     P0DIR = 0xF6;
     P1DIR = 0xFF;
 }
@@ -96,8 +95,7 @@ void IoInit(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void Timer0Init(void)
-{
+void Timer0Init(void) {
     TMOD = 0x01;	                     //16位定时器
     TH0  = (65536 - TIMER0_VALUE) / 256;	 //写入初值
     TL0  = (65536 - TIMER0_VALUE) % 256;
@@ -110,8 +108,7 @@ void Timer0Init(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void ClockInit(void)
-{
+void ClockInit(void) {
     hal_clk_set_16m_source(HAL_CLK_XOSC16M);   //使用外部16MHz晶振
 }
 
@@ -120,8 +117,7 @@ void ClockInit(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void RfCofig(void)
-{
+void RfCofig(void) {
     RFCKEN = 1;	     //使能RF时钟
 
 
@@ -147,60 +143,42 @@ void RfCofig(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void ID_Inbuf(void)
-{
+void ID_Inbuf(void) {
     uint8_t i, idx;
     xdata uint8_t iswrite, lastcnt = 0, row = 0;
 
     idx = 0xFF;
 
-    if(ID_BufTmp[0] == CMD_TAG_REPID)
-    {
+    if(ID_BufTmp[0] == CMD_TAG_REPID) {
         iswrite = true;
 
-        for(i = 0; i < MAX_TAG_BUFNUM; i++)
-        {
-            if(ID_Buf[i][0] != 0)
-            {
-                if((ID_Buf[i][1] == ID_BufTmp[1]) && (ID_Buf[i][2] == ID_BufTmp[2]))//标签ID存在
-                {
-                    if(ID_Buf[i][0] < ID_OVERTIME)  //未超过20秒收到相同的标签号不上报
-                    {
+        for(i = 0; i < MAX_TAG_BUFNUM; i++) {
+            if(ID_Buf[i][0] != 0) {
+                if((ID_Buf[i][1] == ID_BufTmp[1]) && (ID_Buf[i][2] == ID_BufTmp[2])) { //标签ID存在
+                    if(ID_Buf[i][0] < ID_OVERTIME) { //未超过20秒收到相同的标签号不上报
                         iswrite = false;
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         ID_Buf[i][0] = TAG_NEED_REP;
                         iswrite = false;
                         break;
                     }
-                }
-                else
-                {
-                    if(ID_Buf[i][0] > lastcnt)
-                    {
+                } else {
+                    if(ID_Buf[i][0] > lastcnt) {
                         lastcnt = ID_Buf[i][0];
                         row = i;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 if(idx == 0xFF)idx = i;
             }
         }
-        if(iswrite == true) //ID需要写入缓存
-        {
-            if(idx < MAX_TAG_BUFNUM)
-            {
+        if(iswrite == true) { //ID需要写入缓存
+            if(idx < MAX_TAG_BUFNUM) {
                 for(i = 0; i < (RX_PAYLOAD_LEN - 2); i++)ID_Buf[idx][i + 1] = ID_BufTmp[i + 1];
                 ID_Buf[idx][0] = TAG_NEED_REP;
-            }
-            else
-            {
-                if(row < MAX_TAG_BUFNUM)
-                {
+            } else {
+                if(row < MAX_TAG_BUFNUM) {
                     for(i = 0; i < (RX_PAYLOAD_LEN - 2); i++)ID_Buf[row][i + 1] = ID_BufTmp[i + 1];
                     ID_Buf[row][0] = TAG_NEED_REP;
                 }
@@ -214,8 +192,7 @@ void ID_Inbuf(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void uart_sendchar(uint8_t dat)
-{
+void uart_sendchar(uint8_t dat) {
     S0BUF = dat;
     while(!TI0);
     TI0 = 0;
@@ -225,8 +202,7 @@ void uart_sendchar(uint8_t dat)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void PutString(char *s)
-{
+void PutString(char *s) {
     while(*s != 0)
         uart_sendchar(*s++);
     //delay_ms(1);
@@ -236,21 +212,18 @@ void PutString(char *s)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void Uart_PackAndRepDat(void)
-{
+void Uart_PackAndRepDat(void) {
     xdata uint8_t i, tagnum = 0, fcs;
-	uint8_t	temp[5],humy[5],id[5];
-	
-//	memset(temp, 0, 5);
-	//memset(humy, 0, 5);
-	//memset(id, 0, 5);
-	
+    uint8_t	temp[5], humy[5], id[5];
+
+    //	memset(temp, 0, 5);
+    //memset(humy, 0, 5);
+    //memset(id, 0, 5);
+
     RepFlag = false;
 
-    for(i = 0; i < MAX_TAG_BUFNUM; i++)
-    {
-        if(ID_Buf[i][0] > 1)
-        {
+    for(i = 0; i < MAX_TAG_BUFNUM; i++) {
+        if(ID_Buf[i][0] > 1) {
             ID_Buf[i][0]++;
             if(ID_Buf[i][0] >= ID_OVERTIME)ID_Buf[i][0] = 0;
         }
@@ -261,20 +234,18 @@ void Uart_PackAndRepDat(void)
     UARTSendbuf[2] = DEST_ADDR;     // DA
     UARTSendbuf[3] = READER_ADDR;   // SA
 
-    for(i = 0; i < MAX_TAG_BUFNUM; i++)
-    {
-        if(ID_Buf[i][0] == TAG_NEED_REP)
-        {
+    for(i = 0; i < MAX_TAG_BUFNUM; i++) {
+        if(ID_Buf[i][0] == TAG_NEED_REP) {
             /*UARTSendbuf[4 * tagnum + 8]  = ID_Buf[i][1];
             UARTSendbuf[4 * tagnum + 9]  = ID_Buf[i][2];
             UARTSendbuf[4 * tagnum + 10]  = ID_Buf[i][3];
             UARTSendbuf[4 * tagnum + 11] = ID_Buf[i][4];
-						*/
-					  UARTSendbuf[PAYLOAD_LEN * tagnum + 8]  = ID_Buf[i][1];//IDH
+            			*/
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 8]  = ID_Buf[i][1];//IDH
             UARTSendbuf[PAYLOAD_LEN * tagnum + 9]  = ID_Buf[i][2];//IDL
             UARTSendbuf[PAYLOAD_LEN * tagnum + 10]  = ID_Buf[i][3];//电压整数
             UARTSendbuf[PAYLOAD_LEN * tagnum + 11] = ID_Buf[i][4];//电压小数
-					  UARTSendbuf[PAYLOAD_LEN * tagnum + 12]  = ID_Buf[i][5];//温度整数
+            UARTSendbuf[PAYLOAD_LEN * tagnum + 12]  = ID_Buf[i][5];//温度整数
             UARTSendbuf[PAYLOAD_LEN * tagnum + 13]  = ID_Buf[i][6];//温度小数
             UARTSendbuf[PAYLOAD_LEN * tagnum + 14]  = ID_Buf[i][7];//湿度整数
             UARTSendbuf[PAYLOAD_LEN * tagnum + 15] = ID_Buf[i][8];//湿度小数
@@ -296,19 +267,18 @@ void Uart_PackAndRepDat(void)
     for(i = 0; i < UARTSendbuf[4]; i++)fcs = fcs + UARTSendbuf[i + 2];
     UARTSendbuf[UARTSendbuf[4] + 2] = (256 - fcs) % 256;
     for(i = 0; i < (UARTSendbuf[4] + 3); i++)  hal_uart_putchar(UARTSendbuf[i] );
-    
-		//PutString(temp);		
-		//PutString(humy);
-		//hal_uart_putchar('\r');
-		//hal_uart_putchar('\n');
+
+    //PutString(temp);
+    //PutString(humy);
+    //hal_uart_putchar('\r');
+    //hal_uart_putchar('\n');
 }
 /*******************************************************************************************************
  * 描  述 : 主函数
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void main()
-{
+void main() {
     uint8_t i;
 
     IoInit();
@@ -328,14 +298,12 @@ void main()
 #endif
 
 
-    while(1)
-    {
+    while(1) {
 #ifdef  USE_WDT
         hal_wdog_restart();
 #endif
 
-        if(RF_Recv_Flag == true)//接收到Tag信息
-        {
+        if(RF_Recv_Flag == true) { //接收到Tag信息
 #ifdef DEBUG_LED
             D1 = ~D1;
 #endif
@@ -344,8 +312,7 @@ void main()
             ID_Inbuf();          //ID信息写入缓存
         }
 
-        if(SecondFlag == true)//1秒定时时间到
-        {
+        if(SecondFlag == true) { //1秒定时时间到
             SecondFlag = false;	//清零秒定时标志
             Uart_PackAndRepDat();//串口上报数据
         }
@@ -356,25 +323,20 @@ void main()
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void rf_irq() interrupt INTERRUPT_RFIRQ
-{
+void rf_irq() interrupt INTERRUPT_RFIRQ {
     uint8_t irq_flags, i;
 
     irq_flags = hal_nrf_get_clear_irq_flags(); //读取并清除中断标志
 
-    if(irq_flags & (1 << HAL_NRF_RX_DR)) //接收中断
-    {
-        while(!hal_nrf_rx_fifo_empty())
-        {
+    if(irq_flags & (1 << HAL_NRF_RX_DR)) { //接收中断
+        while(!hal_nrf_rx_fifo_empty()) {
             PipeAndLen = hal_nrf_read_rx_payload(RxPayload);
 
-            if((PipeAndLen & 0xFF) == RX_PAYLOAD_LEN) //检查长度是否为12//6
-            {
-                if(((RxPayload[0] + RxPayload[1] + RxPayload[2] + RxPayload[3] + RxPayload[4] + RxPayload[5]+
-									RxPayload[6] + RxPayload[7] + RxPayload[8] + RxPayload[9]
-									
-								) % 256) == 0x00) //校验正确
-                {
+            if((PipeAndLen & 0xFF) == RX_PAYLOAD_LEN) { //检查长度是否为12//6
+                if(((RxPayload[0] + RxPayload[1] + RxPayload[2] + RxPayload[3] + RxPayload[4] + RxPayload[5] +
+                        RxPayload[6] + RxPayload[7] + RxPayload[8] + RxPayload[9]
+
+                    ) % 256) == 0x00) { //校验正确
                     for(i = 0; i < (RX_PAYLOAD_LEN - 1); i++)ID_BufTmp[i]	= RxPayload[i];
                     RF_Recv_Flag = true;
                 }
@@ -382,13 +344,11 @@ void rf_irq() interrupt INTERRUPT_RFIRQ
             hal_nrf_flush_rx();
         }
     }
-    if(irq_flags & ((1 << HAL_NRF_TX_DS)))				 // transimmter finish
-    {
+    if(irq_flags & ((1 << HAL_NRF_TX_DS))) {			 // transimmter finish
         hal_nrf_flush_tx();
     }
 
-    if(irq_flags & ((1 << HAL_NRF_MAX_RT)))				 // re-transimmter
-    {
+    if(irq_flags & ((1 << HAL_NRF_MAX_RT))) {			 // re-transimmter
         hal_nrf_flush_tx();
     }
 }
@@ -397,8 +357,7 @@ void rf_irq() interrupt INTERRUPT_RFIRQ
  * 入  参 : 待校验的数组地址
  * 返回值 : 校验结果
  *******************************************************************************************************/
-uint8_t Calculate_Fcs(uint8_t *buf)
-{
+uint8_t Calculate_Fcs(uint8_t *buf) {
     xdata uint8_t i, fcs;
     fcs = 0;
     for(i = 0; i < 6; i++)fcs  = fcs + *(buf + i);
@@ -409,15 +368,13 @@ uint8_t Calculate_Fcs(uint8_t *buf)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void Timer0_irq() interrupt INTERRUPT_T0
-{
+void Timer0_irq() interrupt INTERRUPT_T0 {
 
     TH0 = (65536 - TIMER0_VALUE) / 256;
     TL0 = (65536 - TIMER0_VALUE) % 256;
     TimeCount++;
 
-    if(TimeCount == 50)	//1000ms
-    {
+    if(TimeCount == 50) {	//1000ms
         TimeCount = 0;
         SecondFlag = true;
     }

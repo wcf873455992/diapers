@@ -38,8 +38,7 @@ static void aes_set_key(const uint8_t *key_bytes);
 static void key_upgrade(uint8_t round);
 
 /*----------------------- AES STATIC values ----------------------------------*/
-static uint8_t const code s_box[256] =
-{
+static uint8_t const code s_box[256] = {
     99, 124, 119, 123, 242, 107, 111, 197,  48,   1, 103,  43, 254, 215, 171, 118,
     202, 130, 201, 125, 250,  89,  71, 240, 173, 212, 162, 175, 156, 164, 114, 192,
     183, 253, 147,  38,  54,  63, 247, 204,  52, 165, 229, 241, 113, 216,  49,  21,
@@ -58,14 +57,12 @@ static uint8_t const code s_box[256] =
     140, 161, 137,  13, 191, 230,  66, 104,  65, 153,  45,  15, 176,  84, 187,  22,
 };
 
-static uint8_t const code rcon[] =
-{
+static uint8_t const code rcon[] = {
     0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36
 };
 
 /*----------------------- AES API --------------------------------------------*/
-void hal_aes_setup(bool decrypt, aes_modes_t mode, const uint8_t *keyin, const uint8_t *ivin)
-{
+void hal_aes_setup(bool decrypt, aes_modes_t mode, const uint8_t *keyin, const uint8_t *ivin) {
     aes_set_key(keyin);
 
     //lint -save -e438
@@ -81,22 +78,19 @@ void hal_aes_setup(bool decrypt, aes_modes_t mode, const uint8_t *keyin, const u
 static uint8_t data aes_state[16];      //AES State
 #endif
 
-void hal_aes_crypt(uint8_t *dest_buf, const uint8_t *src_buf)
-{
+void hal_aes_crypt(uint8_t *dest_buf, const uint8_t *src_buf) {
 #ifdef __C51__
     uint8_t data aes_state[16];      //AES State
 #endif
 
     uint8_t a;
-    for(a = 0; a < 16; a++)
-    {
+    for(a = 0; a < 16; a++) {
         aes_state[a] = src_buf[a];
     }
 
     //Start
     CCPDATIB = 0x02;  //Set co-prosessor the GF(2^8)*2 (used in mix-colums)
-    for (a = 0; a < 9; a++)
-    {
+    for (a = 0; a < 9; a++) {
         add_sub_shift(aes_state);
         mix_columns_hw(aes_state);
         key_upgrade(a);
@@ -108,24 +102,20 @@ void hal_aes_crypt(uint8_t *dest_buf, const uint8_t *src_buf)
     add_key(aes_state);
 
     //Clean up
-    for(a = 0; a < 16; a++)
-    {
+    for(a = 0; a < 16; a++) {
         aes_round_key[a] = cipher_key[a]; //Write back cipher-key
         dest_buf[a] = aes_state[a];     //Write out encrypted result
     }
 }
 /*----------------------- Private AES Encryption Functions -------------------*/
-static void aes_set_key(const uint8_t *key_bytes)
-{
+static void aes_set_key(const uint8_t *key_bytes) {
     uint8_t k;
-    for (k = 0; k < 16; k++)
-    {
+    for (k = 0; k < 16; k++) {
         cipher_key[k] = aes_round_key[k] = key_bytes[k];
     }
 }
 
-static void add_key(uint8_t data *aes_state)
-{
+static void add_key(uint8_t data *aes_state) {
     aes_state[0] ^= aes_round_key[0];
     aes_state[1] ^= aes_round_key[1];
     aes_state[2] ^= aes_round_key[2];
@@ -144,8 +134,7 @@ static void add_key(uint8_t data *aes_state)
     aes_state[15] ^= aes_round_key[15];
 }
 
-static void key_upgrade(uint8_t round)
-{
+static void key_upgrade(uint8_t round) {
     aes_round_key[0] = s_box[aes_round_key[13]] ^ aes_round_key[0] ^ rcon[round + 1];
     aes_round_key[1] = s_box[aes_round_key[14]] ^ aes_round_key[1];
     aes_round_key[2] = s_box[aes_round_key[15]] ^ aes_round_key[2];
@@ -167,8 +156,7 @@ static void key_upgrade(uint8_t round)
     aes_round_key[15] = aes_round_key[11] ^ aes_round_key[15];
 }
 
-static void add_sub_shift(uint8_t data *aes_state)
-{
+static void add_sub_shift(uint8_t data *aes_state) {
     uint8_t row[2];
 
     aes_state[0] = s_box[aes_state[0] ^ aes_round_key[0]];
@@ -196,8 +184,7 @@ static void add_sub_shift(uint8_t data *aes_state)
     aes_state[3] = row[0];
 }
 
-static void mix_columns_hw(uint8_t data *aes_state)
-{
+static void mix_columns_hw(uint8_t data *aes_state) {
     uint8_t col, r, tmp;
     /*
     This function operates on the columns of the state. Each column is subject to the

@@ -61,8 +61,7 @@
 /** An enum describing the clock frequency.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_W2_IDLE   = 0x00,       /**< Idle */
     HAL_W2_100KHZ = 0x01,       /**< 100 KHz (Standard mode) */
     HAL_W2_400KHZ = 0x02        /**< 400 KHz (Fast mode) */
@@ -71,8 +70,7 @@ typedef enum
 /** An enum describing master or slave mode.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_W2_MASTER,              /**< Master mode */
     HAL_W2_SLAVE                /**< Slave mode */
 } hal_w2_op_mode_t;
@@ -80,8 +78,7 @@ typedef enum
 /** An enum describing the 2-wire's irq sources.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_W2_STOP_COND = 0x08,    /**< Interrupt caused by stop condition */
     HAL_W2_ADRESS_MATCH = 0x04, /**< Interrupt caused by address match */
     HAL_W2_DATA_READY = 0x01    /**< Interrupt caused by byte transmitted/received */
@@ -90,8 +87,7 @@ typedef enum
 /** An enum describing master transfer direction.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_W2_DIR_WRITE,              /**< Transfer direction: write */
     HAL_W2_DIR_READ                /**< Transfer direction: read */
 } hal_w2_direction_t;

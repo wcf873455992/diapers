@@ -74,8 +74,7 @@ xdata TagInformation TagInfo;
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void IoInit(void)
-{
+void IoInit(void) {
     P0DIR = 0x00;
     P1DIR = 0x00;
 }
@@ -85,8 +84,7 @@ void IoInit(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void uart_sendchar(uint8_t dat)
-{
+void uart_sendchar(uint8_t dat) {
     S0BUF = dat;
     while(!TI0);
     TI0 = 0;
@@ -97,21 +95,19 @@ void uart_sendchar(uint8_t dat)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void PutString(char *s)
-{
-	#ifdef DEBUG_UART
+void PutString(char *s) {
+#ifdef DEBUG_UART
     while(*s != 0)
         uart_sendchar(*s++);
     //delay_ms(1);
-		#endif
+#endif
 }
 /*********************************************************************************************************
 ** 描  述:  adc初始化
 ** 入  参:  NONE
 ** 返回值:  NONE
 *********************************************************************************************************/
-void adc_init(void)
-{
+void adc_init(void) {
     hal_adc_set_input_channel(HAL_INP_VDD1_3);          //设置通道 检测1/3 VDD电压
     hal_adc_set_reference(HAL_ADC_REF_INT);             //设置参考电压 内部1.22V
     hal_adc_set_input_mode(HAL_ADC_SINGLE);             //单端输入
@@ -126,8 +122,7 @@ void adc_init(void)
  * 入  参 : period:休眠时间
  * 返回值 : 无
  *******************************************************************************************************/
-void set_timer_period(uint16_t period)
-{
+void set_timer_period(uint16_t period) {
     if((period < 10) && (period > 65536))period = 32768;
 
     hal_rtc_start(false);
@@ -140,8 +135,7 @@ void set_timer_period(uint16_t period)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void RfCofig(void)
-{
+void RfCofig(void) {
     RFCKEN = 1;	     //使能RF时钟
 
     hal_nrf_close_pipe(HAL_NRF_ALL);           //先关闭所有的通道.
@@ -165,8 +159,7 @@ void RfCofig(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void mcu_init(void)
-{
+void mcu_init(void) {
     hal_rtc_start(false);
     hal_clklf_set_source(HAL_CLKLF_RCOSC32K);           // Use 32.768KHz的时钟源为内部RC
 
@@ -186,8 +179,7 @@ void mcu_init(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void Assemble_Data(void)
-{
+void Assemble_Data(void) {
     xdata uint8_t fcs = 0, i;
 
 
@@ -200,27 +192,26 @@ void Assemble_Data(void)
     TxPayload[6] = TagInfo.tempL;
     TxPayload[7] = TagInfo.humyH;
     TxPayload[8] = TagInfo.humyL;
-	
+
     for(i = 0; i < (MAX_TX_PAYLOAD - 1); i++)fcs += TxPayload[i];
 
     TxPayload[MAX_TX_PAYLOAD - 1] = (256 - fcs) % 256;
 }
-void CellVoltage(){
-	uint32_t	ad_value = 0,temp=0;
-	hal_adc_start();           //启动ADC
-	while( hal_adc_busy())     //等待ADC转换结束
-	;	
-	TagInfo.CellVoltageH = hal_adc_read_MSB(); //读取ADC采样值
-	TagInfo.CellVoltageL = hal_adc_read_LSB();
-	ad_value = (ad_value|hal_adc_read_MSB())<<8;
-	ad_value = ad_value|hal_adc_read_LSB();
-	temp = ad_value*1.2*3*100/4096; //电压扩大100倍
-	TagInfo.CellVoltageH = temp/100;//
-	TagInfo.CellVoltageL = ((temp%100/10)<<4)|(temp%100%10);
+void CellVoltage() {
+    uint32_t	ad_value = 0, temp = 0;
+    hal_adc_start();           //启动ADC
+    while( hal_adc_busy())     //等待ADC转换结束
+        ;
+    TagInfo.CellVoltageH = hal_adc_read_MSB(); //读取ADC采样值
+    TagInfo.CellVoltageL = hal_adc_read_LSB();
+    ad_value = (ad_value | hal_adc_read_MSB()) << 8;
+    ad_value = ad_value | hal_adc_read_LSB();
+    temp = ad_value * 1.2 * 3 * 100 / 4096; //电压扩大100倍
+    TagInfo.CellVoltageH = temp / 100; //
+    TagInfo.CellVoltageL = ((temp % 100 / 10) << 4) | (temp % 100 % 10);
 }
 
-void AHT10(void)
-{
+void AHT10(void) {
     uint8_t temp[5];
     uint8_t humidity[5];
 
@@ -236,52 +227,50 @@ void AHT10(void)
         Read_AHT10();  //读取温度和湿度 ， 可间隔1.5S读一次
         //EnableIrq(); //恢复中断
 
-				TagInfo.tempH = AHT10Value.tempH ;
+        TagInfo.tempH = AHT10Value.tempH ;
         TagInfo.tempL = AHT10Value.tempL ;
         TagInfo.humyH = AHT10Value.humyH ;
         TagInfo.humyL = AHT10Value.humyL ;
-				
-        temp[0] = (AHT10Value.tempH>>4) + 0x30;
-        temp[1] = (AHT10Value.tempH&0x0f) + 0x30;
-        temp[3] = (AHT10Value.tempL>>4) + 0x30;
-        humidity[0] = (TagInfo.humyH>>4) + 0x30;
-        humidity[1] = (TagInfo.humyH&0x0f) + 0x30;
-        humidity[3] = (TagInfo.humyL>>4) + 0x30;
-			        	 
-			PutString("AHT10-温度:");
-        	 PutString(temp);
-        	 PutString("    ");
-        	 PutString("湿度:");
-        	 PutString(humidity);
-        	 PutString("\r\n");
-       /**/ 		
+
+        temp[0] = (AHT10Value.tempH >> 4) + 0x30;
+        temp[1] = (AHT10Value.tempH & 0x0f) + 0x30;
+        temp[3] = (AHT10Value.tempL >> 4) + 0x30;
+        humidity[0] = (TagInfo.humyH >> 4) + 0x30;
+        humidity[1] = (TagInfo.humyH & 0x0f) + 0x30;
+        humidity[3] = (TagInfo.humyL >> 4) + 0x30;
+
+        PutString("AHT10-温度:");
+        PutString(temp);
+        PutString("    ");
+        PutString("湿度:");
+        PutString(humidity);
+        PutString("\r\n");
+        /**/
         //delay_ms(1500); //延时1.5S
         //为读取的数据更稳定，还可以使用平均值滤波或者窗口滤波，或者前面读取的值与后面的值相差不能太大。
     }
 }
-void	Send_data(){
-		Assemble_Data();  // 数据打包
-		hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
+void	Send_data() {
+    Assemble_Data();  // 数据打包
+    hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
 
-		CE_PULSE();	            //无线发射数据
-		radio_busy = true;
-		while(radio_busy)		    //等待操作完成
-		;
-		led_flash(led1);
+    CE_PULSE();	            //无线发射数据
+    radio_busy = true;
+    while(radio_busy)		    //等待操作完成
+        ;
+    led_flash(led1);
 }
 /*******************************************************************************************************
  * 描  述 : 获取上一次低功耗模式，并通过串口打印
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void GetPrintLastPWM(void)
-{
+void GetPrintLastPWM(void) {
     uint8_t PowrMode;
 
     PowrMode = PWRDWN & 0x07;
 
-    switch(PowrMode)
-    {
+    switch(PowrMode) {
     case 0x00:
         PutString("Last mode:Power Off!");
         break;
@@ -307,8 +296,7 @@ void GetPrintLastPWM(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void SetWakeUpPin(void)
-{
+void SetWakeUpPin(void) {
     OPMCON = 0x04;             /* 开锁，低电平唤醒          */
     WUOPC0 = 0x00;             /* P0唤醒的引脚设置：无      */
     WUOPC1 = 0x04;             /* P1唤醒的引脚设置：P12     */
@@ -332,12 +320,10 @@ void SetWakeUpPin(void)
  * 入  参 : mode:低功耗模式
  * 返回值 : 无
  *******************************************************************************************************/
-void SetPowrDownMode(uint8_t mode)
-{
+void SetPowrDownMode(uint8_t mode) {
     uint8_t PowrMode;
 
-    switch(mode)
-    {
+    switch(mode) {
     case DEEPSLEEP  :     // 深度睡眠，唤醒后复位
         PowrMode = 0x01;
         break;
@@ -362,63 +348,60 @@ void SetPowrDownMode(uint8_t mode)
     PWRDWN = 0x00;  // Clear power down
 }
 
-void main(void)
-{
-	uint8_t RfReceLen, second = 0;
+void main(void) {
+    uint8_t RfReceLen, second = 0;
     uint32_t	minute = 0;
-	
-	TagInfo.id.id16 = TAG_ID;
+
+    TagInfo.id.id16 = TAG_ID;
     IoInit();      //配置IO
-    SetWakeUpPin(); //设置唤醒管脚	
-	led_init();
-	key_init();
-    mcu_init();		
+    SetWakeUpPin(); //设置唤醒管脚
+    led_init();
+    key_init();
+    mcu_init();
     adc_init();
-	AHT10_Init();		
+    AHT10_Init();
     RfCofig();
-#ifdef DEBUG_UART 	
+#ifdef DEBUG_UART
     hal_uart_init(UART_BAUD_57K6); // 初始化UART0
     while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
-      ;
+        ;
 #endif
 #if USE_WDT
     hal_wdog_init(WDT_TIME);//配置看门狗超时时间2s，使能看门狗
 #endif
     PutString("Program starting...\r\n");
-    GetPrintLastPWM();	
-	CellVoltage();	
-	AHT10();
-	Send_data();
-    while(1)
-    {
+    GetPrintLastPWM();
+    CellVoltage();
+    AHT10();
+    Send_data();
+    while(1) {
 
 #if USE_WDT
-		hal_wdog_restart(); //喂狗
+        hal_wdog_restart(); //喂狗
 #endif
-        if(KEY1 == 0){
-			delay_ms(100);
-			if(KEY1 == 0){
-				second = 0;
-				minute = 0;
-				CellVoltage();	
-				AHT10();
-				Send_data();
-			}
+        if(KEY1 == 0) {
+            delay_ms(100);
+            if(KEY1 == 0) {
+                second = 0;
+                minute = 0;
+                CellVoltage();
+                AHT10();
+                Send_data();
+            }
         }
-        if(second <= MINUTE){ //一分钟        
+        if(second <= MINUTE) { //一分钟
             second++;
             SetPowrDownMode(REGRET);
             PutString("into REGRET\n");
-        }else{
+        } else {
             second = 0;
             minute++;
-            if(minute == 24*HOUR)
-            {
+            if(minute == 24 * HOUR) {
                 PutString("into DEEPSLEEP\n");
                 SetPowrDownMode(DEEPSLEEP);
             }
-			AHT10();
-			Send_data();
+            AHT10();
+            Send_data();
         }
     }
 }
@@ -427,29 +410,24 @@ void main(void)
  * 入  参 : 无
  * 返回值 : 无
  *******************************************************************************************************/
-void rf_irq() interrupt INTERRUPT_RFIRQ
-{
+void rf_irq() interrupt INTERRUPT_RFIRQ {
     uint8_t  irq_flags;
 
     irq_flags = hal_nrf_get_clear_irq_flags(); //读取并清除无线中断标志
 
-    if(irq_flags & (1 << HAL_NRF_RX_DR)) //接收到数据?
-    {
+    if(irq_flags & (1 << HAL_NRF_RX_DR)) { //接收到数据?
 
-        while(!hal_nrf_rx_fifo_empty())// Read payload
-        {
+        while(!hal_nrf_rx_fifo_empty()) { // Read payload
             PipeAndLen = hal_nrf_read_rx_payload(RxPayload);//读取数据
         }
         radio_busy = false;
     }
 
-    if(irq_flags & ((1 << HAL_NRF_TX_DS)))			// transimmter finish
-    {
+    if(irq_flags & ((1 << HAL_NRF_TX_DS))) {		// transimmter finish
         radio_busy = false;
     }
 
-    if(irq_flags & ((1 << HAL_NRF_MAX_RT)))			// re-transimmter
-    {
+    if(irq_flags & ((1 << HAL_NRF_MAX_RT))) {		// re-transimmter
         radio_busy = false;
         hal_nrf_flush_tx();
     }

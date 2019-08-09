@@ -19,42 +19,31 @@
 #include "hal_rtc.h"
 #include "nordic_common.h"
 
-void hal_rtc_capture(void)
-{
+void hal_rtc_capture(void) {
     RTC2CON |= BIT_4;                         // Set "sfrCapture" bit(Trig. sig.)
 }
 
-void hal_rtc_radio_capture_enable(bool en)
-{
-    if(en)
-    {
+void hal_rtc_radio_capture_enable(bool en) {
+    if(en) {
         RTC2CON |= BIT_3;                       // Set "enableExtCapture" bit
-    }
-    else
-    {
+    } else {
         RTC2CON &= ~BIT_3;                      // Clear "enableExtCapture" bit
     }
 }
 
-void hal_rtc_set_compare_mode(hal_rtc_compare_mode_t mode)
-{
+void hal_rtc_set_compare_mode(hal_rtc_compare_mode_t mode) {
     RTC2CON = (RTC2CON & 0xF9) | ((mode << 1) & ~0xF9); // Set "compareMode" bits
 }
 
-void hal_rtc_start(bool en)
-{
-    if(en)
-    {
+void hal_rtc_start(bool en) {
+    if(en) {
         RTC2CON |= BIT_0;                       // Set "rtc2Enable" bit
-    }
-    else
-    {
+    } else {
         RTC2CON &= ~BIT_0;                      // Clear "rtc2Enable" bit
     }
 }
 
-void hal_rtc_set_compare_value(uint16_t value)
-{
+void hal_rtc_set_compare_value(uint16_t value) {
     uint8_t compare_status;
     compare_status = (RTC2CON & (BIT_1 | BIT_2)); // Save "compareMode" bits
     RTC2CON &= ~(BIT_1 | BIT_2);              // Disable compare
@@ -63,8 +52,7 @@ void hal_rtc_set_compare_value(uint16_t value)
     RTC2CON |= compare_status;                // Update compare status
 }
 
-uint16_t hal_rtc_get_compare_value(void)
-{
+uint16_t hal_rtc_get_compare_value(void) {
     uint8_t compare_status;
     uint16_t value;                           // Create temporary output variable
     compare_status = (RTC2CON & (BIT_1 | BIT_2)); // Save "compareMode" bits
@@ -76,8 +64,7 @@ uint16_t hal_rtc_get_compare_value(void)
     return value;                             // Return compare value
 }
 
-uint16_t hal_rtc_get_capture_value(void)
-{
+uint16_t hal_rtc_get_capture_value(void) {
     uint8_t capture_status;
     uint16_t value;                           // Create temporary output variable
     capture_status = (RTC2CON & BIT_3);       // Save "compareMode" bits
@@ -89,7 +76,6 @@ uint16_t hal_rtc_get_capture_value(void)
     return value;                             // Return timer value
 }
 
-uint8_t hal_rtc_get_capture_clock_cycles(void)
-{
+uint8_t hal_rtc_get_capture_clock_cycles(void) {
     return RTC2CPT10;                         // Return register
 }

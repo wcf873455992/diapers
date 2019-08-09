@@ -17,52 +17,45 @@ AHT10VALUE AHT10Value;
 
 
 
-void flash_P00()
-{
+void flash_P00() {
     P00 = LOW;
     delay_ms(500);
     P00 = HIGH;
 }
-void SDA_Pin_Output_High(void)   //将P15配置为输出 ， 并设置为高电平， P15作为I2C的SDA
-{
+void SDA_Pin_Output_High(void) { //将P15配置为输出 ， 并设置为高电平， P15作为I2C的SDA
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = HIGH;
     //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
     //Gpio_SetIO(1,5,1);
 }
 
-void SDA_Pin_Output_Low(void)  //将P15配置为输出  并设置为低电平
-{
+void SDA_Pin_Output_Low(void) { //将P15配置为输出  并设置为低电平
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = LOW;
     //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
     //Gpio_SetIO(1,5,0);
 }
 
-void SDA_Pin_IN_FLOATING(void)  //SDA配置为悬浮输入
-{
+void SDA_Pin_IN_FLOATING(void) { //SDA配置为悬浮输入
     P1DIR |= 0x20;	   //配置P1.5为输入
     //Gpio_InitIO(1, 5, GpioDirIn);
 }
 
 
 
-void SCL_Pin_Output_High(void) //SCL输出高电平，P14作为I2C的SCL
-{
+void SCL_Pin_Output_High(void) { //SCL输出高电平，P14作为I2C的SCL
     //Gpio_SetIO(1, 4, 1);
     P1DIR &= ~0x10;	   //配置P1.4为输出
     SCL	= HIGH;
 }
 
-void SCL_Pin_Output_Low(void) //SCL输出低电平
-{
+void SCL_Pin_Output_Low(void) { //SCL输出低电平
     //Gpio_SetIO(1, 4, 0);
     P1DIR &= ~0x10;	   //配置P1.4为输出
     SCL	= LOW;
 }
 
-void Init_I2C_Sensor_Port(void) //初始化I2C接口
-{
+void Init_I2C_Sensor_Port(void) { //初始化I2C接口
 
     //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//将P15配置为开漏输出  并设置为高电平
     //Gpio_SetIO(1,5,1);
@@ -76,8 +69,7 @@ void Init_I2C_Sensor_Port(void) //初始化I2C接口
 }
 
 
-void I2C_Start(void)		 //I2C主机发送START信号
-{
+void I2C_Start(void) {	 //I2C主机发送START信号
     SDA_Pin_Output_High();
     //SensorDelay_us(8);
     delay_us(8);
@@ -93,23 +85,18 @@ void I2C_Start(void)		 //I2C主机发送START信号
 }
 
 
-void ZSSC_I2C_WR_Byte(uint8_t Byte) //往AHT10写一个字节
-{
+void ZSSC_I2C_WR_Byte(uint8_t Byte) { //往AHT10写一个字节
     uint8_t Data, N, i;
     Data = Byte;
     i = 0x80;
-    for(N = 0; N < 8; N++)
-    {
+    for(N = 0; N < 8; N++) {
         SCL_Pin_Output_Low();
 
         //Delay_3us();
         delay_us(3);
-        if(i & Data)
-        {
+        if(i & Data) {
             SDA_Pin_Output_High();
-        }
-        else
-        {
+        } else {
             SDA_Pin_Output_Low();
         }
 
@@ -129,16 +116,14 @@ void ZSSC_I2C_WR_Byte(uint8_t Byte) //往AHT10写一个字节
 }
 
 
-uint8_t ZSSC_I2C_RD_Byte(void)//从AHT10读取一个字节
-{
+uint8_t ZSSC_I2C_RD_Byte(void) { //从AHT10读取一个字节
     uint8_t Byte, i, a;
     Byte = 0;
     SCL_Pin_Output_Low();
     SDA_Pin_IN_FLOATING();
     //SensorDelay_us(8);
     delay_us(8);
-    for(i = 0; i < 8; i++)
-    {
+    for(i = 0; i < 8; i++) {
         SCL_Pin_Output_High();
         //Delay_1us();
         delay_us(1);
@@ -157,8 +142,7 @@ uint8_t ZSSC_I2C_RD_Byte(void)//从AHT10读取一个字节
 }
 
 
-uint8_t Receive_ACK(void)   //看AHT10是否有回复ACK
-{
+uint8_t Receive_ACK(void) { //看AHT10是否有回复ACK
     uint16_t CNT;
     CNT = 0;
     SCL_Pin_Output_Low();
@@ -172,8 +156,7 @@ uint8_t Receive_ACK(void)   //看AHT10是否有回复ACK
 
     while((SDA)  && CNT < 100)
         CNT++;
-    if(CNT == 100)
-    {
+    if(CNT == 100) {
         return 0;
     }
     SCL_Pin_Output_Low();
@@ -182,8 +165,7 @@ uint8_t Receive_ACK(void)   //看AHT10是否有回复ACK
     return 1;
 }
 
-void Send_ACK(void)		  //主机回复ACK信号
-{
+void Send_ACK(void) {	  //主机回复ACK信号
     SCL_Pin_Output_Low();
     //SensorDelay_us(8);
     delay_us(8);
@@ -201,8 +183,7 @@ void Send_ACK(void)		  //主机回复ACK信号
     delay_us(8);
 }
 
-void Send_NOT_ACK(void)	//主机不回复ACK
-{
+void Send_NOT_ACK(void) {	//主机不回复ACK
     SCL_Pin_Output_Low();
     //SensorDelay_us(8);
     delay_us(8);
@@ -220,8 +201,7 @@ void Send_NOT_ACK(void)	//主机不回复ACK
     delay_us(8);
 }
 
-void Stop_I2C(void)	  //一条协议结束
-{
+void Stop_I2C(void) {  //一条协议结束
     SDA_Pin_Output_Low();
     //SensorDelay_us(8);
     delay_us(8);
@@ -233,8 +213,7 @@ void Stop_I2C(void)	  //一条协议结束
     delay_us(8);
 }
 
-uint8_t JH_Read_Status(void)//读取AHT10的状态寄存器
-{
+uint8_t JH_Read_Status(void) { //读取AHT10的状态寄存器
 
     uint8_t Byte_first;
     I2C_Start();
@@ -250,8 +229,7 @@ uint8_t JH_Read_Status(void)//读取AHT10的状态寄存器
     return Byte_first;
 }
 
-uint8_t JH_Read_Cal_Enable(void)  //查询cal enable位有没有使能？
-{
+uint8_t JH_Read_Cal_Enable(void) { //查询cal enable位有没有使能？
     uint8_t val = 0;//ret = 0,
 
     val = JH_Read_Status();
@@ -262,8 +240,7 @@ uint8_t JH_Read_Cal_Enable(void)  //查询cal enable位有没有使能？
 
 
 
-void JH_SendAC(void) //向AHT10发送AC命令
-{
+void JH_SendAC(void) { //向AHT10发送AC命令
 
     I2C_Start();
     ZSSC_I2C_WR_Byte(0x70);
@@ -278,8 +255,7 @@ void JH_SendAC(void) //向AHT10发送AC命令
 
 }
 
-void JH_Send_BA(void)//向AHT10发送BA命令
-{
+void JH_Send_BA(void) { //向AHT10发送BA命令
 
 
     I2C_Start();
@@ -292,8 +268,7 @@ void JH_Send_BA(void)//向AHT10发送BA命令
 
 }
 
-void Read_AHT10() //读取AHT10的温度和湿度数据
-{
+void Read_AHT10() { //读取AHT10的温度和湿度数据
     volatile uint8_t  Byte_1th = 0;
     volatile uint8_t  Byte_2th = 0;
     volatile uint8_t  Byte_3th = 0;
@@ -305,8 +280,7 @@ void Read_AHT10() //读取AHT10的温度和湿度数据
     uint16_t cnt = 0;
 
 
-    while(JH_Read_Cal_Enable() == 0) //等到校准输出使能位为1，才读取。
-    {
+    while(JH_Read_Cal_Enable() == 0) { //等到校准输出使能位为1，才读取。
         AHT10_Init();//如果为0再使能一次
         delay_ms(30);
     }
@@ -314,12 +288,10 @@ void Read_AHT10() //读取AHT10的温度和湿度数据
     JH_SendAC();//向AHT10发送AC命令
     delay_ms(75);//等待75ms
     cnt = 0;
-    while(((JH_Read_Status() & 0x80) == 0x80)) //等待忙状态结束
-    {
+    while(((JH_Read_Status() & 0x80) == 0x80)) { //等待忙状态结束
         //SensorDelay_us(1508);
         delay_us(1508);
-        if(cnt++ >= 100)
-        {
+        if(cnt++ >= 100) {
             break;
         }
     }
@@ -347,8 +319,8 @@ void Read_AHT10() //读取AHT10的温度和湿度数据
     RetuData = RetuData >> 4;
 
     temp = (RetuData * 1000 / 1024 / 1024); //计算得到湿度值（放大了10倍,如果c1=523，表示现在湿度为52.3%）
-    AHT10Value.humyH = (temp / 100)<<4|(temp % 100 / 10) ;
-    AHT10Value.humyL = temp % 100 % 10<<4;
+    AHT10Value.humyH = (temp / 100) << 4 | (temp % 100 / 10) ;
+    AHT10Value.humyL = temp % 100 % 10 << 4;
 
     RetuData = 0;
     RetuData = (RetuData | Byte_4th) << 8;
@@ -357,13 +329,12 @@ void Read_AHT10() //读取AHT10的温度和湿度数据
     RetuData = RetuData & 0xfffff;
 
     temp = (RetuData * 2000 / 1024 / 1024 - 500); //计算得到温度值（放大了10倍，如果t1=245，表示现在温度为24.5℃）
-    AHT10Value.tempH = ((temp / 100)<<4)|(temp % 100 / 10) ;
-    AHT10Value.tempL = temp % 100 % 10<<4;
+    AHT10Value.tempH = ((temp / 100) << 4) | (temp % 100 / 10) ;
+    AHT10Value.tempL = temp % 100 % 10 << 4;
 }
 
 
-uint8_t AHT10_Init(void)   //初始化AHT10
-{
+uint8_t AHT10_Init(void) { //初始化AHT10
     uint8_t	count;
 
     Init_I2C_Sensor_Port();
@@ -382,8 +353,7 @@ uint8_t AHT10_Init(void)   //初始化AHT10
     Stop_I2C();
 
     delay_ms(500);//延时0.5S
-    while(JH_Read_Cal_Enable() == 0) //需要等待状态字status的Bit[3]=1时才去读数据。如果Bit[3]不等于1 ，发软件复位0xBA给AHT10，再重新初始化AHT10，直至Bit[3]=1
-    {
+    while(JH_Read_Cal_Enable() == 0) { //需要等待状态字status的Bit[3]=1时才去读数据。如果Bit[3]不等于1 ，发软件复位0xBA给AHT10，再重新初始化AHT10，直至Bit[3]=1
 
         JH_Send_BA();  //复位
         delay_ms(100);
@@ -407,8 +377,7 @@ uint8_t AHT10_Init(void)   //初始化AHT10
     return 1;
 }
 
-void AHT10_test(void)
-{
+void AHT10_test(void) {
     uint8_t temp[5];
     uint8_t humidity[5];
     static uint8_t ret = 0;
@@ -417,11 +386,9 @@ void AHT10_test(void)
     //memset(humidity, 0, 5);
     temp[2] = '.';
     humidity[2] = '.';
-    if (ret == 0)
-    {
+    if (ret == 0) {
         ret = AHT10_Init(); //初始化
-        if(ret == 0)
-        {
+        if(ret == 0) {
             //PutString("AHT10初始化失败\r\n");
             while(1);
         }

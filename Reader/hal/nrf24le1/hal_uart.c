@@ -38,23 +38,18 @@ static uint8_t idata uart_tx[UART_NBUF];
 static uint8_t uart_rx_wp, uart_rx_rp, uart_rx_cnt;
 static uint8_t idata uart_rx[UART_NBUF];
 
-UART0_ISR()
-{
-    if (RI0 == 1)
-    {
+UART0_ISR() {
+    if (RI0 == 1) {
         RI0 = 0;
-        if (uart_rx_cnt < UART_NBUF)
-        {
+        if (uart_rx_cnt < UART_NBUF) {
             uart_rx[uart_rx_wp] = S0BUF;
             uart_rx_wp = (uart_rx_wp + 1) % UART_NBUF;
             uart_rx_cnt++;
         }
     }
-    if (TI0 == 1)
-    {
+    if (TI0 == 1) {
         TI0 = 0;
-        if (uart_tx_cnt > 1)
-        {
+        if (uart_tx_cnt > 1) {
             S0BUF = uart_tx[uart_tx_rp];
             uart_tx_rp = (uart_tx_rp + 1) % UART_NBUF;
         }
@@ -62,8 +57,7 @@ UART0_ISR()
     }
 }
 
-void hal_uart_init(hal_uart_baudrate_t baud)
-{
+void hal_uart_init(hal_uart_baudrate_t baud) {
     uint16_t temp;
 
     ES0 = 0;                      // Disable UART0 interrupt while initializing
@@ -76,8 +70,7 @@ void hal_uart_init(hal_uart_baudrate_t baud)
     SM1 = 1;                      // ..8 bit variable baud rate
     PCON |= 0x80;                 // SMOD = 1
     ADCON |= 0x80;                // Select internal baud rate generator
-    switch(baud)
-    {
+    switch(baud) {
     case UART_BAUD_57K6:
         temp = BAUD_57K6;
         break;
@@ -99,18 +92,14 @@ void hal_uart_init(hal_uart_baudrate_t baud)
     // ES0 = 0;                      // Enable UART0 interrupt
 }
 
-void hal_uart_putchar(uint8_t ch)
-{
+void hal_uart_putchar(uint8_t ch) {
     // Wait until there is space in the TX buffer:
     while(uart_tx_cnt > UART_NBUF)
         ;
     ES0 = 0;
-    if (uart_tx_cnt == 0)
-    {
+    if (uart_tx_cnt == 0) {
         S0BUF = ch;                 // Write first char directly to the UART SFR
-    }
-    else
-    {
+    } else {
         uart_tx[uart_tx_wp] = ch;
         uart_tx_wp = (uart_tx_wp + 1) % UART_NBUF;
     }
@@ -119,24 +108,18 @@ void hal_uart_putchar(uint8_t ch)
 }
 
 
-uint8_t hal_uart_chars_available(void)
-{
+uint8_t hal_uart_chars_available(void) {
     return uart_rx_cnt;
 }
 
-bool hal_uart_tx_complete()
-{
-    if(uart_tx_cnt == 0)
-    {
+bool hal_uart_tx_complete() {
+    if(uart_tx_cnt == 0) {
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
-uint8_t hal_uart_getchar(void)
-{
+uint8_t hal_uart_getchar(void) {
     uint8_t ch;
 
     // Wait until a character is available:

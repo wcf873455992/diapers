@@ -31,8 +31,7 @@
 /** An enum describing the clock frequency.
  *
  */
-typedef enum
-{
+typedef enum {
     HAL_RTC_COMPARE_MODE_DISABLE = 0x00,     /**< Compare disabled */
     HAL_RTC_COMPARE_MODE_1       = 0x02,     /**< Interrupt will not reset the timer */
     HAL_RTC_COMPARE_MODE_0       = 0x03      /**< The interrupt resets the timer */
