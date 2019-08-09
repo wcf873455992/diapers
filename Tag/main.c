@@ -272,7 +272,7 @@ void main()
     while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
         ;
 #endif
-    EA = 1;             //使能全局中断
+    //EA = 1;             //使能全局中断
     adc_init();
 		CellVoltage();
     RfCofig();
@@ -295,11 +295,15 @@ void main()
         second++;
         if(second <= MINUTE) //未到1分钟
         {		
-						//AHT10();
+#ifdef 			DEBUG_LED
+						D1 = ~D1;
+#endif
+					//AHT10();
             //if(loopCount <= MINUTE){//未到1分钟
             PutString("into sleep...\r\n");
             PWRDWN = 0x04;    // 进入寄存器维持低功耗模式
             PWRDWN = 0x00;
+
         }
         else
         {

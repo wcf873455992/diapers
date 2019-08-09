@@ -1,11 +1,11 @@
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 1   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE AHT10
+C51 COMPILER V9.54, COMPILATION OF MODULE AHT10
 OBJECT MODULE PLACED IN .\Object\AHT10.obj
-COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE user\AHT10.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24
-                    -l01p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\AHT10.lst) TABS(2) OBJECT(.\
-                    -Object\AHT10.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE user\AHT10.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nr
+                    -f24l01p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\AHT10.lst) TABS(2) OBJECT
+                    -(.\Object\AHT10.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   51          {
   52   1          //Gpio_SetIO(1, 4, 1);
   53   1          P1DIR &= ~0x10;    //配置P1.4为输出
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 2   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 2   
 
   54   1          SCL = HIGH;
   55   1      }
@@ -126,7 +126,7 @@ line level    source
  113   3                  SDA_Pin_Output_Low();
  114   3              }
  115   2      
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 3   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 3   
 
  116   2              SCL_Pin_Output_High();
  117   2              //Delay_3us();
@@ -190,7 +190,7 @@ line level    source
  175   1          if(CNT == 100)
  176   1          {
  177   2              return 0;
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 4   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 4   
 
  178   2          }
  179   1          SCL_Pin_Output_Low();
@@ -254,7 +254,7 @@ line level    source
  237          {
  238   1      
  239   1          uint8_t Byte_first;
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 5   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 5   
 
  240   1          I2C_Start();
  241   1          ZSSC_I2C_WR_Byte(0x71);
@@ -318,7 +318,7 @@ line level    source
  299   1          volatile uint8_t  Byte_3th = 0;
  300   1          volatile uint8_t  Byte_4th = 0;
  301   1          volatile uint8_t  Byte_5th = 0;
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 6   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 6   
 
  302   1          volatile uint8_t  Byte_6th = 0;
  303   1          uint32_t RetuData = 0;
@@ -382,7 +382,7 @@ line level    source
  361   1          temp = (RetuData * 2000 / 1024 / 1024 - 500); //计算得到温度值（放大了10倍，如果t1=245，表示现在温度为
              -24.5℃）
  362   1          AHT10Value.temp = temp;
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 7   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 7   
 
  363   1          AHT10Value.tempH = temp / 100 ;
  364   1          AHT10Value.tempL = temp % 100 / 10;
@@ -446,7 +446,7 @@ line level    source
  421   1          //memset(humidity, 0, 5);
  422   1          temp[2] = '.';
  423   1          humidity[2] = '.';
-C51 COMPILER V9.52.0.0   AHT10                                                             08/08/2019 23:32:02 PAGE 8   
+C51 COMPILER V9.54   AHT10                                                                 08/09/2019 10:47:59 PAGE 8   
 
  424   1          if (ret == 0)
  425   1          {
