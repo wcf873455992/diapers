@@ -1,10 +1,11 @@
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:23:33 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:45:06 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Object\main.obj
-COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE main.c OPTIMIZE(2,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24l01p;hal;compi
-                    -ler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\main.lst) OBJECT(.\Object\main.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(2,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24l01p;hal;co
+                    -mpiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\main.lst) TABS(2) OBJECT(.\Object\main.
+                    -obj)
 
 line level    source
 
@@ -13,16 +14,16 @@ line level    source
    3          **                                 合肥艾克姆电子科技有限公司
    4          **                                  论坛：http://930ebbs.com
    5          **--------------File Info---------------------------------------------------------------------------------
-   6          ** File name:                   main.c
+   6          ** File name:     main.c
    7          ** Last modified Date: 2017-3-1
-   8          ** Last Version:                   1.3
+   8          ** Last Version:       1.3
    9          ** Descriptions:
   10          **
   11          **--------------------------------------------------------------------------------------------------------
-  12          ** Created by:                  FiYu
-  13          ** Created date:                2014-11-12
-  14          ** Version:                         1.1
-  15          ** Descriptions:                READER实验程序
+  12          ** Created by:      FiYu
+  13          ** Created date:    2014-11-12
+  14          ** Version:         1.1
+  15          ** Descriptions:    READER实验程序
   16          **
   17          **                      RF配置
   18          **                      模式：接收设备
@@ -61,9 +62,9 @@ line level    source
   50           *******************************************************************************************************/
   51          xdata uint8_t RxPayload[32];
   52          xdata uint8_t AckPayLoad[32];
-  53          uint8_t  RF_Recv_Flag;
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:23:33 PAGE 2   
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:45:06 PAGE 2   
 
+  53          uint8_t  RF_Recv_Flag;
   54          uint16_t PipeAndLen;
   55          xdata uint8_t  RX_ADDRESS[5]  = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7}; // RX address
   56          
@@ -80,8 +81,8 @@ line level    source
   67          xdata uint8_t ID_BufTmp[12];// CMD IDH IDL VH VL
   68          
   69          /******** ID_Buf数据格式  ******************
-  70          字节    1      2     3    4   5         6                               7                               8                               9                               10                      11              12
-  71                计时器  IDH   IDL  VH  VL tempH           tempL           tempD           humyH           humyL           humyD
+  70          字节    1      2     3    4   5   6       7       8       9       10      11    12
+  71                计时器  IDH   IDL  VH  VL tempH   tempL   tempD   humyH   humyL   humyD
   72          *******************************************/
   73          xdata uint8_t TimeCount = 0;
   74          xdata uint8_t SecondFlag = 0;
@@ -101,308 +102,316 @@ line level    source
   88           *******************************************************************************************************/
   89          void IoInit(void) {
   90   1          P0DIR = 0xF6;
-  91   1          P1DIR = 0xFF;
-  92   1      }
-  93          /*******************************************************************************************************
-  94           * 描  述 : Timer0初始化
-  95           * 入  参 : 无
-  96           * 返回值 : 无
-  97           *******************************************************************************************************/
-  98          void Timer0Init(void) {
-  99   1          TMOD = 0x01;                             //16位定时器
- 100   1          TH0  = (65536 - TIMER0_VALUE) / 256;         //写入初值
- 101   1          TL0  = (65536 - TIMER0_VALUE) % 256;
- 102   1          ET0  = 1;            //使能Timer0溢出中断
- 103   1          TR0  = 1;            //启动Timer0
- 104   1      }
- 105          
- 106          /*******************************************************************************************************
- 107           * 描  述 : 初始化时钟
- 108           * 入  参 : 无
- 109           * 返回值 : 无
- 110           *******************************************************************************************************/
- 111          void ClockInit(void) {
- 112   1          hal_clk_set_16m_source(HAL_CLK_XOSC16M);   //使用外部16MHz晶振
- 113   1      }
- 114          
- 115          /*******************************************************************************************************
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:23:33 PAGE 3   
+  91   1          //P0DIR = 0xB6;
+  92   1          P1DIR = 0xFF;
+  93   1      }
+  94          /*******************************************************************************************************
+  95           * 描  述 : Timer0初始化
+  96           * 入  参 : 无
+  97           * 返回值 : 无
+  98           *******************************************************************************************************/
+  99          void Timer0Init(void) {
+ 100   1          TMOD = 0x01;                       //16位定时器
+ 101   1          TH0  = (65536 - TIMER0_VALUE) / 256;   //写入初值
+ 102   1          TL0  = (65536 - TIMER0_VALUE) % 256;
+ 103   1          ET0  = 1;    //使能Timer0溢出中断
+ 104   1          TR0  = 1;    //启动Timer0
+ 105   1      }
+ 106          
+ 107          /*******************************************************************************************************
+ 108           * 描  述 : 初始化时钟
+ 109           * 入  参 : 无
+ 110           * 返回值 : 无
+ 111           *******************************************************************************************************/
+ 112          void ClockInit(void) {
+ 113   1          hal_clk_set_16m_source(HAL_CLK_XOSC16M);   //使用外部16MHz晶振
+ 114   1      }
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:45:06 PAGE 3   
 
- 116           * 描  述 : 配置无线参数
- 117           * 入  参 : 无
- 118           * 返回值 : 无
- 119           *******************************************************************************************************/
- 120          void RfCofig(void) {
- 121   1          RFCKEN = 1;      //使能RF时钟
- 122   1      
+ 115          
+ 116          /*******************************************************************************************************
+ 117           * 描  述 : 配置无线参数
+ 118           * 入  参 : 无
+ 119           * 返回值 : 无
+ 120           *******************************************************************************************************/
+ 121          void RfCofig(void) {
+ 122   1          RFCKEN = 1;      //使能RF时钟
  123   1      
- 124   1          hal_nrf_close_pipe(HAL_NRF_ALL);          //先关闭所有的通道
- 125   1          hal_nrf_open_pipe(HAL_NRF_PIPE0, false);     //再打开通道0.
- 126   1      
- 127   1          hal_nrf_set_operation_mode(HAL_NRF_PRX);    // 模式：接收机
- 128   1          hal_nrf_set_rf_channel(READER_CH);              // RF信道：50。接收和发送必须处于同一信道
- 129   1          hal_nrf_set_datarate(HAL_NRF_250KBPS);        // RF速率：250KBPS
- 130   1          hal_nrf_set_output_power(HAL_NRF_0DBM);       // 功率：0DBM
- 131   1          hal_nrf_set_crc_mode(HAL_NRF_CRC_16BIT);       //设置CRC校验：16位CRC。必须和发送设备一致。
- 132   1          hal_nrf_set_address(HAL_NRF_PIPE0, RX_ADDRESS); //设置接收机地址
- 133   1          hal_nrf_set_rx_payload_width(HAL_NRF_PIPE0, RX_PAYLOAD_LEN); // 接收模式下需要设置数据长度
- 134   1          hal_nrf_set_power_mode(HAL_NRF_PWR_UP);         //接收机上电
- 135   1      
- 136   1          RF = 1;       //使能无线中断
- 137   1          EA = 1;          // 使能全局中断
- 138   1      
- 139   1          CE_HIGH(); // 使能接收
- 140   1      }
- 141          /*******************************************************************************************************
- 142           * 描  述 : 标签ID入缓存
- 143           * 入  参 : 无
- 144           * 返回值 : 无
- 145           *******************************************************************************************************/
- 146          void ID_Inbuf(void) {
- 147   1          uint8_t i, idx;
- 148   1          xdata uint8_t iswrite, lastcnt = 0, row = 0;
- 149   1      
- 150   1          idx = 0xFF;
- 151   1      
- 152   1          if(ID_BufTmp[0] == CMD_TAG_REPID) {
- 153   2              iswrite = true;
- 154   2      
- 155   2              for(i = 0; i < MAX_TAG_BUFNUM; i++) {
- 156   3                  if(ID_Buf[i][0] != 0) {
- 157   4                      if((ID_Buf[i][1] == ID_BufTmp[1]) && (ID_Buf[i][2] == ID_BufTmp[2])) { //标签ID存在
- 158   5                          if(ID_Buf[i][0] < ID_OVERTIME) { //未超过20秒收到相同的标签号不上报
- 159   6                              iswrite = false;
- 160   6                              break;
- 161   6                          } else {
- 162   6                              ID_Buf[i][0] = TAG_NEED_REP;
- 163   6                              iswrite = false;
- 164   6                              break;
- 165   6                          }
- 166   5                      } else {
- 167   5                          if(ID_Buf[i][0] > lastcnt) {
- 168   6                              lastcnt = ID_Buf[i][0];
- 169   6                              row = i;
- 170   6                          }
- 171   5                      }
- 172   4                  } else {
- 173   4                      if(idx == 0xFF)idx = i;
- 174   4                  }
- 175   3              }
- 176   2              if(iswrite == true) { //ID需要写入缓存
- 177   3                  if(idx < MAX_TAG_BUFNUM) {
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:23:33 PAGE 4   
+ 124   1      
+ 125   1          hal_nrf_close_pipe(HAL_NRF_ALL);          //先关闭所有的通道
+ 126   1          hal_nrf_open_pipe(HAL_NRF_PIPE0, false);   //再打开通道0.
+ 127   1      
+ 128   1          hal_nrf_set_operation_mode(HAL_NRF_PRX);  // 模式：接收机
+ 129   1          hal_nrf_set_rf_channel(READER_CH);        // RF信道：50。接收和发送必须处于同一信道
+ 130   1          hal_nrf_set_datarate(HAL_NRF_250KBPS);    // RF速率：250KBPS
+ 131   1          hal_nrf_set_output_power(HAL_NRF_0DBM);   // 功率：0DBM
+ 132   1          hal_nrf_set_crc_mode(HAL_NRF_CRC_16BIT);       //设置CRC校验：16位CRC。必须和发送设备一致。
+ 133   1          hal_nrf_set_address(HAL_NRF_PIPE0, RX_ADDRESS); //设置接收机地址
+ 134   1          hal_nrf_set_rx_payload_width(HAL_NRF_PIPE0, RX_PAYLOAD_LEN); // 接收模式下需要设置数据长度
+ 135   1          hal_nrf_set_power_mode(HAL_NRF_PWR_UP);     //接收机上电
+ 136   1      
+ 137   1          RF = 1;       //使能无线中断
+ 138   1          EA = 1;      // 使能全局中断
+ 139   1      
+ 140   1          CE_HIGH(); // 使能接收
+ 141   1      }
+ 142          /*******************************************************************************************************
+ 143           * 描  述 : 标签ID入缓存
+ 144           * 入  参 : 无
+ 145           * 返回值 : 无
+ 146           *******************************************************************************************************/
+ 147          void ID_Inbuf(void) {
+ 148   1          uint8_t i, idx;
+ 149   1          xdata uint8_t iswrite, lastcnt = 0, row = 0;
+ 150   1      
+ 151   1          idx = 0xFF;
+ 152   1      
+ 153   1          if(ID_BufTmp[0] == CMD_TAG_REPID) {
+ 154   2              iswrite = true;
+ 155   2      
+ 156   2              for(i = 0; i < MAX_TAG_BUFNUM; i++) {
+ 157   3                  if(ID_Buf[i][0] != 0) {
+ 158   4                      if((ID_Buf[i][1] == ID_BufTmp[1]) && (ID_Buf[i][2] == ID_BufTmp[2])) { //标签ID存在
+ 159   5                          if(ID_Buf[i][0] < ID_OVERTIME) { //未超过20秒收到相同的标签号不上报
+ 160   6                              iswrite = false;
+ 161   6                              break;
+ 162   6                          } else {
+ 163   6                              ID_Buf[i][0] = TAG_NEED_REP;
+ 164   6                              iswrite = false;
+ 165   6                              break;
+ 166   6                          }
+ 167   5                      } else {
+ 168   5                          if(ID_Buf[i][0] > lastcnt) {
+ 169   6                              lastcnt = ID_Buf[i][0];
+ 170   6                              row = i;
+ 171   6                          }
+ 172   5                      }
+ 173   4                  } else {
+ 174   4                      if(idx == 0xFF)idx = i;
+ 175   4                  }
+ 176   3              }
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:45:06 PAGE 4   
 
- 178   4                      for(i = 0; i < (RX_PAYLOAD_LEN - 2); i++)ID_Buf[idx][i + 1] = ID_BufTmp[i + 1];
- 179   4                      ID_Buf[idx][0] = TAG_NEED_REP;
- 180   4                  } else {
- 181   4                      if(row < MAX_TAG_BUFNUM) {
- 182   5                          for(i = 0; i < (RX_PAYLOAD_LEN - 2); i++)ID_Buf[row][i + 1] = ID_BufTmp[i + 1];
- 183   5                          ID_Buf[row][0] = TAG_NEED_REP;
- 184   5                      }
- 185   4                  }
- 186   3              }
- 187   2          }
- 188   1      }
- 189          
- 190          /*******************************************************************************************************
- 191           * 描  述 : 串口输出字符
- 192           * 入  参 : 无
- 193           * 返回值 : 无
- 194           *******************************************************************************************************/
- 195          void uart_sendchar(uint8_t dat) {
- 196   1          S0BUF = dat;
- 197   1          while(!TI0);
- 198   1          TI0 = 0;
- 199   1      }
- 200          /*******************************************************************************************************
- 201           * 描  述 : 串口输出字符串
- 202           * 入  参 : 无
- 203           * 返回值 : 无
- 204           *******************************************************************************************************/
- 205          void PutString(char *s) {
- 206   1          while(*s != 0)
- 207   1              uart_sendchar(*s++);
- 208   1          //delay_ms(1);
- 209   1      }
- 210          /*******************************************************************************************************
- 211           * 描  述 : UART上报数据打包
- 212           * 入  参 : 无
- 213           * 返回值 : 无
- 214           *******************************************************************************************************/
- 215          void Uart_PackAndRepDat(void) {
- 216   1          xdata uint8_t i,j, tagnum = 0, fcs;
- 217   1          uint8_t     temp[5], humy[5], id[5];
- 218   1      
- 219   1          RepFlag = false;
+ 177   2              iswrite = true;//
+ 178   2              if(iswrite == true) { //ID需要写入缓存
+ 179   3                  if(idx < MAX_TAG_BUFNUM) {
+ 180   4                      for(i = 0; i < (RX_PAYLOAD_LEN - 2); i++)ID_Buf[idx][i + 1] = ID_BufTmp[i + 1];
+ 181   4                      ID_Buf[idx][0] = TAG_NEED_REP;
+ 182   4                  } else {
+ 183   4                      if(row < MAX_TAG_BUFNUM) {
+ 184   5                          for(i = 0; i < (RX_PAYLOAD_LEN - 2); i++)ID_Buf[row][i + 1] = ID_BufTmp[i + 1];
+ 185   5                          ID_Buf[row][0] = TAG_NEED_REP;
+ 186   5                      }
+ 187   4                  }
+ 188   3              }
+ 189   2          }
+ 190   1      }
+ 191          
+ 192          /*******************************************************************************************************
+ 193           * 描  述 : 串口输出字符
+ 194           * 入  参 : 无
+ 195           * 返回值 : 无
+ 196           *******************************************************************************************************/
+ 197          void uart_sendchar(uint8_t dat) {
+ 198   1          S0BUF = dat;
+ 199   1          while(!TI0);
+ 200   1          TI0 = 0;
+ 201   1      }
+ 202          /*******************************************************************************************************
+ 203           * 描  述 : 串口输出字符串
+ 204           * 入  参 : 无
+ 205           * 返回值 : 无
+ 206           *******************************************************************************************************/
+ 207          void PutString(char *s) {
+ 208   1          while(*s != 0)
+ 209   1              uart_sendchar(*s++);
+ 210   1          //delay_ms(1);
+ 211   1      }
+ 212          /*******************************************************************************************************
+ 213           * 描  述 : UART上报数据打包
+ 214           * 入  参 : 无
+ 215           * 返回值 : 无
+ 216           *******************************************************************************************************/
+ 217          void Uart_PackAndRepDat(void) {
+ 218   1          xdata uint8_t i,j, tagnum = 0, fcs;
+ 219   1          uint8_t temp[5], humy[5], id[5];
  220   1      
- 221   1          for(i = 0; i < MAX_TAG_BUFNUM; i++) {
- 222   2              if(ID_Buf[i][0] > 1) {
- 223   3                  ID_Buf[i][0]++;
- 224   3                  if(ID_Buf[i][0] >= ID_OVERTIME)ID_Buf[i][0] = 0;
- 225   3              }
- 226   2          }
- 227   1      
- 228   1          UARTSendbuf[0] = FRAME_FIR_HEAD; //帧头
- 229   1          UARTSendbuf[1] = FRAME_SEC_HEAD;
- 230   1          UARTSendbuf[2] = DEST_ADDR;     // DA
- 231   1          UARTSendbuf[3] = READER_ADDR;   // SA
- 232   1      
- 233   1              for(i = 0; i < MAX_TAG_BUFNUM; i++) {
- 234   2                      if(ID_Buf[i][0] == TAG_NEED_REP) {
- 235   3                              for(j = 0; j < PAYLOAD_LEN; j++){
- 236   4                                      UARTSendbuf[PAYLOAD_LEN * tagnum + 8 +j]  = ID_Buf[i][1+j];//IDH
- 237   4                              }
- 238   3                              /*
- 239   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 9]  = ID_Buf[i][2];//IDL
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:23:33 PAGE 5   
+ 221   1          RepFlag = false;
+ 222   1      
+ 223   1          for(i = 0; i < MAX_TAG_BUFNUM; i++) {
+ 224   2              if(ID_Buf[i][0] > 1) {
+ 225   3                  ID_Buf[i][0]++;
+ 226   3                  if(ID_Buf[i][0] >= ID_OVERTIME)ID_Buf[i][0] = 0;
+ 227   3              }
+ 228   2          }
+ 229   1      
+ 230   1          UARTSendbuf[0] = FRAME_FIR_HEAD; //帧头
+ 231   1          UARTSendbuf[1] = FRAME_SEC_HEAD;
+ 232   1          UARTSendbuf[2] = DEST_ADDR;     // DA
+ 233   1          UARTSendbuf[3] = READER_ADDR;   // SA
+ 234   1      
+ 235   1        for(i = 0; i < MAX_TAG_BUFNUM; i++) {
+ 236   2          if(ID_Buf[i][0] == TAG_NEED_REP) {
+ 237   3            for(j = 0; j < PAYLOAD_LEN; j++){
+ 238   4              UARTSendbuf[PAYLOAD_LEN * tagnum + 8 +j]  = ID_Buf[i][1+j];//IDH
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:45:06 PAGE 5   
 
- 240   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 10]  = ID_Buf[i][3];//电压整数
- 241   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 11] = ID_Buf[i][4];//电压小数
- 242   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 12]  = ID_Buf[i][5];//温度整数
- 243   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 13]  = ID_Buf[i][6];//温度小数
- 244   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 14]  = ID_Buf[i][7];//湿度整数
- 245   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 15] = ID_Buf[i][8];//湿度小数
- 246   3                              */
- 247   3                  ID_Buf[i][0] = 2;
- 248   3                  tagnum++;
- 249   3                  RepFlag = true;
- 250   3                  if(tagnum == MAX_REP_IDNUM)break;
- 251   3              }
- 252   2          }
- 253   1          UartSN++;
- 254   1          if(UartSN == 0xFF)UartSN = 1;
- 255   1          //UARTSendbuf[4] = tagnum * 4 + 6;  // 长度
- 256   1          UARTSendbuf[4] = tagnum * PAYLOAD_LEN + 6;  // 长度
- 257   1          UARTSendbuf[5] = UartSN;          // 流水号
- 258   1          UARTSendbuf[6] = REP_ID_INFO;     // 命令
- 259   1          UARTSendbuf[7] = tagnum;          // TAG数量
- 260   1      
- 261   1          fcs = 0;
- 262   1          for(i = 0; i < UARTSendbuf[4]; i++)fcs = fcs + UARTSendbuf[i + 2];
- 263   1          UARTSendbuf[UARTSendbuf[4] + 2] = (256 - fcs) % 256;
- 264   1          for(i = 0; i < (UARTSendbuf[4] + 3); i++)  hal_uart_putchar(UARTSendbuf[i] );
- 265   1      
- 266   1      }
-*** WARNING C280 IN LINE 217 OF main.c: 'temp': unreferenced local variable
-*** WARNING C280 IN LINE 217 OF main.c: 'humy': unreferenced local variable
-*** WARNING C280 IN LINE 217 OF main.c: 'id': unreferenced local variable
- 267          /*******************************************************************************************************
- 268           * 描  述 : 主函数
- 269           * 入  参 : 无
- 270           * 返回值 : 无
- 271           *******************************************************************************************************/
- 272          void main() {
- 273   1          uint8_t i;
- 274   1      
- 275   1          IoInit();
+ 239   4            }
+ 240   3            /*
+ 241   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 9]  = ID_Buf[i][2];//IDL
+ 242   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 10]  = ID_Buf[i][3];//电压整数
+ 243   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 11] = ID_Buf[i][4];//电压小数
+ 244   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 12]  = ID_Buf[i][5];//温度整数
+ 245   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 13]  = ID_Buf[i][6];//温度小数
+ 246   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 14]  = ID_Buf[i][7];//湿度整数
+ 247   3                  UARTSendbuf[PAYLOAD_LEN * tagnum + 15] = ID_Buf[i][8];//湿度小数
+ 248   3            */
+ 249   3                  ID_Buf[i][0] = 2;
+ 250   3                  tagnum++;
+ 251   3                  RepFlag = true;
+ 252   3                  if(tagnum == MAX_REP_IDNUM)break;
+ 253   3              }
+ 254   2          }
+ 255   1          UartSN++;
+ 256   1          if(UartSN == 0xFF)UartSN = 1;
+ 257   1          //UARTSendbuf[4] = tagnum * 4 + 6;  // 长度
+ 258   1          UARTSendbuf[4] = tagnum * PAYLOAD_LEN + 6;  // 长度
+ 259   1          UARTSendbuf[5] = UartSN;          // 流水号
+ 260   1          UARTSendbuf[6] = REP_ID_INFO;     // 命令
+ 261   1          UARTSendbuf[7] = tagnum;          // TAG数量
+ 262   1      
+ 263   1          fcs = 0;
+ 264   1          for(i = 0; i < UARTSendbuf[4]; i++)fcs = fcs + UARTSendbuf[i + 2];
+ 265   1          UARTSendbuf[UARTSendbuf[4] + 2] = (256 - fcs) % 256;
+ 266   1          for(i = 0; i < (UARTSendbuf[4] + 3); i++)  hal_uart_putchar(UARTSendbuf[i] );
+ 267   1      
+ 268   1      }
+*** WARNING C280 IN LINE 219 OF main.c: 'temp': unreferenced local variable
+*** WARNING C280 IN LINE 219 OF main.c: 'humy': unreferenced local variable
+*** WARNING C280 IN LINE 219 OF main.c: 'id': unreferenced local variable
+ 269          /*******************************************************************************************************
+ 270           * 描  述 : 主函数
+ 271           * 入  参 : 无
+ 272           * 返回值 : 无
+ 273           *******************************************************************************************************/
+ 274          void main() {
+ 275   1          uint8_t i;
  276   1      
- 277   1          ClockInit();
- 278   1          RfCofig();
- 279   1      
- 280   1          hal_uart_init(UART_BAUD_57K6);  //初始化UART，波特率57600
+ 277   1          IoInit();
+ 278   1      
+ 279   1          ClockInit();
+ 280   1          RfCofig();
  281   1      
- 282   1          while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
- 283   1              ;
- 284   1          Timer0Init();
- 285   1      
- 286   1          for(i = 0; i < MAX_TAG_BUFNUM; i++)ID_Buf[i][0] = 0;
- 287   1      #ifdef  USE_WDT
+ 282   1          hal_uart_init(UART_BAUD_57K6);  //初始化UART，波特率57600
+ 283   1      
+ 284   1          while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
+ 285   1              ;
+ 286   1          Timer0Init();
+ 287   1      
+ 288   1          for(i = 0; i < MAX_TAG_BUFNUM; i++)ID_Buf[i][0] = 0;
+ 289   1      #ifdef  USE_WDT
                   hal_wdog_init(WDT_TIME);
               #endif
- 290   1      
- 291   1      
- 292   1          while(1) {
- 293   2      #ifdef  USE_WDT
+ 292   1      
+ 293   1      
+ 294   1        P0DIR &= 0xbF;
+ 295   1        P06 = 0;
+ 296   1          while(1) {
+ 297   2      #ifdef  USE_WDT
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:45:06 PAGE 6   
+
                       hal_wdog_restart();
               #endif
- 296   2      
- 297   2              if(RF_Recv_Flag == true) { //接收到Tag信息
- 298   3      #ifdef DEBUG_LED
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:23:33 PAGE 6   
-
- 299   3                  D1 = ~D1;
- 300   3      #endif
- 301   3      
- 302   3                  RF_Recv_Flag = false;//接收有效标志清零
- 303   3                  ID_Inbuf();          //ID信息写入缓存
- 304   3              }
- 305   2      
- 306   2              if(SecondFlag == true) { //1秒定时时间到
- 307   3                  SecondFlag = false; //清零秒定时标志
- 308   3                  Uart_PackAndRepDat();//串口上报数据
- 309   3              }
- 310   2          }
- 311   1      }
- 312          /*******************************************************************************************************
- 313           * 描  述 : UART上报数据打包
- 314           * 入  参 : 无
- 315           * 返回值 : 无
- 316           *******************************************************************************************************/
- 317          void rf_irq() interrupt INTERRUPT_RFIRQ {
- 318   1          uint8_t irq_flags, i;
- 319   1      
- 320   1          irq_flags = hal_nrf_get_clear_irq_flags(); //读取并清除中断标志
- 321   1      
- 322   1          if(irq_flags & (1 << HAL_NRF_RX_DR)) { //接收中断
- 323   2              while(!hal_nrf_rx_fifo_empty()) {
- 324   3                  PipeAndLen = hal_nrf_read_rx_payload(RxPayload);
- 325   3      
- 326   3                  if((PipeAndLen & 0xFF) == RX_PAYLOAD_LEN) { //检查长度是否为12//6
- 327   4                      if(((RxPayload[0] + RxPayload[1] + RxPayload[2] + RxPayload[3] + RxPayload[4] + RxPayload[
+ 300   2      
+ 301   2              if(RF_Recv_Flag == true) { //接收到Tag信息
+ 302   3      #ifdef DEBUG_LED
+ 303   3                  D1 = ~D1;
+ 304   3                  P06 = 1;
+ 305   3                  delay_ms(50);
+ 306   3                  P06 = 0;
+ 307   3      #endif
+ 308   3      
+ 309   3                  RF_Recv_Flag = false;//接收有效标志清零
+ 310   3                  ID_Inbuf();          //ID信息写入缓存
+ 311   3                  Uart_PackAndRepDat();//串口上报数据
+ 312   3              }
+ 313   2      
+ 314   2              if(SecondFlag == true) { //1秒定时时间到
+ 315   3                  SecondFlag = false; //清零秒定时标志
+ 316   3                  //Uart_PackAndRepDat();//串口上报数据
+ 317   3              }
+ 318   2          }
+ 319   1      }
+ 320          /*******************************************************************************************************
+ 321           * 描  述 : UART上报数据打包
+ 322           * 入  参 : 无
+ 323           * 返回值 : 无
+ 324           *******************************************************************************************************/
+ 325          void rf_irq() interrupt INTERRUPT_RFIRQ {
+ 326   1          uint8_t irq_flags, i;
+ 327   1      
+ 328   1          irq_flags = hal_nrf_get_clear_irq_flags(); //读取并清除中断标志
+ 329   1      
+ 330   1          if(irq_flags & (1 << HAL_NRF_RX_DR)) { //接收中断
+ 331   2              while(!hal_nrf_rx_fifo_empty()) {
+ 332   3                  PipeAndLen = hal_nrf_read_rx_payload(RxPayload);
+ 333   3      
+ 334   3                  if((PipeAndLen & 0xFF) == RX_PAYLOAD_LEN) { //检查长度是否为12//6
+ 335   4                      if(((RxPayload[0] + RxPayload[1] + RxPayload[2] + RxPayload[3] + RxPayload[4] + RxPayload[
              -5] +
- 328   4                              RxPayload[6] + RxPayload[7] + RxPayload[8] + RxPayload[9]
- 329   4      
- 330   4                          ) % 256) == 0x00) { //校验正确
- 331   5                          for(i = 0; i < (RX_PAYLOAD_LEN - 1); i++)ID_BufTmp[i]       = RxPayload[i];
- 332   5                          RF_Recv_Flag = true;
- 333   5                      }
- 334   4                  }
- 335   3                  hal_nrf_flush_rx();
- 336   3              }
- 337   2          }
- 338   1          if(irq_flags & ((1 << HAL_NRF_TX_DS))) {                     // transimmter finish
- 339   2              hal_nrf_flush_tx();
- 340   2          }
- 341   1      
- 342   1          if(irq_flags & ((1 << HAL_NRF_MAX_RT))) {                    // re-transimmter
- 343   2              hal_nrf_flush_tx();
- 344   2          }
- 345   1      }
- 346          /*******************************************************************************************************
- 347           * 描  述 : 计算累加和校核
- 348           * 入  参 : 待校验的数组地址
- 349           * 返回值 : 校验结果
- 350           *******************************************************************************************************/
- 351          uint8_t Calculate_Fcs(uint8_t *buf) {
- 352   1          xdata uint8_t i, fcs;
- 353   1          fcs = 0;
- 354   1          for(i = 0; i < 6; i++)fcs  = fcs + *(buf + i);
- 355   1          return (256 - fcs);
- 356   1      }
- 357          /*******************************************************************************************************
- 358           * 描  述 : Timer0中断服务函数
- 359           * 入  参 : 无
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:23:33 PAGE 7   
+ 336   4                              RxPayload[6] + RxPayload[7] + RxPayload[8] + RxPayload[9]
+ 337   4      
+ 338   4                          ) % 256) == 0x00) { //校验正确
+ 339   5                          for(i = 0; i < (RX_PAYLOAD_LEN - 1); i++)ID_BufTmp[i] = RxPayload[i];
+ 340   5                          RF_Recv_Flag = true;
+ 341   5                      }
+ 342   4                  }
+ 343   3                  hal_nrf_flush_rx();
+ 344   3              }
+ 345   2          }
+ 346   1          if(irq_flags & ((1 << HAL_NRF_TX_DS))) {       // transimmter finish
+ 347   2              hal_nrf_flush_tx();
+ 348   2          }
+ 349   1      
+ 350   1          if(irq_flags & ((1 << HAL_NRF_MAX_RT))) {      // re-transimmter
+ 351   2              hal_nrf_flush_tx();
+ 352   2          }
+ 353   1      }
+ 354          /*******************************************************************************************************
+ 355           * 描  述 : 计算累加和校核
+ 356           * 入  参 : 待校验的数组地址
+ 357           * 返回值 : 校验结果
+ 358           *******************************************************************************************************/
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:45:06 PAGE 7   
 
- 360           * 返回值 : 无
- 361           *******************************************************************************************************/
- 362          void Timer0_irq() interrupt INTERRUPT_T0 {
- 363   1      
- 364   1          TH0 = (65536 - TIMER0_VALUE) / 256;
- 365   1          TL0 = (65536 - TIMER0_VALUE) % 256;
- 366   1          TimeCount++;
- 367   1      
- 368   1          if(TimeCount == 50) {       //1000ms
- 369   2              TimeCount = 0;
- 370   2              SecondFlag = true;
- 371   2          }
- 372   1      }
- 373          /*********************************END FILE****************************************************************
+ 359          uint8_t Calculate_Fcs(uint8_t *buf) {
+ 360   1          xdata uint8_t i, fcs;
+ 361   1          fcs = 0;
+ 362   1          for(i = 0; i < 6; i++)fcs  = fcs + *(buf + i);
+ 363   1          return (256 - fcs);
+ 364   1      }
+ 365          /*******************************************************************************************************
+ 366           * 描  述 : Timer0中断服务函数
+ 367           * 入  参 : 无
+ 368           * 返回值 : 无
+ 369           *******************************************************************************************************/
+ 370          void Timer0_irq() interrupt INTERRUPT_T0 {
+ 371   1      
+ 372   1          TH0 = (65536 - TIMER0_VALUE) / 256;
+ 373   1          TL0 = (65536 - TIMER0_VALUE) % 256;
+ 374   1          TimeCount++;
+ 375   1      
+ 376   1          if(TimeCount == 50) { //1000ms
+ 377   2              TimeCount = 0;
+ 378   2              SecondFlag = true;
+ 379   2          }
+ 380   1      }
+ 381          /*********************************END FILE****************************************************************
              -/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1717    ----
+   CODE SIZE        =   1739    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =    985       9
    PDATA SIZE       =   ----    ----

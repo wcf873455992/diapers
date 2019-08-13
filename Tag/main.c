@@ -16,8 +16,8 @@
 **						      发送数据格式
 **                  长度：6个字节
 **                  ID长度：2字节
-字节:    1     2   3    4  5   6
-意义:   命令  IDH IDL  VH  VL  校验
+字节:    1     2   3    4  5   6	7		8		9		10
+意义:   命令  IDH IDL  VH  VL  温度		湿度		校验
 
 **--------------------------------------------------------------------------------------------------------
 ** Modified by:
@@ -398,7 +398,9 @@ void main(void) {
             minute++;
             if(minute == 24 * HOUR) {
                 PutString("into DEEPSLEEP\n");
-                SetPowrDownMode(DEEPSLEEP);
+                //SetPowrDownMode(DEEPSLEEP);							
+								CellVoltage();
+								minute = 0;
             }
             AHT10();
             Send_data();

@@ -25,45 +25,34 @@ void flash_P00() {
 void SDA_Pin_Output_High(void) { //将P15配置为输出 ， 并设置为高电平， P15作为I2C的SDA
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = HIGH;
-    //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
-    //Gpio_SetIO(1,5,1);
 }
 
 void SDA_Pin_Output_Low(void) { //将P15配置为输出  并设置为低电平
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = LOW;
-    //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
-    //Gpio_SetIO(1,5,0);
 }
 
 void SDA_Pin_IN_FLOATING(void) { //SDA配置为悬浮输入
     P1DIR |= 0x20;	   //配置P1.5为输入
-    //Gpio_InitIO(1, 5, GpioDirIn);
 }
 
 
 
 void SCL_Pin_Output_High(void) { //SCL输出高电平，P14作为I2C的SCL
-    //Gpio_SetIO(1, 4, 1);
     P1DIR &= ~0x10;	   //配置P1.4为输出
     SCL	= HIGH;
 }
 
 void SCL_Pin_Output_Low(void) { //SCL输出低电平
-    //Gpio_SetIO(1, 4, 0);
     P1DIR &= ~0x10;	   //配置P1.4为输出
     SCL	= LOW;
 }
 
 void Init_I2C_Sensor_Port(void) { //初始化I2C接口
 
-    //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//将P15配置为开漏输出  并设置为高电平
-    //Gpio_SetIO(1,5,1);
     P1DIR &= ~0x10;	   //配置P1.4为输出
     SCL	= HIGH;
 
-    //Gpio_InitIOExt(1,4,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//将P14配置为开漏输出  并设置为高电平
-    //Gpio_SetIO(1,4,1);
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = HIGH;
 }
@@ -71,16 +60,12 @@ void Init_I2C_Sensor_Port(void) { //初始化I2C接口
 
 void I2C_Start(void) {	 //I2C主机发送START信号
     SDA_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
     SDA_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
 }
 
@@ -92,7 +77,6 @@ void ZSSC_I2C_WR_Byte(uint8_t Byte) { //往AHT10写一个字节
     for(N = 0; N < 8; N++) {
         SCL_Pin_Output_Low();
 
-        //Delay_3us();
         delay_us(3);
         if(i & Data) {
             SDA_Pin_Output_High();
@@ -101,17 +85,14 @@ void ZSSC_I2C_WR_Byte(uint8_t Byte) { //往AHT10写一个字节
         }
 
         SCL_Pin_Output_High();
-        //Delay_3us();
         delay_us(3);
 
         Data <<= 1;
 
     }
     SCL_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SDA_Pin_IN_FLOATING();
-    //SensorDelay_us(8);
     delay_us(8);
 }
 
@@ -121,22 +102,17 @@ uint8_t ZSSC_I2C_RD_Byte(void) { //从AHT10读取一个字节
     Byte = 0;
     SCL_Pin_Output_Low();
     SDA_Pin_IN_FLOATING();
-    //SensorDelay_us(8);
     delay_us(8);
     for(i = 0; i < 8; i++) {
         SCL_Pin_Output_High();
-        //Delay_1us();
         delay_us(1);
         a = 0;
-        //if(Gpio_GetIO(1,5))a=1;
         if(SDA)a = 1;
         Byte = (Byte << 1) | a;
         SCL_Pin_Output_Low();
-        //Delay_1us();
         delay_us(8);
     }
     SDA_Pin_IN_FLOATING();
-    //SensorDelay_us(8);
     delay_us(8);
     return Byte;
 }
@@ -147,12 +123,9 @@ uint8_t Receive_ACK(void) { //看AHT10是否有回复ACK
     CNT = 0;
     SCL_Pin_Output_Low();
     SDA_Pin_IN_FLOATING();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
-    //while((Gpio_GetIO(1,5))  && CNT < 100)
 
     while((SDA)  && CNT < 100)
         CNT++;
@@ -160,56 +133,42 @@ uint8_t Receive_ACK(void) { //看AHT10是否有回复ACK
         return 0;
     }
     SCL_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     return 1;
 }
 
 void Send_ACK(void) {	  //主机回复ACK信号
     SCL_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SDA_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SDA_Pin_IN_FLOATING();
-    //SensorDelay_us(8);
     delay_us(8);
 }
 
 void Send_NOT_ACK(void) {	//主机不回复ACK
     SCL_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SDA_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SDA_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
 }
 
 void Stop_I2C(void) {  //一条协议结束
     SDA_Pin_Output_Low();
-    //SensorDelay_us(8);
     delay_us(8);
     SCL_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
     SDA_Pin_Output_High();
-    //SensorDelay_us(8);
     delay_us(8);
 }
 
@@ -230,7 +189,7 @@ uint8_t JH_Read_Status(void) { //读取AHT10的状态寄存器
 }
 
 uint8_t JH_Read_Cal_Enable(void) { //查询cal enable位有没有使能？
-    uint8_t val = 0;//ret = 0,
+    uint8_t val = 0;
 
     val = JH_Read_Status();
     if((val & 0x68) == 0x08) //判断NOR模式和校准输出是否有效
@@ -338,7 +297,6 @@ uint8_t AHT10_Init(void) { //初始化AHT10
     uint8_t	count;
 
     Init_I2C_Sensor_Port();
-    //SensorDelay_us(11038);
     delay_us(11038);
 
     I2C_Start();
@@ -357,7 +315,6 @@ uint8_t AHT10_Init(void) { //初始化AHT10
 
         JH_Send_BA();  //复位
         delay_ms(100);
-        //SensorDelay_us(11038);
         delay_us(11038);
 
         I2C_Start();

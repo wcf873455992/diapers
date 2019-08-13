@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title></title>
-</head>
+<html>
 <body>
-  <pre>
-</pre>
-  <h1>µVision Build Log</h1>
-  <pre>
-</pre>
-  <h2>Tool Versions:</h2>
-  <pre>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
 IDE-Version: ¦ÌVision V5.27.1.0
 Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
 License Information: wcf Administrator, wcf, LIC=76PMM-X278K-YIP5X-HUWUQ-JICF8-RX5FB
@@ -28,23 +20,23 @@ Dialog DLL:      DP51.DLL V2.62.0.1
     Target DLL: nrfkeil515.dll
 Dialog DLL:      TP51.DLL V2.58
  
-</pre>
-  <h2>Project:</h2>
-  <pre>
+<h2>Project:</h2>
 H:\Äò²»Êª\code\Tag\Tag.uvproj
-Project File Date:  08/09/2019
+Project File Date:  08/13/2019
 
-</pre>
-  <h2>Output:</h2>
-  <pre>
+<h2>Output:</h2>
 Rebuild target 'TAG'
 compiling main.c...
-main.c(277): warning C280: 'RfReceLen': unreferenced local variable
-main.c(277): warning C280: 'i': unreferenced local variable
+main.c(98): warning C280: 's': unreferenced local variable
+main.c(369): warning C322: unknown identifier
+main.c(379): warning C322: unknown identifier
+main.c(352): warning C280: 'RfReceLen': unreferenced local variable
 compiling AHT10.c...
 compiling DHT11.C...
 compiling led.c...
 user\led.c(9): warning C323: newline expected, extra characters found
+compiling key.c...
+user\key.c(9): warning C323: newline expected, extra characters found
 compiling hal_delay.c...
 compiling hal_clk.c...
 compiling hal_rtc.c...
@@ -54,10 +46,10 @@ compiling hal_wdog.c...
 compiling hal_nrf.c...
 compiling hal_uart.c...
 linking...
-Program Size: data=73.0 xdata=209 code=8082
+Program Size: data=73.0 xdata=204 code=8400
 creating hex file from ".\Object\Tag"...
-".\Object\Tag" - 0 Error(s), 3 Warning(s).
-Build Time Elapsed:  00:00:01
+".\Object\Tag" - 0 Error(s), 6 Warning(s).
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

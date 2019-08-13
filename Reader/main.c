@@ -88,6 +88,7 @@ uint8_t Calculate_Fcs(uint8_t *buf);
  *******************************************************************************************************/
 void IoInit(void) {
     P0DIR = 0xF6;
+    //P0DIR = 0xB6;
     P1DIR = 0xFF;
 }
 /*******************************************************************************************************
@@ -173,6 +174,7 @@ void ID_Inbuf(void) {
                 if(idx == 0xFF)idx = i;
             }
         }
+				iswrite = true;//
         if(iswrite == true) { //ID需要写入缓存
             if(idx < MAX_TAG_BUFNUM) {
                 for(i = 0; i < (RX_PAYLOAD_LEN - 2); i++)ID_Buf[idx][i + 1] = ID_BufTmp[i + 1];
@@ -289,6 +291,8 @@ void main() {
 #endif
 
 
+	P0DIR &= 0xbF;
+	P06 = 0;
     while(1) {
 #ifdef  USE_WDT
         hal_wdog_restart();
@@ -297,15 +301,19 @@ void main() {
         if(RF_Recv_Flag == true) { //接收到Tag信息
 #ifdef DEBUG_LED
             D1 = ~D1;
+						P06 = 1;
+						delay_ms(50);
+						P06 = 0;
 #endif
 
             RF_Recv_Flag = false;//接收有效标志清零
             ID_Inbuf();          //ID信息写入缓存
+						Uart_PackAndRepDat();//串口上报数据
         }
 
         if(SecondFlag == true) { //1秒定时时间到
             SecondFlag = false;	//清零秒定时标志
-            Uart_PackAndRepDat();//串口上报数据
+            //Uart_PackAndRepDat();//串口上报数据
         }
     }
 }

@@ -1,68 +1,68 @@
-C51 COMPILER V9.52.0.0   LED                                                               08/09/2019 21:10:58 PAGE 1   
+C51 COMPILER V9.54   LED                                                                   08/13/2019 14:54:27 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE LED
+C51 COMPILER V9.54, COMPILATION OF MODULE LED
 OBJECT MODULE PLACED IN .\Object\led.obj
-COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE user\led.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24l0
-                    -1p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\led.lst) OBJECT(.\Object\led.o
-                    -bj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE user\led.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf2
+                    -4l01p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\led.lst) TABS(2) OBJECT(.\O
+                    -bject\led.obj)
 
 line level    source
 
    1          #include <reg24le1.h>
-   2          #include "led.h" 
+   2          #include "led.h"
    3          #include "hal_delay.h"
    4          #include <string.h>
    5          
-   6          void led_init(){
-   7   1      #if     (BOARD == IKMSIK)
-   8   1              P0DIR &= ~0x03;//P00,P01输出
-   9   1      #else   (BOARD == DIAPER)
+   6          void led_init() {
+   7   1      #if (BOARD == IKMSIK)
+   8   1          P0DIR &= ~0x03;//P00,P01输出
+   9   1      #else (BOARD == DIAPER)
 *** WARNING C323 IN LINE 9 OF user\led.c: newline expected, extra characters found
-                      P0DIR &= ~0x03;//P00,P01输出
+                  P0DIR &= ~0x03;//P00,P01输出
               #endif
   12   1      }
   13          
-  14          void led_flash(uint8_t led){
-  15   1              switch(led){
-  16   2                      case led1:
-  17   2                                      LED1 = ON;
-  18   2                                      delay_us(100);
-  19   2                                      LED1 = OFF;
-  20   2                              break;
-  21   2                      case led2:
-  22   2                                      LED2    =       ON;
-  23   2                                      delay_us(100);
-  24   2                                      LED2 = OFF;
-  25   2                              break;
-  26   2                      default:
-  27   2                              break;
-  28   2              }       
+  14          void led_flash(uint8_t led) {
+  15   1          switch(led) {
+  16   2          case led1:
+  17   2              LED1 = ON;
+  18   2              delay_us(100);
+  19   2              LED1 = OFF;
+  20   2              break;
+  21   2          case led2:
+  22   2              LED2  = ON;
+  23   2              delay_us(100);
+  24   2              LED2 = OFF;
+  25   2              break;
+  26   2          default:
+  27   2              break;
+  28   2          }
   29   1      }
-  30          void led_on(uint8_t led){
-  31   1              switch(led){
-  32   2                      case led1:
-  33   2                                      LED1 = ON;
-  34   2                              break;
-  35   2                      case led2:
-  36   2                                      LED2    =       ON;
-  37   2                              break;
-  38   2                      default:
-  39   2                              break;
-  40   2              }       
+  30          void led_on(uint8_t led) {
+  31   1          switch(led) {
+  32   2          case led1:
+  33   2              LED1 = ON;
+  34   2              break;
+  35   2          case led2:
+  36   2              LED2  = ON;
+  37   2              break;
+  38   2          default:
+  39   2              break;
+  40   2          }
   41   1      }
-  42          void led_off(uint8_t led){
-  43   1              switch(led){
-  44   2                      case led1:
-  45   2                                      LED1 = OFF;
-  46   2                              break;
-  47   2                      case led2:
-  48   2                                      LED2    =       OFF;
-  49   2                              break;
-  50   2                      default:
-  51   2                              break;
-  52   2              }       
-C51 COMPILER V9.52.0.0   LED                                                               08/09/2019 21:10:58 PAGE 2   
+  42          void led_off(uint8_t led) {
+  43   1          switch(led) {
+  44   2          case led1:
+  45   2              LED1 = OFF;
+  46   2              break;
+  47   2          case led2:
+  48   2              LED2  = OFF;
+  49   2              break;
+  50   2          default:
+  51   2              break;
+  52   2          }
+C51 COMPILER V9.54   LED                                                                   08/13/2019 14:54:27 PAGE 2   
 
   53   1      }
   54          /*********************************END FILE*************************************/

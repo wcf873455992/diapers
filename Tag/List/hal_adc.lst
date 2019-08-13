@@ -1,11 +1,11 @@
-C51 COMPILER V9.52.0.0   HAL_ADC                                                           08/09/2019 21:10:59 PAGE 1   
+C51 COMPILER V9.54   HAL_ADC                                                               08/13/2019 14:54:27 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE HAL_ADC
+C51 COMPILER V9.54, COMPILATION OF MODULE HAL_ADC
 OBJECT MODULE PLACED IN .\Object\hal_adc.obj
-COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE hal\nrf24le1\hal_adc.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1
-                    -;hal\nrf24l01p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\hal_adc.lst) OBJEC
-                    -T(.\Object\hal_adc.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE hal\nrf24le1\hal_adc.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24
+                    -le1;hal\nrf24l01p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\hal_adc.lst) TA
+                    -BS(2) OBJECT(.\Object\hal_adc.obj)
 
 line level    source
 
@@ -34,102 +34,86 @@ line level    source
   23          #include "hal_adc.h"
   24          
   25          
-  26          void hal_adc_set_input_channel(hal_adc_input_channel_t chsel)
-  27          {
-  28   1          // Update "chsel" bits
-  29   1          ADCCON1 = ((ADCCON1 & 0xC3) | (((uint8_t)(chsel) << 2) & ~0xC3));
-  30   1      }
+  26          void hal_adc_set_input_channel(hal_adc_input_channel_t chsel) {
+  27   1          // Update "chsel" bits
+  28   1          ADCCON1 = ((ADCCON1 & 0xC3) | (((uint8_t)(chsel) << 2) & ~0xC3));
+  29   1      }
+  30          
   31          
-  32          
-  33          void hal_adc_set_reference(hal_adc_reference_t refsel)
-  34          {
-  35   1          // Update "refsel" bits
-  36   1          ADCCON1 = ((ADCCON1 & 0xFC) | (((uint8_t)(refsel)) & ~0xFC));
-  37   1      }
-  38          
-  39          
-  40          void hal_adc_set_input_mode(hal_adc_input_mode_t input_mode)
-  41          {
-  42   1          // Update "diffm" bits
-  43   1          ADCCON2 = ((ADCCON2 & 0x3F) | ((uint8_t)(input_mode) << 6));
-  44   1      }
-  45          
-  46          
-  47          void hal_adc_set_conversion_mode(hal_adc_conversion_mode_t conv_mode)
-  48          {
-  49   1          // Update "cont" bit
-  50   1          ADCCON2 = ((ADCCON2 & 0xDF) | (((uint8_t)(conv_mode) << 5) & ~0xDF));
-  51   1      }
-  52          
-  53          
-C51 COMPILER V9.52.0.0   HAL_ADC                                                           08/09/2019 21:10:59 PAGE 2   
+  32          void hal_adc_set_reference(hal_adc_reference_t refsel) {
+  33   1          // Update "refsel" bits
+  34   1          ADCCON1 = ((ADCCON1 & 0xFC) | (((uint8_t)(refsel)) & ~0xFC));
+  35   1      }
+  36          
+  37          
+  38          void hal_adc_set_input_mode(hal_adc_input_mode_t input_mode) {
+  39   1          // Update "diffm" bits
+  40   1          ADCCON2 = ((ADCCON2 & 0x3F) | ((uint8_t)(input_mode) << 6));
+  41   1      }
+  42          
+  43          
+  44          void hal_adc_set_conversion_mode(hal_adc_conversion_mode_t conv_mode) {
+  45   1          // Update "cont" bit
+  46   1          ADCCON2 = ((ADCCON2 & 0xDF) | (((uint8_t)(conv_mode) << 5) & ~0xDF));
+  47   1      }
+  48          
+  49          
+  50          void hal_adc_set_sampling_rate(hal_adc_sampling_rate_t rate) {
+  51   1          // Update "rate" bits
+  52   1          ADCCON2 = ((ADCCON2 & 0xE3) | (((uint8_t)(rate) << 2) & ~0xE3));
+  53   1      }
+C51 COMPILER V9.54   HAL_ADC                                                               08/13/2019 14:54:27 PAGE 2   
 
-  54          void hal_adc_set_sampling_rate(hal_adc_sampling_rate_t rate)
-  55          {
-  56   1          // Update "rate" bits
-  57   1          ADCCON2 = ((ADCCON2 & 0xE3) | (((uint8_t)(rate) << 2) & ~0xE3));
-  58   1      }
-  59          
+  54          
+  55          
+  56          void hal_adc_set_power_down_delay(hal_adc_power_down_delay_t pdd) {
+  57   1          // Update "rate" bits
+  58   1          ADCCON2 = ((ADCCON2 & 0xE3) | (((uint8_t)(pdd) << 2) & ~0xE3));
+  59   1      }
   60          
-  61          void hal_adc_set_power_down_delay(hal_adc_power_down_delay_t pdd)
-  62          {
-  63   1          // Update "rate" bits
-  64   1          ADCCON2 = ((ADCCON2 & 0xE3) | (((uint8_t)(pdd) << 2) & ~0xE3));
+  61          
+  62          void hal_adc_set_acq_window(hal_adc_acq_window_t tacq) {
+  63   1          // Update "tacq" bits
+  64   1          ADCCON2 = ((ADCCON2 & 0xFC) | (((uint8_t)(tacq)) & ~0xFC));
   65   1      }
   66          
   67          
-  68          void hal_adc_set_acq_window(hal_adc_acq_window_t tacq)
-  69          {
-  70   1          // Update "tacq" bits
-  71   1          ADCCON2 = ((ADCCON2 & 0xFC) | (((uint8_t)(tacq)) & ~0xFC));
-  72   1      }
+  68          void hal_adc_set_resolution(hal_adc_resolution_t res) {
+  69   1          // Update "resol" bits
+  70   1          ADCCON3 = ((ADCCON3 & 0x3F) | ((uint8_t)(res) << 6));
+  71   1      }
+  72          
   73          
-  74          
-  75          void hal_adc_set_resolution(hal_adc_resolution_t res)
-  76          {
-  77   1          // Update "resol" bits
-  78   1          ADCCON3 = ((ADCCON3 & 0x3F) | ((uint8_t)(res) << 6));
-  79   1      }
-  80          
-  81          
-  82          void hal_adc_set_data_just(hal_adc_data_just_t just)
-  83          {
-  84   1          // Update "rljust" bit
-  85   1          ADCCON3 = ((ADCCON3 & 0xDF) | (((uint8_t)(just) << 5) & ~0xDF));
-  86   1      }
+  74          void hal_adc_set_data_just(hal_adc_data_just_t just) {
+  75   1          // Update "rljust" bit
+  76   1          ADCCON3 = ((ADCCON3 & 0xDF) | (((uint8_t)(just) << 5) & ~0xDF));
+  77   1      }
+  78          
+  79          
+  80          void hal_adc_start(void) {
+  81   1          uint8_t cnt = ADC_STARTUP_CNT;             // Get the counter value
+  82   1          ADCCON1 = ADCCON1 | BIT_7;                 // Set "pwrup" bit
+  83   1      
+  84   1          while(cnt--) {}                        // Wait for busy bit to stabilize
+  85   1      }
+  86          
   87          
-  88          
-  89          void hal_adc_start(void)
-  90          {
-  91   1          uint8_t cnt = ADC_STARTUP_CNT;             // Get the counter value
-  92   1          ADCCON1 = ADCCON1 | BIT_7;                 // Set "pwrup" bit
-  93   1      
-  94   1          while(cnt--) {}                        // Wait for busy bit to stabilize
-  95   1      }
-  96          
-  97          
-  98          uint8_t hal_adc_read_LSB(void)
-  99          {
- 100   1          return ADCDATL;                            // Return value stored in ADCDATL
- 101   1      }
- 102          
- 103          uint8_t hal_adc_read_MSB(void)
- 104          {
- 105   1          return ADCDATH;                            // Return value stored in ADCDATH
- 106   1      }
- 107          
- 108          bool hal_adc_busy(void)
- 109          {
- 110   1          return ((ADCCON1 & BIT_6));            // Return status of "busy" bit
- 111   1      }
- 112          
- 113          hal_adc_overflow_t hal_adc_get_overflow_status(void)
- 114          {
- 115   1          return (hal_adc_overflow_t)((ADCCON3 & (BIT_3 | BIT_4)) >> 3);
-C51 COMPILER V9.52.0.0   HAL_ADC                                                           08/09/2019 21:10:59 PAGE 3   
-
- 116   1      }
- 117          // Return status bits from ADCCON3
+  88          uint8_t hal_adc_read_LSB(void) {
+  89   1          return ADCDATL;                            // Return value stored in ADCDATL
+  90   1      }
+  91          
+  92          uint8_t hal_adc_read_MSB(void) {
+  93   1          return ADCDATH;                            // Return value stored in ADCDATH
+  94   1      }
+  95          
+  96          bool hal_adc_busy(void) {
+  97   1          return ((ADCCON1 & BIT_6));            // Return status of "busy" bit
+  98   1      }
+  99          
+ 100          hal_adc_overflow_t hal_adc_get_overflow_status(void) {
+ 101   1          return (hal_adc_overflow_t)((ADCCON3 & (BIT_3 | BIT_4)) >> 3);
+ 102   1      }
+ 103          // Return status bits from ADCCON3
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

@@ -1,11 +1,11 @@
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Object\main.obj
-COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE main.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24l01p;h
-                    -al;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\main.lst) OBJECT(.\Object\main.obj
-                    -)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c COMPACT OPTIMIZE(4,SPEED) BROWSE INCDIR(hal\nrf24le1;hal\nrf24l01
+                    -p;hal;compiler\c51;compiler\common) DEFINE(MCU_NRF24LE1) DEBUG OBJECTEXTEND PRINT(.\List\main.lst) TABS(2) OBJECT(.\Obje
+                    -ct\main.obj)
 
 line level    source
 
@@ -14,21 +14,21 @@ line level    source
    3          **                                 ºÏ·Ê°¬¿ËÄ·µç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾
    4          **                                  ÂÛÌ³£ºhttp://930ebbs.com
    5          **--------------File Info---------------------------------------------------------------------------------
-   6          ** File name:                   main.c
+   6          ** File name:     main.c
    7          ** Last modified Date: 2017-3-1
-   8          ** Last Version:                   1.3
+   8          ** Last Version:       1.3
    9          ** Descriptions:
   10          **
   11          **--------------------------------------------------------------------------------------------------------
-  12          ** Created by:                  FiYu
-  13          ** Created date:                2014-11-12
-  14          ** Version:                         1.0
-  15          ** Descriptions:                ÓÐÔ´RFIDÊµÑé³ÌÐò-TAG
-  16          **                                                    ·¢ËÍÊý¾Ý¸ñÊ½
+  12          ** Created by:      FiYu
+  13          ** Created date:    2014-11-12
+  14          ** Version:         1.0
+  15          ** Descriptions:    ÓÐÔ´RFIDÊµÑé³ÌÐò-TAG
+  16          **                  ·¢ËÍÊý¾Ý¸ñÊ½
   17          **                  ³¤¶È£º6¸ö×Ö½Ú
   18          **                  ID³¤¶È£º2×Ö½Ú
-  19          ×Ö½Ú:    1     2   3    4  5   6
-  20          ÒâÒå:   ÃüÁî  IDH IDL  VH  VL  Ð£Ñé
+  19          ×Ö½Ú:    1     2   3    4  5   6  7   8   9   10
+  20          ÒâÒå:   ÃüÁî  IDH IDL  VH  VL  ÎÂ¶È   Êª¶È    Ð£Ñé
   21          
   22          **--------------------------------------------------------------------------------------------------------
   23          ** Modified by:
@@ -62,7 +62,7 @@ line level    source
   50          
   51          /*-------------------¹Ü½Å¶¨Òå--------------------------------------------------*/
   52          #define  D1    P00  // ¿ª·¢°åÉÏµÄÖ¸Ê¾µÆD1
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 2   
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 2   
 
   53          #define  D2    P01  // ¿ª·¢°åÉÏµÄÖ¸Ê¾µÆD2
   54          #define  S2    P12  // ¿ª·¢°åÉÏµÄ°´¼üS2
@@ -88,410 +88,390 @@ line level    source
   74           * Èë  ²Î : ÎÞ
   75           * ·µ»ØÖµ : ÎÞ
   76           *******************************************************************************************************/
-  77          void IoInit(void)
-  78          {
-  79   1          P0DIR = 0x00;
-  80   1          P1DIR = 0x00;
-  81   1      }
-  82          #ifdef DEBUG_UART
+  77          void IoInit(void) {
+  78   1          P0DIR = 0x00;
+  79   1          P1DIR = 0x00;
+  80   1      }
+  81          #ifdef DEBUG_UART
               /*******************************************************************************************************
                * Ãè  Êö : ´®¿ÚÊä³ö×Ö·û
                * Èë  ²Î : ÎÞ
                * ·µ»ØÖµ : ÎÞ
                *******************************************************************************************************/
-              void uart_sendchar(uint8_t dat)
-              {
+              void uart_sendchar(uint8_t dat) {
                   S0BUF = dat;
                   while(!TI0);
                   TI0 = 0;
               }
               #endif
-  95          /*******************************************************************************************************
-  96           * Ãè  Êö : ´®¿ÚÊä³ö×Ö·û´®
-  97           * Èë  ²Î : ÎÞ
-  98           * ·µ»ØÖµ : ÎÞ
-  99           *******************************************************************************************************/
- 100          void PutString(char *s)
- 101          {
- 102   1              #ifdef DEBUG_UART
+  93          /*******************************************************************************************************
+  94           * Ãè  Êö : ´®¿ÚÊä³ö×Ö·û´®
+  95           * Èë  ²Î : ÎÞ
+  96           * ·µ»ØÖµ : ÎÞ
+  97           *******************************************************************************************************/
+  98          void PutString(char *s) {
+  99   1      #ifdef DEBUG_UART
                   while(*s != 0)
                       uart_sendchar(*s++);
                   //delay_ms(1);
-                              #endif
- 107   1      }
-*** WARNING C280 IN LINE 100 OF main.c: 's': unreferenced local variable
- 108          /*********************************************************************************************************
- 109          ** Ãè  Êö:  adc³õÊ¼»¯
- 110          ** Èë  ²Î:  NONE
- 111          ** ·µ»ØÖµ:  NONE
- 112          *********************************************************************************************************/
- 113          void adc_init(void)
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 3   
+              #endif
+ 104   1      }
+*** WARNING C280 IN LINE 98 OF main.c: 's': unreferenced local variable
+ 105          /*********************************************************************************************************
+ 106          ** Ãè  Êö:  adc³õÊ¼»¯
+ 107          ** Èë  ²Î:  NONE
+ 108          ** ·µ»ØÖµ:  NONE
+ 109          *********************************************************************************************************/
+ 110          void adc_init(void) {
+ 111   1          hal_adc_set_input_channel(HAL_INP_VDD1_3);          //ÉèÖÃÍ¨µÀ ¼ì²â1/3 VDDµçÑ¹
+ 112   1          hal_adc_set_reference(HAL_ADC_REF_INT);             //ÉèÖÃ²Î¿¼µçÑ¹ ÄÚ²¿1.22V
+ 113   1          hal_adc_set_input_mode(HAL_ADC_SINGLE);             //µ¥¶ËÊäÈë
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 3   
 
- 114          {
- 115   1          hal_adc_set_input_channel(HAL_INP_VDD1_3);          //ÉèÖÃÍ¨µÀ ¼ì²â1/3 VDDµçÑ¹
- 116   1          hal_adc_set_reference(HAL_ADC_REF_INT);             //ÉèÖÃ²Î¿¼µçÑ¹ ÄÚ²¿1.22V
- 117   1          hal_adc_set_input_mode(HAL_ADC_SINGLE);             //µ¥¶ËÊäÈë
- 118   1          hal_adc_set_conversion_mode(HAL_ADC_SINGLE_STEP);   //µ¥´Î²ÉÑùÄ£Ê½
- 119   1          hal_adc_set_sampling_rate(HAL_ADC_2KSPS);           //²ÉÑùËÙÂÊÎª    2ksps
- 120   1          hal_adc_set_resolution(HAL_ADC_RES_12BIT);          //12Î»ADC
- 121   1          hal_adc_set_data_just(HAL_ADC_JUST_RIGHT);          //Êý¾ÝÓÒ¶ÔÆë
- 122   1      }
- 123          
- 124          /*******************************************************************************************************
- 125           * Ãè  Êö : ÉèÖÃÐÝÃßÊ±¼ä
- 126           * Èë  ²Î : period:ÐÝÃßÊ±¼ä
- 127           * ·µ»ØÖµ : ÎÞ
- 128           *******************************************************************************************************/
- 129          void set_timer_period(uint16_t period)
- 130          {
- 131   1          if((period < 10) && (period > 65536))period = 32768;
- 132   1      
- 133   1          hal_rtc_start(false);
- 134   1          hal_rtc_start(true);
- 135   1          hal_rtc_set_compare_value(period - 1);
- 136   1      }
- 137          
- 138          /*******************************************************************************************************
- 139           * Ãè  Êö : ÅäÖÃÎÞÏß²ÎÊý
- 140           * Èë  ²Î : ÎÞ
- 141           * ·µ»ØÖµ : ÎÞ
- 142           *******************************************************************************************************/
- 143          void RfCofig(void)
- 144          {
- 145   1          RFCKEN = 1;      //Ê¹ÄÜRFÊ±ÖÓ
- 146   1      
- 147   1          hal_nrf_close_pipe(HAL_NRF_ALL);           //ÏÈ¹Ø±ÕËùÓÐµÄÍ¨µÀ.
- 148   1          hal_nrf_open_pipe(HAL_NRF_PIPE0, false);      //ÔÙ´ò¿ªÍ¨µÀ0.
- 149   1      
- 150   1          hal_nrf_set_operation_mode(HAL_NRF_PTX);    // Ä£Ê½£º·¢ËÍ
- 151   1          hal_nrf_set_rf_channel(TAG_CH);                       // RFÐÅµÀ£º50¡£½ÓÊÕºÍ·¢ËÍ±ØÐë´¦ÓÚÍ¬Ò»ÐÅµÀ
- 152   1          hal_nrf_set_datarate(HAL_NRF_250KBPS);          // RFËÙÂÊ£º250KBPS
- 153   1          hal_nrf_set_output_power(HAL_NRF_0DBM);         // ¹¦ÂÊ£º0DBM
- 154   1          hal_nrf_set_crc_mode(HAL_NRF_CRC_16BIT);    //ÉèÖÃCRCÐ£Ñé£º16Î»CRC¡£±ØÐëºÍ½ÓÊÕÉè±¸Ò»ÖÂ¡£
- 155   1          hal_nrf_set_address(HAL_NRF_TX, TX_ADDRESS); //ÉèÖÃ·¢Éä»úµØÖ·
- 156   1          hal_nrf_set_auto_retr(0, 1500);                                //×Ô¶¯ÖØ·¢:0
- 157   1      
- 158   1          hal_nrf_set_power_mode(HAL_NRF_PWR_UP);             //·¢Éä»úÉÏµç
- 159   1          RF = 1;       //Ê¹ÄÜÎÞÏßÖÐ¶Ï
- 160   1          EA = 1;          // Ê¹ÄÜÈ«¾ÖÖÐ¶Ï
- 161   1      }
- 162          
- 163          /*******************************************************************************************************
- 164           * Ãè  Êö : Ê±ÖÓºÍRTC»½ÐÑÅäÖÃ
- 165           * Èë  ²Î : ÎÞ
- 166           * ·µ»ØÖµ : ÎÞ
- 167           *******************************************************************************************************/
- 168          void mcu_init(void)
- 169          {
- 170   1          hal_rtc_start(false);
- 171   1          hal_clklf_set_source(HAL_CLKLF_RCOSC32K);           // Use 32.768KHzµÄÊ±ÖÓÔ´ÎªÄÚ²¿RC
+ 114   1          hal_adc_set_conversion_mode(HAL_ADC_SINGLE_STEP);   //µ¥´Î²ÉÑùÄ£Ê½
+ 115   1          hal_adc_set_sampling_rate(HAL_ADC_2KSPS);           //²ÉÑùËÙÂÊÎª  2ksps
+ 116   1          hal_adc_set_resolution(HAL_ADC_RES_12BIT);          //12Î»ADC
+ 117   1          hal_adc_set_data_just(HAL_ADC_JUST_RIGHT);          //Êý¾ÝÓÒ¶ÔÆë
+ 118   1      }
+ 119          
+ 120          /*******************************************************************************************************
+ 121           * Ãè  Êö : ÉèÖÃÐÝÃßÊ±¼ä
+ 122           * Èë  ²Î : period:ÐÝÃßÊ±¼ä
+ 123           * ·µ»ØÖµ : ÎÞ
+ 124           *******************************************************************************************************/
+ 125          void set_timer_period(uint16_t period) {
+ 126   1          if((period < 10) && (period > 65536))period = 32768;
+ 127   1      
+ 128   1          hal_rtc_start(false);
+ 129   1          hal_rtc_start(true);
+ 130   1          hal_rtc_set_compare_value(period - 1);
+ 131   1      }
+ 132          
+ 133          /*******************************************************************************************************
+ 134           * Ãè  Êö : ÅäÖÃÎÞÏß²ÎÊý
+ 135           * Èë  ²Î : ÎÞ
+ 136           * ·µ»ØÖµ : ÎÞ
+ 137           *******************************************************************************************************/
+ 138          void RfCofig(void) {
+ 139   1          RFCKEN = 1;      //Ê¹ÄÜRFÊ±ÖÓ
+ 140   1      
+ 141   1          hal_nrf_close_pipe(HAL_NRF_ALL);           //ÏÈ¹Ø±ÕËùÓÐµÄÍ¨µÀ.
+ 142   1          hal_nrf_open_pipe(HAL_NRF_PIPE0, false);    //ÔÙ´ò¿ªÍ¨µÀ0.
+ 143   1      
+ 144   1          hal_nrf_set_operation_mode(HAL_NRF_PTX);    // Ä£Ê½£º·¢ËÍ
+ 145   1          hal_nrf_set_rf_channel(TAG_CH);             // RFÐÅµÀ£º50¡£½ÓÊÕºÍ·¢ËÍ±ØÐë´¦ÓÚÍ¬Ò»ÐÅµÀ
+ 146   1          hal_nrf_set_datarate(HAL_NRF_250KBPS);      // RFËÙÂÊ£º250KBPS
+ 147   1          hal_nrf_set_output_power(HAL_NRF_0DBM);     // ¹¦ÂÊ£º0DBM
+ 148   1          hal_nrf_set_crc_mode(HAL_NRF_CRC_16BIT);    //ÉèÖÃCRCÐ£Ñé£º16Î»CRC¡£±ØÐëºÍ½ÓÊÕÉè±¸Ò»ÖÂ¡£
+ 149   1          hal_nrf_set_address(HAL_NRF_TX, TX_ADDRESS); //ÉèÖÃ·¢Éä»úµØÖ·
+ 150   1          hal_nrf_set_auto_retr(0, 1500);                //×Ô¶¯ÖØ·¢:0
+ 151   1      
+ 152   1          hal_nrf_set_power_mode(HAL_NRF_PWR_UP);         //·¢Éä»úÉÏµç
+ 153   1          RF = 1;       //Ê¹ÄÜÎÞÏßÖÐ¶Ï
+ 154   1          EA = 1;      // Ê¹ÄÜÈ«¾ÖÖÐ¶Ï
+ 155   1      }
+ 156          
+ 157          /*******************************************************************************************************
+ 158           * Ãè  Êö : Ê±ÖÓºÍRTC»½ÐÑÅäÖÃ
+ 159           * Èë  ²Î : ÎÞ
+ 160           * ·µ»ØÖµ : ÎÞ
+ 161           *******************************************************************************************************/
+ 162          void mcu_init(void) {
+ 163   1          hal_rtc_start(false);
+ 164   1          hal_clklf_set_source(HAL_CLKLF_RCOSC32K);           // Use 32.768KHzµÄÊ±ÖÓÔ´ÎªÄÚ²¿RC
+ 165   1      
+ 166   1          hal_rtc_set_compare_mode(HAL_RTC_COMPARE_MODE_0);   // Use 32 KHz timer mode 0
+ 167   1          set_timer_period(TAG_TIME);                         // Set the RTC2 time£¬card sleep time
+ 168   1          hal_clk_set_16m_source(HAL_CLK_XOSC16M);            // Always run on 16MHz crystal oscillator
+ 169   1          hal_clk_regret_xosc16m_on(0);                       // Keep XOSC16M off in register retention
+ 170   1      
+ 171   1          hal_rtc_start(true);
  172   1      
- 173   1          hal_rtc_set_compare_mode(HAL_RTC_COMPARE_MODE_0);   // Use 32 KHz timer mode 0
- 174   1          set_timer_period(TAG_TIME);                         // Set the RTC2 time£¬card sleep time
- 175   1          hal_clk_set_16m_source(HAL_CLK_XOSC16M);            // Always run on 16MHz crystal oscillator
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 4   
+ 173   1          while((CLKLFCTRL & 0x80) == 0x80);                  // Wait for the 32kHz to startup (change phase)
+ 174   1          while((CLKLFCTRL & 0x80) != 0x80);
+ 175   1      }
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 4   
 
- 176   1          hal_clk_regret_xosc16m_on(0);                       // Keep XOSC16M off in register retention
- 177   1      
- 178   1          hal_rtc_start(true);
- 179   1      
- 180   1          while((CLKLFCTRL & 0x80) == 0x80);                  // Wait for the 32kHz to startup (change phase)
- 181   1          while((CLKLFCTRL & 0x80) != 0x80);
- 182   1      }
- 183          
- 184          /*******************************************************************************************************
- 185           * Ãè  Êö : ×é×°Êý¾Ý
- 186           * Èë  ²Î : ÎÞ
- 187           * ·µ»ØÖµ : ÎÞ
- 188           *******************************************************************************************************/
- 189          void Assemble_Data(void)
- 190          {
- 191   1          xdata uint8_t fcs = 0, i;
- 192   1      
- 193   1      
- 194   1          TxPayload[0] = 0x1E;
- 195   1          TxPayload[1] = TagInfo.id.id8[0];  //IDL
- 196   1          TxPayload[2] = TagInfo.id.id8[1];  //IDH
- 197   1          TxPayload[3] = TagInfo.CellVoltageH;
- 198   1          TxPayload[4] = TagInfo.CellVoltageL;
- 199   1          TxPayload[5] = TagInfo.tempH;
- 200   1          TxPayload[6] = TagInfo.tempL;
- 201   1          TxPayload[7] = TagInfo.humyH;
- 202   1          TxPayload[8] = TagInfo.humyL;
- 203   1              
- 204   1          for(i = 0; i < (MAX_TX_PAYLOAD - 1); i++)fcs += TxPayload[i];
- 205   1      
- 206   1          TxPayload[MAX_TX_PAYLOAD - 1] = (256 - fcs) % 256;
- 207   1      }
- 208          void CellVoltage(){
- 209   1              uint32_t        ad_value = 0,temp=0;
- 210   1              hal_adc_start();           //Æô¶¯ADC
- 211   1              while( hal_adc_busy())     //µÈ´ýADC×ª»»½áÊø
- 212   1              ;       
- 213   1              TagInfo.CellVoltageH = hal_adc_read_MSB(); //¶ÁÈ¡ADC²ÉÑùÖµ
- 214   1              TagInfo.CellVoltageL = hal_adc_read_LSB();
- 215   1              ad_value = (ad_value|hal_adc_read_MSB())<<8;
- 216   1              ad_value = ad_value|hal_adc_read_LSB();
- 217   1              temp = ad_value*1.2*3*100/4096; //µçÑ¹À©´ó100±¶
- 218   1              TagInfo.CellVoltageH = temp/100;//
- 219   1              TagInfo.CellVoltageL = ((temp%100/10)<<4)|(temp%100%10);
- 220   1      }
- 221          
- 222          void AHT10(void)
- 223          {
- 224   1          uint8_t temp[5];
- 225   1          uint8_t humidity[5];
- 226   1      
- 227   1          memset(temp, 0, 5);
- 228   1          memset(humidity, 0, 5);
- 229   1          temp[2] = '.';
- 230   1          humidity[2] = '.';
- 231   1      
- 232   1          //while(1)
- 233   1          {
+ 176          
+ 177          /*******************************************************************************************************
+ 178           * Ãè  Êö : ×é×°Êý¾Ý
+ 179           * Èë  ²Î : ÎÞ
+ 180           * ·µ»ØÖµ : ÎÞ
+ 181           *******************************************************************************************************/
+ 182          void Assemble_Data(void) {
+ 183   1          xdata uint8_t fcs = 0, i;
+ 184   1      
+ 185   1      
+ 186   1          TxPayload[0] = 0x1E;
+ 187   1          TxPayload[1] = TagInfo.id.id8[0];  //IDL
+ 188   1          TxPayload[2] = TagInfo.id.id8[1];  //IDH
+ 189   1          TxPayload[3] = TagInfo.CellVoltageH;
+ 190   1          TxPayload[4] = TagInfo.CellVoltageL;
+ 191   1          TxPayload[5] = TagInfo.tempH;
+ 192   1          TxPayload[6] = TagInfo.tempL;
+ 193   1          TxPayload[7] = TagInfo.humyH;
+ 194   1          TxPayload[8] = TagInfo.humyL;
+ 195   1      
+ 196   1          for(i = 0; i < (MAX_TX_PAYLOAD - 1); i++)fcs += TxPayload[i];
+ 197   1      
+ 198   1          TxPayload[MAX_TX_PAYLOAD - 1] = (256 - fcs) % 256;
+ 199   1      }
+ 200          void CellVoltage() {
+ 201   1          uint32_t  ad_value = 0, temp = 0;
+ 202   1          hal_adc_start();           //Æô¶¯ADC
+ 203   1          while( hal_adc_busy())     //µÈ´ýADC×ª»»½áÊø
+ 204   1              ;
+ 205   1          TagInfo.CellVoltageH = hal_adc_read_MSB(); //¶ÁÈ¡ADC²ÉÑùÖµ
+ 206   1          TagInfo.CellVoltageL = hal_adc_read_LSB();
+ 207   1          ad_value = (ad_value | hal_adc_read_MSB()) << 8;
+ 208   1          ad_value = ad_value | hal_adc_read_LSB();
+ 209   1          temp = ad_value * 1.2 * 3 * 100 / 4096; //µçÑ¹À©´ó100±¶
+ 210   1          TagInfo.CellVoltageH = temp / 100; //
+ 211   1          TagInfo.CellVoltageL = ((temp % 100 / 10) << 4) | (temp % 100 % 10);
+ 212   1      }
+ 213          
+ 214          void AHT10(void) {
+ 215   1          uint8_t temp[5];
+ 216   1          uint8_t humidity[5];
+ 217   1      
+ 218   1          memset(temp, 0, 5);
+ 219   1          memset(humidity, 0, 5);
+ 220   1          temp[2] = '.';
+ 221   1          humidity[2] = '.';
+ 222   1      
+ 223   1          //while(1)
+ 224   1          {
+ 225   2      
+ 226   2              //DisableIrq(); //ÓÉÓÚÊÇÄ£ÄâI2C,Îª¶ÁÈ¡Êý¾Ý¸ü×¼È· £¬¶ÁÈ¡Ö®Ç°½ûÖ¹ÖÐ¶Ï
+ 227   2              Read_AHT10();  //¶ÁÈ¡ÎÂ¶ÈºÍÊª¶È £¬ ¿É¼ä¸ô1.5S¶ÁÒ»´Î
+ 228   2              //EnableIrq(); //»Ö¸´ÖÐ¶Ï
+ 229   2      
+ 230   2              TagInfo.tempH = AHT10Value.tempH ;
+ 231   2              TagInfo.tempL = AHT10Value.tempL ;
+ 232   2              TagInfo.humyH = AHT10Value.humyH ;
+ 233   2              TagInfo.humyL = AHT10Value.humyL ;
  234   2      
- 235   2              //DisableIrq(); //ÓÉÓÚÊÇÄ£ÄâI2C,Îª¶ÁÈ¡Êý¾Ý¸ü×¼È· £¬¶ÁÈ¡Ö®Ç°½ûÖ¹ÖÐ¶Ï
- 236   2              Read_AHT10();  //¶ÁÈ¡ÎÂ¶ÈºÍÊª¶È £¬ ¿É¼ä¸ô1.5S¶ÁÒ»´Î
- 237   2              //EnableIrq(); //»Ö¸´ÖÐ¶Ï
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 5   
+ 235   2              temp[0] = (AHT10Value.tempH >> 4) + 0x30;
+ 236   2              temp[1] = (AHT10Value.tempH & 0x0f) + 0x30;
+ 237   2              temp[3] = (AHT10Value.tempL >> 4) + 0x30;
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 5   
 
- 238   2      
- 239   2                                      TagInfo.tempH = AHT10Value.tempH ;
- 240   2              TagInfo.tempL = AHT10Value.tempL ;
- 241   2              TagInfo.humyH = AHT10Value.humyH ;
- 242   2              TagInfo.humyL = AHT10Value.humyL ;
- 243   2                                      
- 244   2              temp[0] = (AHT10Value.tempH>>4) + 0x30;
- 245   2              temp[1] = (AHT10Value.tempH&0x0f) + 0x30;
- 246   2              temp[3] = (AHT10Value.tempL>>4) + 0x30;
- 247   2              humidity[0] = (TagInfo.humyH>>4) + 0x30;
- 248   2              humidity[1] = (TagInfo.humyH&0x0f) + 0x30;
- 249   2              humidity[3] = (TagInfo.humyL>>4) + 0x30;
- 250   2                                               
- 251   2                              PutString("AHT10-ÎÂ¶È:");
- 252   2                       PutString(temp);
- 253   2                       PutString("    ");
- 254   2                       PutString("Êª¶È:");
- 255   2                       PutString(humidity);
- 256   2                       PutString("\r\n");
- 257   2             /**/             
- 258   2              //delay_ms(1500); //ÑÓÊ±1.5S
- 259   2              //Îª¶ÁÈ¡µÄÊý¾Ý¸üÎÈ¶¨£¬»¹¿ÉÒÔÊ¹ÓÃÆ½¾ùÖµÂË²¨»òÕß´°¿ÚÂË²¨£¬»òÕßÇ°Ãæ¶ÁÈ¡µÄÖµÓëºóÃæµÄÖµÏà²î²»ÄÜÌ«´ó¡£
- 260   2          }
- 261   1      }
- 262          void    Send_data(){
- 263   1                      Assemble_Data();  // Êý¾Ý´ò°ü
- 264   1                      hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
- 265   1      
- 266   1                      CE_PULSE();                 //ÎÞÏß·¢ÉäÊý¾Ý
- 267   1                      radio_busy = true;
- 268   1                      while(radio_busy)                   //µÈ´ý²Ù×÷Íê³É
- 269   1                      ;
- 270   1                      led_flash(led1);
- 271   1      }
- 272          /*******************************************************************************************************
- 273           * Ãè  Êö : »ñÈ¡ÉÏÒ»´ÎµÍ¹¦ºÄÄ£Ê½£¬²¢Í¨¹ý´®¿Ú´òÓ¡
- 274           * Èë  ²Î : ÎÞ
- 275           * ·µ»ØÖµ : ÎÞ
- 276           *******************************************************************************************************/
- 277          void GetPrintLastPWM(void)
- 278          {
- 279   1          uint8_t PowrMode;
- 280   1      
- 281   1          PowrMode = PWRDWN & 0x07;
- 282   1      
- 283   1          switch(PowrMode)
- 284   1          {
- 285   2          case 0x00:
- 286   2              PutString("Last mode:Power Off!");
- 287   2              break;
- 288   2          case 0x01:
- 289   2              PutString("Last mode:Deep Sleep!");
- 290   2              break;
- 291   2          case 0x02:
- 292   2              PutString("Last mode:Memory Retention, Timer Off!");
- 293   2              break;
- 294   2          case 0x03:
- 295   2              PutString("Last mode:Memory Retention, Timer On!");
- 296   2              break;
- 297   2          case 0x04:
- 298   2              PutString("Last mode:Register Retention!");
- 299   2              break;
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 6   
+ 238   2              humidity[0] = (TagInfo.humyH >> 4) + 0x30;
+ 239   2              humidity[1] = (TagInfo.humyH & 0x0f) + 0x30;
+ 240   2              humidity[3] = (TagInfo.humyL >> 4) + 0x30;
+ 241   2      
+ 242   2              PutString("AHT10-ÎÂ¶È:");
+ 243   2              PutString(temp);
+ 244   2              PutString("    ");
+ 245   2              PutString("Êª¶È:");
+ 246   2              PutString(humidity);
+ 247   2              PutString("\r\n");
+ 248   2              /**/
+ 249   2              //delay_ms(1500); //ÑÓÊ±1.5S
+ 250   2              //Îª¶ÁÈ¡µÄÊý¾Ý¸üÎÈ¶¨£¬»¹¿ÉÒÔÊ¹ÓÃÆ½¾ùÖµÂË²¨»òÕß´°¿ÚÂË²¨£¬»òÕßÇ°Ãæ¶ÁÈ¡µÄÖµÓëºóÃæµÄÖµÏà²î²»ÄÜÌ«´ó¡£
+ 251   2          }
+ 252   1      }
+ 253          void  Send_data() {
+ 254   1          Assemble_Data();  // Êý¾Ý´ò°ü
+ 255   1          hal_nrf_write_tx_payload(TxPayload, MAX_TX_PAYLOAD);
+ 256   1      
+ 257   1          CE_PULSE();             //ÎÞÏß·¢ÉäÊý¾Ý
+ 258   1          radio_busy = true;
+ 259   1          while(radio_busy)       //µÈ´ý²Ù×÷Íê³É
+ 260   1              ;
+ 261   1          led_flash(led1);
+ 262   1      }
+ 263          /*******************************************************************************************************
+ 264           * Ãè  Êö : »ñÈ¡ÉÏÒ»´ÎµÍ¹¦ºÄÄ£Ê½£¬²¢Í¨¹ý´®¿Ú´òÓ¡
+ 265           * Èë  ²Î : ÎÞ
+ 266           * ·µ»ØÖµ : ÎÞ
+ 267           *******************************************************************************************************/
+ 268          void GetPrintLastPWM(void) {
+ 269   1          uint8_t PowrMode;
+ 270   1      
+ 271   1          PowrMode = PWRDWN & 0x07;
+ 272   1      
+ 273   1          switch(PowrMode) {
+ 274   2          case 0x00:
+ 275   2              PutString("Last mode:Power Off!");
+ 276   2              break;
+ 277   2          case 0x01:
+ 278   2              PutString("Last mode:Deep Sleep!");
+ 279   2              break;
+ 280   2          case 0x02:
+ 281   2              PutString("Last mode:Memory Retention, Timer Off!");
+ 282   2              break;
+ 283   2          case 0x03:
+ 284   2              PutString("Last mode:Memory Retention, Timer On!");
+ 285   2              break;
+ 286   2          case 0x04:
+ 287   2              PutString("Last mode:Register Retention!");
+ 288   2              break;
+ 289   2          default  :
+ 290   2              PutString("Error Or Reserved!");
+ 291   2              break;
+ 292   2          }
+ 293   1      }
+ 294          /*******************************************************************************************************
+ 295           * Ãè  Êö : ÉèÖÃ»½ÐÑPIN
+ 296           * Èë  ²Î : ÎÞ
+ 297           * ·µ»ØÖµ : ÎÞ
+ 298           *******************************************************************************************************/
+ 299          void SetWakeUpPin(void) {
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 6   
 
- 300   2          default  :
- 301   2              PutString("Error Or Reserved!");
- 302   2              break;
- 303   2          }
- 304   1      }
- 305          /*******************************************************************************************************
- 306           * Ãè  Êö : ÉèÖÃ»½ÐÑPIN
- 307           * Èë  ²Î : ÎÞ
- 308           * ·µ»ØÖµ : ÎÞ
- 309           *******************************************************************************************************/
- 310          void SetWakeUpPin(void)
- 311          {
- 312   1          OPMCON = 0x04;             /* ¿ªËø£¬µÍµçÆ½»½ÐÑ          */
- 313   1          WUOPC0 = 0x00;             /* P0»½ÐÑµÄÒý½ÅÉèÖÃ£ºÎÞ      */
- 314   1          WUOPC1 = 0x04;             /* P1»½ÐÑµÄÒý½ÅÉèÖÃ£ºP12     */
- 315   1      
- 316   1          P1DIR |= 0x04;             /* P12³õÊ¼»¯ÎªÊäÈëI/O¿Ú      */
- 317   1          P12   = 1;                 /* P12³õÊ¼»¯Îª¸ßµçÆ½         */
- 318   1      }
- 319          /*******************************************************************************************************
- 320           * Ãè  Êö : Ö÷º¯Êý
- 321           * Èë  ²Î : ÎÞ
- 322           * ·µ»ØÖµ : ÎÞ
- 323           *******************************************************************************************************/
- 324          
- 325          
- 326          #define  DEEPSLEEP        1  // Éî¶ÈË¯Ãß
- 327          #define  MEMRET_TIMEOFF   2      // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¹Ø±Õ
- 328          #define  MEMRET_TIMEON    3      // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¿ªÆô
- 329          #define  REGRET           4      // ¼Ä´æÆ÷Î¬³Ö
- 330          /*******************************************************************************************************
- 331           * Ãè  Êö : ÉèÖÃnRF24LE1µÍ¹¦ºÄÄ£Ê½
- 332           * Èë  ²Î : mode:µÍ¹¦ºÄÄ£Ê½
- 333           * ·µ»ØÖµ : ÎÞ
- 334           *******************************************************************************************************/
- 335          void SetPowrDownMode(uint8_t mode)
- 336          {
- 337   1          uint8_t PowrMode;
- 338   1      
- 339   1          switch(mode)
- 340   1          {
- 341   2          case DEEPSLEEP  :     // Éî¶ÈË¯Ãß£¬»½ÐÑºó¸´Î»
- 342   2              PowrMode = 0x01;
- 343   2              break;
- 344   2          case MEMRET_TIMEOFF : // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¹Ø±Õ£¬»½ÐÑºó¸´Î»
- 345   2              PowrMode = 0x02;
- 346   2              break;
- 347   2          case MEMRET_TIMEON:   // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¿ªÆô£¬»½ÐÑºó¸´Î»
- 348   2              PowrMode = 0x03;
- 349   2              break;
- 350   2          case REGRET :         // ¼Ä´æÆ÷Î¬³Ö
- 351   2              PowrMode = 0x04;
- 352   2              break;
- 353   2          default         :      //ÔËÐÐ
- 354   2              PowrMode = 0x00;
- 355   2              break;
- 356   2          }
- 357   1      
- 358   1          if(PowrMode == 0x01)hal_clk_set_16m_source(HAL_CLK_RCOSC16M); // ½øÈëµ½DEEPSLEEPÇ°Ò»¶¨ÒªÆôÓÃRCÊ±ÖÓÔ´
- 359   1          if((PowrMode == 0x01) || (PowrMode == 0x02) || (PowrMode == 0x03))OPMCON |= 0x02;    // Õâ3ÖÖµÍ¹¦ºÄÄ£Ê½»
+ 300   1          OPMCON = 0x04;             /* ¿ªËø£¬µÍµçÆ½»½ÐÑ          */
+ 301   1          WUOPC0 = 0x00;             /* P0»½ÐÑµÄÒý½ÅÉèÖÃ£ºÎÞ      */
+ 302   1          WUOPC1 = 0x04;             /* P1»½ÐÑµÄÒý½ÅÉèÖÃ£ºP12     */
+ 303   1      
+ 304   1          P1DIR |= 0x04;             /* P12³õÊ¼»¯ÎªÊäÈëI/O¿Ú      */
+ 305   1          P12   = 1;                 /* P12³õÊ¼»¯Îª¸ßµçÆ½         */
+ 306   1      }
+ 307          /*******************************************************************************************************
+ 308           * Ãè  Êö : Ö÷º¯Êý
+ 309           * Èë  ²Î : ÎÞ
+ 310           * ·µ»ØÖµ : ÎÞ
+ 311           *******************************************************************************************************/
+ 312          
+ 313          
+ 314          #define  DEEPSLEEP        1  // Éî¶ÈË¯Ãß
+ 315          #define  MEMRET_TIMEOFF   2  // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¹Ø±Õ
+ 316          #define  MEMRET_TIMEON    3  // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¿ªÆô
+ 317          #define  REGRET           4  // ¼Ä´æÆ÷Î¬³Ö
+ 318          /*******************************************************************************************************
+ 319           * Ãè  Êö : ÉèÖÃnRF24LE1µÍ¹¦ºÄÄ£Ê½
+ 320           * Èë  ²Î : mode:µÍ¹¦ºÄÄ£Ê½
+ 321           * ·µ»ØÖµ : ÎÞ
+ 322           *******************************************************************************************************/
+ 323          void SetPowrDownMode(uint8_t mode) {
+ 324   1          uint8_t PowrMode;
+ 325   1      
+ 326   1          switch(mode) {
+ 327   2          case DEEPSLEEP  :     // Éî¶ÈË¯Ãß£¬»½ÐÑºó¸´Î»
+ 328   2              PowrMode = 0x01;
+ 329   2              break;
+ 330   2          case MEMRET_TIMEOFF : // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¹Ø±Õ£¬»½ÐÑºó¸´Î»
+ 331   2              PowrMode = 0x02;
+ 332   2              break;
+ 333   2          case MEMRET_TIMEON:   // ´æ´¢Æ÷Î¬³Ö£¬¶¨Ê±Æ÷¿ªÆô£¬»½ÐÑºó¸´Î»
+ 334   2              PowrMode = 0x03;
+ 335   2              break;
+ 336   2          case REGRET :         // ¼Ä´æÆ÷Î¬³Ö
+ 337   2              PowrMode = 0x04;
+ 338   2              break;
+ 339   2          default         :    //ÔËÐÐ
+ 340   2              PowrMode = 0x00;
+ 341   2              break;
+ 342   2          }
+ 343   1      
+ 344   1          if(PowrMode == 0x01)hal_clk_set_16m_source(HAL_CLK_RCOSC16M); // ½øÈëµ½DEEPSLEEPÇ°Ò»¶¨ÒªÆôÓÃRCÊ±ÖÓÔ´
+ 345   1          if((PowrMode == 0x01) || (PowrMode == 0x02) || (PowrMode == 0x03))OPMCON |= 0x02;  // Õâ3ÖÖµÍ¹¦ºÄÄ£Ê½»
              -½ÐÑºónRF24LE1»á¸´Î»£¬ËùÒÔÒªËø¶¨IO
- 360   1      
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 7   
+ 346   1      
+ 347   1          PWRDWN = PowrMode;
+ 348   1          PWRDWN = 0x00;  // Clear power down
+ 349   1      }
+ 350          
+ 351          void main(void) {
+ 352   1          uint8_t RfReceLen, second = 0;
+ 353   1          uint32_t  minute = 0;
+ 354   1      
+ 355   1          TagInfo.id.id16 = TAG_ID;
+ 356   1          IoInit();      //ÅäÖÃIO
+ 357   1          SetWakeUpPin(); //ÉèÖÃ»½ÐÑ¹Ü½Å
+ 358   1          led_init();
+ 359   1          key_init();
+ 360   1          mcu_init();
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 7   
 
- 361   1          PWRDWN = PowrMode;
- 362   1          PWRDWN = 0x00;  // Clear power down
- 363   1      }
- 364          
- 365          void main(void)
- 366          {
- 367   1              uint8_t RfReceLen, second = 0;
- 368   1          uint32_t    minute = 0;
- 369   1              
- 370   1              TagInfo.id.id16 = TAG_ID;
- 371   1          IoInit();      //ÅäÖÃIO
- 372   1          SetWakeUpPin(); //ÉèÖÃ»½ÐÑ¹Ü½Å      
- 373   1              led_init();
- 374   1              key_init();
- 375   1          mcu_init();         
- 376   1          adc_init();
- 377   1              AHT10_Init();           
- 378   1          RfCofig();
- 379   1      #ifdef DEBUG_UART       
+ 361   1          adc_init();
+ 362   1          AHT10_Init();
+ 363   1          RfCofig();
+ 364   1      #ifdef DEBUG_UART
                   hal_uart_init(UART_BAUD_57K6); // ³õÊ¼»¯UART0
                   while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //µÈ´ýÊ±ÖÓÎÈ¶¨
-                    ;
+                      ;
               #endif
- 384   1      #if USE_WDT
-*** WARNING C322 IN LINE 384 OF main.c: unknown identifier
+ 369   1      #if USE_WDT
+*** WARNING C322 IN LINE 369 OF main.c: unknown identifier
                   hal_wdog_init(WDT_TIME);//ÅäÖÃ¿´ÃÅ¹·³¬Ê±Ê±¼ä2s£¬Ê¹ÄÜ¿´ÃÅ¹·
               #endif
- 387   1          PutString("Program starting...\r\n");
- 388   1          GetPrintLastPWM();  
- 389   1              CellVoltage();  
- 390   1              AHT10();
- 391   1              Send_data();
- 392   1          while(1)
- 393   1          {
- 394   2      
- 395   2      #if USE_WDT
-*** WARNING C322 IN LINE 395 OF main.c: unknown identifier
-                              hal_wdog_restart(); //Î¹¹·
+ 372   1          PutString("Program starting...\r\n");
+ 373   1          GetPrintLastPWM();
+ 374   1          CellVoltage();
+ 375   1          AHT10();
+ 376   1          Send_data();
+ 377   1          while(1) {
+ 378   2      
+ 379   2      #if USE_WDT
+*** WARNING C322 IN LINE 379 OF main.c: unknown identifier
+                      hal_wdog_restart(); //Î¹¹·
               #endif
- 398   2              if(KEY1 == 0){
- 399   3                              delay_ms(100);
- 400   3                              if(KEY1 == 0){
- 401   4                                      second = 0;
- 402   4                                      minute = 0;
- 403   4                                      CellVoltage();  
- 404   4                                      AHT10();
- 405   4                                      Send_data();
- 406   4                              }
+ 382   2              if(KEY1 == 0) {
+ 383   3                  delay_ms(100);
+ 384   3                  if(KEY1 == 0) {
+ 385   4                      second = 0;
+ 386   4                      minute = 0;
+ 387   4                      CellVoltage();
+ 388   4                      AHT10();
+ 389   4                      Send_data();
+ 390   4                  }
+ 391   3              }
+ 392   2              if(second <= MINUTE) { //Ò»·ÖÖÓ
+ 393   3                  second++;
+ 394   3                  SetPowrDownMode(REGRET);
+ 395   3                  PutString("into REGRET\n");
+ 396   3              } else {
+ 397   3                  second = 0;
+ 398   3                  minute++;
+ 399   3                  if(minute == 24 * HOUR) {
+ 400   4                      PutString("into DEEPSLEEP\n");
+ 401   4                      //SetPowrDownMode(DEEPSLEEP);             
+ 402   4                      CellVoltage();
+ 403   4                      minute = 0;
+ 404   4                  }
+ 405   3                  AHT10();
+ 406   3                  Send_data();
  407   3              }
- 408   2              if(second <= MINUTE){ //Ò»·ÖÖÓ        
- 409   3                  second++;
- 410   3                  SetPowrDownMode(REGRET);
- 411   3                  PutString("into REGRET\n");
- 412   3              }else{
- 413   3                  second = 0;
- 414   3                  minute++;
- 415   3                  if(minute == 24*HOUR)
- 416   3                  {
- 417   4                      PutString("into DEEPSLEEP\n");
- 418   4                      SetPowrDownMode(DEEPSLEEP);
- 419   4                  }
- 420   3                              AHT10();
-C51 COMPILER V9.52.0.0   MAIN                                                              08/09/2019 21:10:58 PAGE 8   
+ 408   2          }
+ 409   1      }
+*** WARNING C280 IN LINE 352 OF main.c: 'RfReceLen': unreferenced local variable
+ 410          /*******************************************************************************************************
+ 411           * Ãè  Êö : ÎÞÏßÖÐ¶Ï·þÎñº¯Êý
+ 412           * Èë  ²Î : ÎÞ
+ 413           * ·µ»ØÖµ : ÎÞ
+ 414           *******************************************************************************************************/
+ 415          void rf_irq() interrupt INTERRUPT_RFIRQ {
+ 416   1          uint8_t  irq_flags;
+ 417   1      
+ 418   1          irq_flags = hal_nrf_get_clear_irq_flags(); //¶ÁÈ¡²¢Çå³ýÎÞÏßÖÐ¶Ï±êÖ¾
+ 419   1      
+C51 COMPILER V9.54   MAIN                                                                  08/13/2019 14:54:26 PAGE 8   
 
- 421   3                              Send_data();
- 422   3              }
- 423   2          }
- 424   1      }
-*** WARNING C280 IN LINE 367 OF main.c: 'RfReceLen': unreferenced local variable
- 425          /*******************************************************************************************************
- 426           * Ãè  Êö : ÎÞÏßÖÐ¶Ï·þÎñº¯Êý
- 427           * Èë  ²Î : ÎÞ
- 428           * ·µ»ØÖµ : ÎÞ
- 429           *******************************************************************************************************/
- 430          void rf_irq() interrupt INTERRUPT_RFIRQ
- 431          {
- 432   1          uint8_t  irq_flags;
- 433   1      
- 434   1          irq_flags = hal_nrf_get_clear_irq_flags(); //¶ÁÈ¡²¢Çå³ýÎÞÏßÖÐ¶Ï±êÖ¾
- 435   1      
- 436   1          if(irq_flags & (1 << HAL_NRF_RX_DR)) //½ÓÊÕµ½Êý¾Ý?
- 437   1          {
- 438   2      
- 439   2              while(!hal_nrf_rx_fifo_empty())// Read payload
- 440   2              {
- 441   3                  PipeAndLen = hal_nrf_read_rx_payload(RxPayload);//¶ÁÈ¡Êý¾Ý
- 442   3              }
- 443   2              radio_busy = false;
- 444   2          }
- 445   1      
- 446   1          if(irq_flags & ((1 << HAL_NRF_TX_DS)))                      // transimmter finish
- 447   1          {
- 448   2              radio_busy = false;
- 449   2          }
- 450   1      
- 451   1          if(irq_flags & ((1 << HAL_NRF_MAX_RT)))                     // re-transimmter
- 452   1          {
- 453   2              radio_busy = false;
- 454   2              hal_nrf_flush_tx();
- 455   2          }
- 456   1      }
- 457          /********************************************END FILE*****************************************************
+ 420   1          if(irq_flags & (1 << HAL_NRF_RX_DR)) { //½ÓÊÕµ½Êý¾Ý?
+ 421   2      
+ 422   2              while(!hal_nrf_rx_fifo_empty()) { // Read payload
+ 423   3                  PipeAndLen = hal_nrf_read_rx_payload(RxPayload);//¶ÁÈ¡Êý¾Ý
+ 424   3              }
+ 425   2              radio_busy = false;
+ 426   2          }
+ 427   1      
+ 428   1          if(irq_flags & ((1 << HAL_NRF_TX_DS))) {    // transimmter finish
+ 429   2              radio_busy = false;
+ 430   2          }
+ 431   1      
+ 432   1          if(irq_flags & ((1 << HAL_NRF_MAX_RT))) {   // re-transimmter
+ 433   2              radio_busy = false;
+ 434   2              hal_nrf_flush_tx();
+ 435   2          }
+ 436   1      }
+ 437          /********************************************END FILE*****************************************************
              -/
- 458          
+ 438          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1431    ----
+   CODE SIZE        =   1439    ----
    CONSTANT SIZE    =    246    ----
    XDATA SIZE       =     73       2
    PDATA SIZE       =      7      32
