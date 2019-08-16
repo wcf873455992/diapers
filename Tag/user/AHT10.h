@@ -2,9 +2,17 @@
 #define __AHT10_H__
 #include <stdint.h>
 #include <reg24le1.h>
+#include "config.h"
+#include <string.h>
 
-#define  SCL    P14
-#define  SDA    P15
+#if (BOARD == IKMSIK)
+	#define  SCL    P14
+	#define  SDA    P15
+#else
+	#define  SCL    P02
+	#define  SDA    P06
+#endif
+
 #define		HIGH		1
 #define		LOW			0
 
@@ -22,4 +30,9 @@ uint8_t AHT10_Init(void);
 uint8_t JH_Read_Cal_Enable(void);
 void Read_AHT10();
 
+void  SDA_Pin_Output_Low(void);
+void  SDA_Pin_Output_Low(void);
+void  SCL_Pin_Output_HIGH(void);
+void  SCL_Pin_Output_HIGH(void);
+void Init_I2C_Sensor_Port(void);
 #endif

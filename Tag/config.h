@@ -4,7 +4,7 @@
 #define IKMSIK 1
 #define DIAPER 2
 
-#define BOARD IKMSIK
+#define BOARD DIAPER//DIAPER//IKMSIK
 #define	TRUE	1
 #define FALSE	0
 /******************************************************************************/
@@ -18,7 +18,7 @@
 #define  TAG_ID          1000	    // ID
 #define  TAG_CH          50	      // 信道
 
-#if 0
+#if 1
 	#define  TAG_TIME        2*32768U	  // 休眠时间：2*1000ms
 #else
 	#define  TAG_TIME        2.5*3276U	  // 休眠时间：10ms 测试用
@@ -28,7 +28,7 @@
 #define  TAG_ID_LEN      2        // ID字节数
 #define  ADC_TIME        7200U      // ADC检测时间间隔
 
-#define MINUTE		1//30=1分钟
+#define MINUTE		0//30=1分钟
 #define HOUR		60
 /******************************************************************************/
 /* Watchdog*/

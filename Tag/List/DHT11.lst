@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   DHT11                                                                 08/13/2019 14:54:27 PAGE 1   
+C51 COMPILER V9.54   DHT11                                                                 08/15/2019 15:51:52 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE DHT11
@@ -62,7 +62,7 @@ line level    source
   51   1        delay_us(1);   
   52   1      }
   53          
-C51 COMPILER V9.54   DHT11                                                                 08/13/2019 14:54:27 PAGE 2   
+C51 COMPILER V9.54   DHT11                                                                 08/15/2019 15:51:52 PAGE 2   
 
   54          /******************************************************************************
   55           * 描  述 : Ds18b20写操作：写入1个字节
@@ -126,7 +126,7 @@ line level    source
  113   2              uchartemp=(u8T_data_H_temp+u8T_data_L_temp+u8RH_data_H_temp+uRH_data_L_temp);
  114   2              if(uchartemp==u8checkdata_temp)
  115   2              {
-C51 COMPILER V9.54   DHT11                                                                 08/13/2019 14:54:27 PAGE 3   
+C51 COMPILER V9.54   DHT11                                                                 08/15/2019 15:51:52 PAGE 3   
 
  116   3                  u8RH_data_H=u8RH_data_H_temp;
  117   3                  u8RH_data_L=uRH_data_L_temp;

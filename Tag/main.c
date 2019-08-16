@@ -258,7 +258,11 @@ void	Send_data() {
     radio_busy = true;
     while(radio_busy)		    //等待操作完成
         ;
+#if	(BOARD == IKMSIK)
     led_flash(led1);
+#else		
+    led_flash(led3);
+#endif
 }
 /*******************************************************************************************************
  * 描  述 : 获取上一次低功耗模式，并通过串口打印
@@ -349,33 +353,39 @@ void SetPowrDownMode(uint8_t mode) {
 }
 
 void main(void) {
-    uint8_t RfReceLen, second = 0;
+    uint8_t RfReceLen,i, second = 0;
     uint32_t	minute = 0;
 
     TagInfo.id.id16 = TAG_ID;
-    IoInit();      //配置IO
-    SetWakeUpPin(); //设置唤醒管脚
-    led_init();
-    key_init();
-    mcu_init();
-    adc_init();
-    AHT10_Init();
-    RfCofig();
 #ifdef DEBUG_UART
     hal_uart_init(UART_BAUD_57K6); // 初始化UART0
     while(hal_clk_get_16m_source() != HAL_CLK_XOSC16M) //等待时钟稳定
         ;
 #endif
+    IoInit();      //配置IO
+    SetWakeUpPin(); //设置唤醒管脚
+    led_init();
+    key_init();
+    mcu_init();
+    adc_init();    
+    RfCofig();
+		if(AHT10_Init() == 0)PutString("AHT10_Init fial !!!\r\n");
 #if USE_WDT
     hal_wdog_init(WDT_TIME);//配置看门狗超时时间2s，使能看门狗
 #endif
     PutString("Program starting...\r\n");
+		for(i = 0;i < 3; i ++){
+			led_on(led2);
+			delay_ms(100);
+			led_off(led2);
+			delay_ms(100);
+		}
     GetPrintLastPWM();
     CellVoltage();
     AHT10();
-    Send_data();
+    Send_data();		
+		
     while(1) {
-
 #if USE_WDT
         hal_wdog_restart(); //喂狗
 #endif

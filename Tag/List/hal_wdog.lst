@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   HAL_WDOG                                                              08/13/2019 14:54:28 PAGE 1   
+C51 COMPILER V9.54   HAL_WDOG                                                              08/15/2019 15:51:53 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE HAL_WDOG
@@ -62,7 +62,7 @@ line level    source
               #error Please define watchdog restart
               #endif
   53   1      }
-C51 COMPILER V9.54   HAL_WDOG                                                              08/13/2019 14:54:28 PAGE 2   
+C51 COMPILER V9.54   HAL_WDOG                                                              08/15/2019 15:51:53 PAGE 2   
 
 
 

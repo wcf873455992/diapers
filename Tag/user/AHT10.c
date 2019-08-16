@@ -22,22 +22,18 @@ void flash_P00() {
     delay_ms(500);
     P00 = HIGH;
 }
+#if	(BOARD == IKMSIK)
 void SDA_Pin_Output_High(void) { //将P15配置为输出 ， 并设置为高电平， P15作为I2C的SDA
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = HIGH;
 }
-
 void SDA_Pin_Output_Low(void) { //将P15配置为输出  并设置为低电平
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = LOW;
 }
-
 void SDA_Pin_IN_FLOATING(void) { //SDA配置为悬浮输入
     P1DIR |= 0x20;	   //配置P1.5为输入
 }
-
-
-
 void SCL_Pin_Output_High(void) { //SCL输出高电平，P14作为I2C的SCL
     P1DIR &= ~0x10;	   //配置P1.4为输出
     SCL	= HIGH;
@@ -49,13 +45,42 @@ void SCL_Pin_Output_Low(void) { //SCL输出低电平
 }
 
 void Init_I2C_Sensor_Port(void) { //初始化I2C接口
-
     P1DIR &= ~0x10;	   //配置P1.4为输出
     SCL	= HIGH;
-
     P1DIR &= ~0x20;	   //配置P1.5为输出
     SDA = HIGH;
 }
+#else
+void SDA_Pin_Output_High(void) { //将P15配置为输出 ， 并设置为高电平， P15作为I2C的SDA
+    P0DIR &= ~0x40;	   //配置P0.6为输出
+    SDA = HIGH;
+}
+void SDA_Pin_Output_Low(void) { //将P15配置为输出  并设置为低电平
+    P0DIR &= ~0x40;	   //配置P0.6为输出
+    SDA = LOW;
+}
+void SDA_Pin_IN_FLOATING(void) { //SDA配置为悬浮输入
+    P0DIR |= 0x40;	   //配置P0.6为输入
+}
+
+
+void SCL_Pin_Output_High(void) { //SCL输出高电平，P14作为I2C的SCL
+    P0DIR &= ~0x04;	   //配置P0.2为输出
+    SCL	= HIGH;
+}
+
+void SCL_Pin_Output_Low(void) { //SCL输出低电平
+    P0DIR &= ~0x04;	   //配置P0.2为输出
+    SCL	= LOW;
+}
+
+void Init_I2C_Sensor_Port(void) { //初始化I2C接口
+    P0DIR &= ~0x04;	   //配置P0.2为输出
+    SCL	= HIGH;
+		P0DIR &= ~0x40;	   //配置P0.6为输出
+    SDA = HIGH;
+}
+#endif
 
 
 void I2C_Start(void) {	 //I2C主机发送START信号
@@ -238,20 +263,30 @@ void Read_AHT10() { //读取AHT10的温度和湿度数据
     volatile int   temp = 0;
     uint16_t cnt = 0;
 
-
     while(JH_Read_Cal_Enable() == 0) { //等到校准输出使能位为1，才读取。
-        AHT10_Init();//如果为0再使能一次
+        if(AHT10_Init() == 0){//如果为0再使能一次
+					AHT10Value.humyH = 0xff;
+					AHT10Value.humyL = 0xff;
+					AHT10Value.tempH = 0xff;
+					AHT10Value.tempL = 0xff;
+					//return;
+				};
+				if(cnt++ >= 2){
+					return;
+				}
         delay_ms(30);
+			/**/
     }
+		
 
     JH_SendAC();//向AHT10发送AC命令
     delay_ms(75);//等待75ms
     cnt = 0;
     while(((JH_Read_Status() & 0x80) == 0x80)) { //等待忙状态结束
-        //SensorDelay_us(1508);
         delay_us(1508);
         if(cnt++ >= 100) {
             break;
+					//return;
         }
     }
     I2C_Start();
@@ -296,6 +331,7 @@ void Read_AHT10() { //读取AHT10的温度和湿度数据
 uint8_t AHT10_Init(void) { //初始化AHT10
     uint8_t	count;
 
+		memset(&AHT10Value, 0, sizeof(AHT10Value));
     Init_I2C_Sensor_Port();
     delay_us(11038);
 

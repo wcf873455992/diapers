@@ -14,9 +14,14 @@ enum LEDS {
     led2,
 };
 #else
-#define LED1	P00
-#define LED2	P01
-#define LED3	P02
+	#define LED1	P15
+	#define LED2	P16
+	#define LED3	P00
+enum LEDS {
+    led1,
+    led2,
+    led3,
+};
 #endif
 
 void led_init();

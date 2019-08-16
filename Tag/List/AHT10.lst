@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 1   
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE AHT10
@@ -33,421 +33,412 @@ line level    source
   22   1          delay_ms(500);
   23   1          P00 = HIGH;
   24   1      }
-  25          void SDA_Pin_Output_High(void) { //½«P15ÅäÖÃÎªÊä³ö £¬ ²¢ÉèÖÃÎª¸ßµçÆ½£¬ P15×÷ÎªI2CµÄSDA
-  26   1          P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
-  27   1          SDA = HIGH;
-  28   1          //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
-  29   1          //Gpio_SetIO(1,5,1);
-  30   1      }
-  31          
-  32          void SDA_Pin_Output_Low(void) { //½«P15ÅäÖÃÎªÊä³ö  ²¢ÉèÖÃÎªµÍµçÆ½
-  33   1          P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
-  34   1          SDA = LOW;
-  35   1          //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//config P15 to output
-  36   1          //Gpio_SetIO(1,5,0);
-  37   1      }
-  38          
-  39          void SDA_Pin_IN_FLOATING(void) { //SDAÅäÖÃÎªÐü¸¡ÊäÈë
-  40   1          P1DIR |= 0x20;     //ÅäÖÃP1.5ÎªÊäÈë
-  41   1          //Gpio_InitIO(1, 5, GpioDirIn);
-  42   1      }
-  43          
-  44          
-  45          
-  46          void SCL_Pin_Output_High(void) { //SCLÊä³ö¸ßµçÆ½£¬P14×÷ÎªI2CµÄSCL
-  47   1          //Gpio_SetIO(1, 4, 1);
-  48   1          P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
-  49   1          SCL = HIGH;
-  50   1      }
-  51          
-  52          void SCL_Pin_Output_Low(void) { //SCLÊä³öµÍµçÆ½
-  53   1          //Gpio_SetIO(1, 4, 0);
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 2   
+  25          #if (BOARD == IKMSIK)
+              void SDA_Pin_Output_High(void) { //½«P15ÅäÖÃÎªÊä³ö £¬ ²¢ÉèÖÃÎª¸ßµçÆ½£¬ P15×÷ÎªI2CµÄSDA
+                  P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
+                  SDA = HIGH;
+              }
+              void SDA_Pin_Output_Low(void) { //½«P15ÅäÖÃÎªÊä³ö  ²¢ÉèÖÃÎªµÍµçÆ½
+                  P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
+                  SDA = LOW;
+              }
+              void SDA_Pin_IN_FLOATING(void) { //SDAÅäÖÃÎªÐü¸¡ÊäÈë
+                  P1DIR |= 0x20;     //ÅäÖÃP1.5ÎªÊäÈë
+              }
+              void SCL_Pin_Output_High(void) { //SCLÊä³ö¸ßµçÆ½£¬P14×÷ÎªI2CµÄSCL
+                  P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
+                  SCL = HIGH;
+              }
+              
+              void SCL_Pin_Output_Low(void) { //SCLÊä³öµÍµçÆ½
+                  P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
+                  SCL = LOW;
+              }
+              
+              void Init_I2C_Sensor_Port(void) { //³õÊ¼»¯I2C½Ó¿Ú
+                  P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
+                  SCL = HIGH;
+                  P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
+                  SDA = HIGH;
+              }
+              #else
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 2   
 
-  54   1          P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
-  55   1          SCL = LOW;
-  56   1      }
-  57          
-  58          void Init_I2C_Sensor_Port(void) { //³õÊ¼»¯I2C½Ó¿Ú
-  59   1      
-  60   1          //Gpio_InitIOExt(1,5,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//½«P15ÅäÖÃÎª¿ªÂ©Êä³ö  ²¢ÉèÖÃÎª¸ßµçÆ½
-  61   1          //Gpio_SetIO(1,5,1);
-  62   1          P1DIR &= ~0x10;    //ÅäÖÃP1.4ÎªÊä³ö
-  63   1          SCL = HIGH;
-  64   1      
-  65   1          //Gpio_InitIOExt(1,4,GpioDirOut,TRUE, FALSE, TRUE, FALSE);//½«P14ÅäÖÃÎª¿ªÂ©Êä³ö  ²¢ÉèÖÃÎª¸ßµçÆ½
-  66   1          //Gpio_SetIO(1,4,1);
-  67   1          P1DIR &= ~0x20;    //ÅäÖÃP1.5ÎªÊä³ö
-  68   1          SDA = HIGH;
-  69   1      }
-  70          
+  54          void SDA_Pin_Output_High(void) { //½«P15ÅäÖÃÎªÊä³ö £¬ ²¢ÉèÖÃÎª¸ßµçÆ½£¬ P15×÷ÎªI2CµÄSDA
+  55   1          P0DIR &= ~0x40;    //ÅäÖÃP0.6ÎªÊä³ö
+  56   1          SDA = HIGH;
+  57   1      }
+  58          void SDA_Pin_Output_Low(void) { //½«P15ÅäÖÃÎªÊä³ö  ²¢ÉèÖÃÎªµÍµçÆ½
+  59   1          P0DIR &= ~0x40;    //ÅäÖÃP0.6ÎªÊä³ö
+  60   1          SDA = LOW;
+  61   1      }
+  62          void SDA_Pin_IN_FLOATING(void) { //SDAÅäÖÃÎªÐü¸¡ÊäÈë
+  63   1          P0DIR |= 0x40;     //ÅäÖÃP0.6ÎªÊäÈë
+  64   1      }
+  65          
+  66          
+  67          void SCL_Pin_Output_High(void) { //SCLÊä³ö¸ßµçÆ½£¬P14×÷ÎªI2CµÄSCL
+  68   1          P0DIR &= ~0x04;    //ÅäÖÃP0.2ÎªÊä³ö
+  69   1          SCL = HIGH;
+  70   1      }
   71          
-  72          void I2C_Start(void) {   //I2CÖ÷»ú·¢ËÍSTARTÐÅºÅ
-  73   1          SDA_Pin_Output_High();
-  74   1          //SensorDelay_us(8);
-  75   1          delay_us(8);
-  76   1          SCL_Pin_Output_High();
-  77   1          //SensorDelay_us(8);
-  78   1          delay_us(8);
-  79   1          SDA_Pin_Output_Low();
-  80   1          //SensorDelay_us(8);
-  81   1          delay_us(8);
-  82   1          SCL_Pin_Output_Low();
-  83   1          //SensorDelay_us(8);
-  84   1          delay_us(8);
-  85   1      }
-  86          
-  87          
-  88          void ZSSC_I2C_WR_Byte(uint8_t Byte) { //ÍùAHT10Ð´Ò»¸ö×Ö½Ú
-  89   1          uint8_t Data, N, i;
-  90   1          Data = Byte;
-  91   1          i = 0x80;
-  92   1          for(N = 0; N < 8; N++) {
-  93   2              SCL_Pin_Output_Low();
-  94   2      
-  95   2              //Delay_3us();
-  96   2              delay_us(3);
-  97   2              if(i & Data) {
-  98   3                  SDA_Pin_Output_High();
-  99   3              } else {
- 100   3                  SDA_Pin_Output_Low();
- 101   3              }
- 102   2      
- 103   2              SCL_Pin_Output_High();
- 104   2              //Delay_3us();
+  72          void SCL_Pin_Output_Low(void) { //SCLÊä³öµÍµçÆ½
+  73   1          P0DIR &= ~0x04;    //ÅäÖÃP0.2ÎªÊä³ö
+  74   1          SCL = LOW;
+  75   1      }
+  76          
+  77          void Init_I2C_Sensor_Port(void) { //³õÊ¼»¯I2C½Ó¿Ú
+  78   1          P0DIR &= ~0x04;    //ÅäÖÃP0.2ÎªÊä³ö
+  79   1          SCL = HIGH;
+  80   1          P0DIR &= ~0x40;    //ÅäÖÃP0.6ÎªÊä³ö
+  81   1          SDA = HIGH;
+  82   1      }
+  83          #endif
+  84          
+  85          
+  86          void I2C_Start(void) {   //I2CÖ÷»ú·¢ËÍSTARTÐÅºÅ
+  87   1          SDA_Pin_Output_High();
+  88   1          delay_us(8);
+  89   1          SCL_Pin_Output_High();
+  90   1          delay_us(8);
+  91   1          SDA_Pin_Output_Low();
+  92   1          delay_us(8);
+  93   1          SCL_Pin_Output_Low();
+  94   1          delay_us(8);
+  95   1      }
+  96          
+  97          
+  98          void ZSSC_I2C_WR_Byte(uint8_t Byte) { //ÍùAHT10Ð´Ò»¸ö×Ö½Ú
+  99   1          uint8_t Data, N, i;
+ 100   1          Data = Byte;
+ 101   1          i = 0x80;
+ 102   1          for(N = 0; N < 8; N++) {
+ 103   2              SCL_Pin_Output_Low();
+ 104   2      
  105   2              delay_us(3);
- 106   2      
- 107   2              Data <<= 1;
- 108   2      
- 109   2          }
- 110   1          SCL_Pin_Output_Low();
- 111   1          //SensorDelay_us(8);
- 112   1          delay_us(8);
- 113   1          SDA_Pin_IN_FLOATING();
- 114   1          //SensorDelay_us(8);
- 115   1          delay_us(8);
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 3   
+ 106   2              if(i & Data) {
+ 107   3                  SDA_Pin_Output_High();
+ 108   3              } else {
+ 109   3                  SDA_Pin_Output_Low();
+ 110   3              }
+ 111   2      
+ 112   2              SCL_Pin_Output_High();
+ 113   2              delay_us(3);
+ 114   2      
+ 115   2              Data <<= 1;
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 3   
 
- 116   1      }
- 117          
- 118          
- 119          uint8_t ZSSC_I2C_RD_Byte(void) { //´ÓAHT10¶ÁÈ¡Ò»¸ö×Ö½Ú
- 120   1          uint8_t Byte, i, a;
- 121   1          Byte = 0;
- 122   1          SCL_Pin_Output_Low();
- 123   1          SDA_Pin_IN_FLOATING();
- 124   1          //SensorDelay_us(8);
- 125   1          delay_us(8);
- 126   1          for(i = 0; i < 8; i++) {
- 127   2              SCL_Pin_Output_High();
- 128   2              //Delay_1us();
- 129   2              delay_us(1);
- 130   2              a = 0;
- 131   2              //if(Gpio_GetIO(1,5))a=1;
- 132   2              if(SDA)a = 1;
- 133   2              Byte = (Byte << 1) | a;
- 134   2              SCL_Pin_Output_Low();
- 135   2              //Delay_1us();
- 136   2              delay_us(8);
- 137   2          }
- 138   1          SDA_Pin_IN_FLOATING();
- 139   1          //SensorDelay_us(8);
- 140   1          delay_us(8);
- 141   1          return Byte;
- 142   1      }
- 143          
+ 116   2      
+ 117   2          }
+ 118   1          SCL_Pin_Output_Low();
+ 119   1          delay_us(8);
+ 120   1          SDA_Pin_IN_FLOATING();
+ 121   1          delay_us(8);
+ 122   1      }
+ 123          
+ 124          
+ 125          uint8_t ZSSC_I2C_RD_Byte(void) { //´ÓAHT10¶ÁÈ¡Ò»¸ö×Ö½Ú
+ 126   1          uint8_t Byte, i, a;
+ 127   1          Byte = 0;
+ 128   1          SCL_Pin_Output_Low();
+ 129   1          SDA_Pin_IN_FLOATING();
+ 130   1          delay_us(8);
+ 131   1          for(i = 0; i < 8; i++) {
+ 132   2              SCL_Pin_Output_High();
+ 133   2              delay_us(1);
+ 134   2              a = 0;
+ 135   2              if(SDA)a = 1;
+ 136   2              Byte = (Byte << 1) | a;
+ 137   2              SCL_Pin_Output_Low();
+ 138   2              delay_us(8);
+ 139   2          }
+ 140   1          SDA_Pin_IN_FLOATING();
+ 141   1          delay_us(8);
+ 142   1          return Byte;
+ 143   1      }
  144          
- 145          uint8_t Receive_ACK(void) { //¿´AHT10ÊÇ·ñÓÐ»Ø¸´ACK
- 146   1          uint16_t CNT;
- 147   1          CNT = 0;
- 148   1          SCL_Pin_Output_Low();
- 149   1          SDA_Pin_IN_FLOATING();
- 150   1          //SensorDelay_us(8);
+ 145          
+ 146          uint8_t Receive_ACK(void) { //¿´AHT10ÊÇ·ñÓÐ»Ø¸´ACK
+ 147   1          uint16_t CNT;
+ 148   1          CNT = 0;
+ 149   1          SCL_Pin_Output_Low();
+ 150   1          SDA_Pin_IN_FLOATING();
  151   1          delay_us(8);
  152   1          SCL_Pin_Output_High();
- 153   1          //SensorDelay_us(8);
- 154   1          delay_us(8);
- 155   1          //while((Gpio_GetIO(1,5))  && CNT < 100)
- 156   1      
- 157   1          while((SDA)  && CNT < 100)
- 158   1              CNT++;
- 159   1          if(CNT == 100) {
- 160   2              return 0;
- 161   2          }
- 162   1          SCL_Pin_Output_Low();
- 163   1          //SensorDelay_us(8);
- 164   1          delay_us(8);
- 165   1          return 1;
- 166   1      }
- 167          
- 168          void Send_ACK(void) {   //Ö÷»ú»Ø¸´ACKÐÅºÅ
- 169   1          SCL_Pin_Output_Low();
- 170   1          //SensorDelay_us(8);
+ 153   1          delay_us(8);
+ 154   1      
+ 155   1          while((SDA)  && CNT < 100)
+ 156   1              CNT++;
+ 157   1          if(CNT == 100) {
+ 158   2              return 0;
+ 159   2          }
+ 160   1          SCL_Pin_Output_Low();
+ 161   1          delay_us(8);
+ 162   1          return 1;
+ 163   1      }
+ 164          
+ 165          void Send_ACK(void) {   //Ö÷»ú»Ø¸´ACKÐÅºÅ
+ 166   1          SCL_Pin_Output_Low();
+ 167   1          delay_us(8);
+ 168   1          SDA_Pin_Output_Low();
+ 169   1          delay_us(8);
+ 170   1          SCL_Pin_Output_High();
  171   1          delay_us(8);
- 172   1          SDA_Pin_Output_Low();
- 173   1          //SensorDelay_us(8);
- 174   1          delay_us(8);
- 175   1          SCL_Pin_Output_High();
- 176   1          //SensorDelay_us(8);
- 177   1          delay_us(8);
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 4   
+ 172   1          SCL_Pin_Output_Low();
+ 173   1          delay_us(8);
+ 174   1          SDA_Pin_IN_FLOATING();
+ 175   1          delay_us(8);
+ 176   1      }
+ 177          
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 4   
 
- 178   1          SCL_Pin_Output_Low();
- 179   1          //SensorDelay_us(8);
+ 178          void Send_NOT_ACK(void) { //Ö÷»ú²»»Ø¸´ACK
+ 179   1          SCL_Pin_Output_Low();
  180   1          delay_us(8);
- 181   1          SDA_Pin_IN_FLOATING();
- 182   1          //SensorDelay_us(8);
- 183   1          delay_us(8);
- 184   1      }
- 185          
- 186          void Send_NOT_ACK(void) { //Ö÷»ú²»»Ø¸´ACK
- 187   1          SCL_Pin_Output_Low();
- 188   1          //SensorDelay_us(8);
- 189   1          delay_us(8);
- 190   1          SDA_Pin_Output_High();
- 191   1          //SensorDelay_us(8);
- 192   1          delay_us(8);
- 193   1          SCL_Pin_Output_High();
- 194   1          //SensorDelay_us(8);
+ 181   1          SDA_Pin_Output_High();
+ 182   1          delay_us(8);
+ 183   1          SCL_Pin_Output_High();
+ 184   1          delay_us(8);
+ 185   1          SCL_Pin_Output_Low();
+ 186   1          delay_us(8);
+ 187   1          SDA_Pin_Output_Low();
+ 188   1          delay_us(8);
+ 189   1      }
+ 190          
+ 191          void Stop_I2C(void) {  //Ò»ÌõÐ­Òé½áÊø
+ 192   1          SDA_Pin_Output_Low();
+ 193   1          delay_us(8);
+ 194   1          SCL_Pin_Output_High();
  195   1          delay_us(8);
- 196   1          SCL_Pin_Output_Low();
- 197   1          //SensorDelay_us(8);
- 198   1          delay_us(8);
- 199   1          SDA_Pin_Output_Low();
- 200   1          //SensorDelay_us(8);
- 201   1          delay_us(8);
- 202   1      }
- 203          
- 204          void Stop_I2C(void) {  //Ò»ÌõÐ­Òé½áÊø
- 205   1          SDA_Pin_Output_Low();
- 206   1          //SensorDelay_us(8);
- 207   1          delay_us(8);
- 208   1          SCL_Pin_Output_High();
- 209   1          //SensorDelay_us(8);
- 210   1          delay_us(8);
- 211   1          SDA_Pin_Output_High();
- 212   1          //SensorDelay_us(8);
- 213   1          delay_us(8);
+ 196   1          SDA_Pin_Output_High();
+ 197   1          delay_us(8);
+ 198   1      }
+ 199          
+ 200          uint8_t JH_Read_Status(void) { //¶ÁÈ¡AHT10µÄ×´Ì¬¼Ä´æÆ÷
+ 201   1      
+ 202   1          uint8_t Byte_first;
+ 203   1          I2C_Start();
+ 204   1          ZSSC_I2C_WR_Byte(0x71);
+ 205   1          Receive_ACK();
+ 206   1          Byte_first = ZSSC_I2C_RD_Byte();
+ 207   1      
+ 208   1      
+ 209   1          Send_NOT_ACK();
+ 210   1          Stop_I2C();
+ 211   1      
+ 212   1      
+ 213   1          return Byte_first;
  214   1      }
  215          
- 216          uint8_t JH_Read_Status(void) { //¶ÁÈ¡AHT10µÄ×´Ì¬¼Ä´æÆ÷
- 217   1      
- 218   1          uint8_t Byte_first;
- 219   1          I2C_Start();
- 220   1          ZSSC_I2C_WR_Byte(0x71);
- 221   1          Receive_ACK();
- 222   1          Byte_first = ZSSC_I2C_RD_Byte();
- 223   1      
- 224   1      
- 225   1          Send_NOT_ACK();
- 226   1          Stop_I2C();
- 227   1      
+ 216          uint8_t JH_Read_Cal_Enable(void) { //²éÑ¯cal enableÎ»ÓÐÃ»ÓÐÊ¹ÄÜ£¿
+ 217   1          uint8_t val = 0;
+ 218   1      
+ 219   1          val = JH_Read_Status();
+ 220   1          if((val & 0x68) == 0x08) //ÅÐ¶ÏNORÄ£Ê½ºÍÐ£×¼Êä³öÊÇ·ñÓÐÐ§
+ 221   1              return 1;
+ 222   1          else  return 0;
+ 223   1      }
+ 224          
+ 225          
+ 226          
+ 227          void JH_SendAC(void) { //ÏòAHT10·¢ËÍACÃüÁî
  228   1      
- 229   1          return Byte_first;
- 230   1      }
- 231          
- 232          uint8_t JH_Read_Cal_Enable(void) { //²éÑ¯cal enableÎ»ÓÐÃ»ÓÐÊ¹ÄÜ£¿
- 233   1          uint8_t val = 0;//ret = 0,
- 234   1      
- 235   1          val = JH_Read_Status();
- 236   1          if((val & 0x68) == 0x08) //ÅÐ¶ÏNORÄ£Ê½ºÍÐ£×¼Êä³öÊÇ·ñÓÐÐ§
- 237   1              return 1;
- 238   1          else  return 0;
- 239   1      }
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 5   
+ 229   1          I2C_Start();
+ 230   1          ZSSC_I2C_WR_Byte(0x70);
+ 231   1          Receive_ACK();
+ 232   1          ZSSC_I2C_WR_Byte(0xac);
+ 233   1          Receive_ACK();
+ 234   1          ZSSC_I2C_WR_Byte(0x33);
+ 235   1          Receive_ACK();
+ 236   1          ZSSC_I2C_WR_Byte(0x00);
+ 237   1          Receive_ACK();
+ 238   1          Stop_I2C();
+ 239   1      
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 5   
 
- 240          
+ 240   1      }
  241          
- 242          
- 243          void JH_SendAC(void) { //ÏòAHT10·¢ËÍACÃüÁî
+ 242          void JH_Send_BA(void) { //ÏòAHT10·¢ËÍBAÃüÁî
+ 243   1      
  244   1      
  245   1          I2C_Start();
  246   1          ZSSC_I2C_WR_Byte(0x70);
  247   1          Receive_ACK();
- 248   1          ZSSC_I2C_WR_Byte(0xac);
+ 248   1          ZSSC_I2C_WR_Byte(0xba);
  249   1          Receive_ACK();
- 250   1          ZSSC_I2C_WR_Byte(0x33);
- 251   1          Receive_ACK();
- 252   1          ZSSC_I2C_WR_Byte(0x00);
- 253   1          Receive_ACK();
- 254   1          Stop_I2C();
- 255   1      
- 256   1      }
- 257          
- 258          void JH_Send_BA(void) { //ÏòAHT10·¢ËÍBAÃüÁî
- 259   1      
- 260   1      
- 261   1          I2C_Start();
- 262   1          ZSSC_I2C_WR_Byte(0x70);
- 263   1          Receive_ACK();
- 264   1          ZSSC_I2C_WR_Byte(0xba);
- 265   1          Receive_ACK();
- 266   1          Stop_I2C();
- 267   1      
- 268   1      
- 269   1      }
- 270          
- 271          void Read_AHT10() { //¶ÁÈ¡AHT10µÄÎÂ¶ÈºÍÊª¶ÈÊý¾Ý
- 272   1          volatile uint8_t  Byte_1th = 0;
- 273   1          volatile uint8_t  Byte_2th = 0;
- 274   1          volatile uint8_t  Byte_3th = 0;
- 275   1          volatile uint8_t  Byte_4th = 0;
- 276   1          volatile uint8_t  Byte_5th = 0;
- 277   1          volatile uint8_t  Byte_6th = 0;
- 278   1          uint32_t RetuData = 0;
- 279   1          volatile int   temp = 0;
- 280   1          uint16_t cnt = 0;
+ 250   1          Stop_I2C();
+ 251   1      
+ 252   1      
+ 253   1      }
+ 254          
+ 255          void Read_AHT10() { //¶ÁÈ¡AHT10µÄÎÂ¶ÈºÍÊª¶ÈÊý¾Ý
+ 256   1          volatile uint8_t  Byte_1th = 0;
+ 257   1          volatile uint8_t  Byte_2th = 0;
+ 258   1          volatile uint8_t  Byte_3th = 0;
+ 259   1          volatile uint8_t  Byte_4th = 0;
+ 260   1          volatile uint8_t  Byte_5th = 0;
+ 261   1          volatile uint8_t  Byte_6th = 0;
+ 262   1          uint32_t RetuData = 0;
+ 263   1          volatile int   temp = 0;
+ 264   1          uint16_t cnt = 0;
+ 265   1      
+ 266   1          while(JH_Read_Cal_Enable() == 0) { //µÈµ½Ð£×¼Êä³öÊ¹ÄÜÎ»Îª1£¬²Å¶ÁÈ¡¡£
+ 267   2              if(AHT10_Init() == 0){//Èç¹ûÎª0ÔÙÊ¹ÄÜÒ»´Î
+ 268   3                AHT10Value.humyH = 0xff;
+ 269   3                AHT10Value.humyL = 0xff;
+ 270   3                AHT10Value.tempH = 0xff;
+ 271   3                AHT10Value.tempL = 0xff;
+ 272   3                //return;
+ 273   3              };
+ 274   2              if(cnt++ >= 2){
+ 275   3                return;
+ 276   3              }
+ 277   2              delay_ms(30);
+ 278   2            /**/
+ 279   2          }
+ 280   1          
  281   1      
- 282   1      
- 283   1          while(JH_Read_Cal_Enable() == 0) { //µÈµ½Ð£×¼Êä³öÊ¹ÄÜÎ»Îª1£¬²Å¶ÁÈ¡¡£
- 284   2              AHT10_Init();//Èç¹ûÎª0ÔÙÊ¹ÄÜÒ»´Î
- 285   2              delay_ms(30);
- 286   2          }
- 287   1      
- 288   1          JH_SendAC();//ÏòAHT10·¢ËÍACÃüÁî
- 289   1          delay_ms(75);//µÈ´ý75ms
- 290   1          cnt = 0;
- 291   1          while(((JH_Read_Status() & 0x80) == 0x80)) { //µÈ´ýÃ¦×´Ì¬½áÊø
- 292   2              //SensorDelay_us(1508);
- 293   2              delay_us(1508);
- 294   2              if(cnt++ >= 100) {
- 295   3                  break;
- 296   3              }
- 297   2          }
- 298   1          I2C_Start();
- 299   1      
- 300   1          ZSSC_I2C_WR_Byte(0x71);//0x70+1   0x70ÎªÉè±¸µØÖ· 1Îª·½ÏòÎ»
- 301   1          Receive_ACK();
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 6   
+ 282   1          JH_SendAC();//ÏòAHT10·¢ËÍACÃüÁî
+ 283   1          delay_ms(75);//µÈ´ý75ms
+ 284   1          cnt = 0;
+ 285   1          while(((JH_Read_Status() & 0x80) == 0x80)) { //µÈ´ýÃ¦×´Ì¬½áÊø
+ 286   2              delay_us(1508);
+ 287   2              if(cnt++ >= 100) {
+ 288   3                  break;
+ 289   3                //return;
+ 290   3              }
+ 291   2          }
+ 292   1          I2C_Start();
+ 293   1      
+ 294   1          ZSSC_I2C_WR_Byte(0x71);//0x70+1   0x70ÎªÉè±¸µØÖ· 1Îª·½ÏòÎ»
+ 295   1          Receive_ACK();
+ 296   1          Byte_1th = ZSSC_I2C_RD_Byte();//×´Ì¬×Ö
+ 297   1          Send_ACK();
+ 298   1          Byte_2th = ZSSC_I2C_RD_Byte();//Êª¶È×Ö½Ú
+ 299   1          Send_ACK();
+ 300   1          Byte_3th = ZSSC_I2C_RD_Byte();//Êª¶È×Ö½Ú
+ 301   1          Send_ACK();
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 6   
 
- 302   1          Byte_1th = ZSSC_I2C_RD_Byte();//×´Ì¬×Ö
+ 302   1          Byte_4th = ZSSC_I2C_RD_Byte();//¸ß4Î»ÎªÊª¶È  µÍ4Î»ÎªÎÂ¶È
  303   1          Send_ACK();
- 304   1          Byte_2th = ZSSC_I2C_RD_Byte();//Êª¶È×Ö½Ú
+ 304   1          Byte_5th = ZSSC_I2C_RD_Byte();//ÎÂ¶È×Ö½Ú
  305   1          Send_ACK();
- 306   1          Byte_3th = ZSSC_I2C_RD_Byte();//Êª¶È×Ö½Ú
- 307   1          Send_ACK();
- 308   1          Byte_4th = ZSSC_I2C_RD_Byte();//¸ß4Î»ÎªÊª¶È  µÍ4Î»ÎªÎÂ¶È
- 309   1          Send_ACK();
- 310   1          Byte_5th = ZSSC_I2C_RD_Byte();//ÎÂ¶È×Ö½Ú
- 311   1          Send_ACK();
- 312   1          Byte_6th = ZSSC_I2C_RD_Byte();//ÎÂ¶È×Ö½Ú
- 313   1          Send_NOT_ACK();
- 314   1          Stop_I2C();
- 315   1      
- 316   1          RetuData = (RetuData | Byte_2th) << 8;
- 317   1          RetuData = (RetuData | Byte_3th) << 8;
- 318   1          RetuData = (RetuData | Byte_4th);
- 319   1          RetuData = RetuData >> 4;
- 320   1      
- 321   1          temp = (RetuData * 1000 / 1024 / 1024); //¼ÆËãµÃµ½Êª¶ÈÖµ£¨·Å´óÁË10±¶,Èç¹ûc1=523£¬±íÊ¾ÏÖÔÚÊª¶ÈÎª52.3%£©
- 322   1          AHT10Value.humyH = (temp / 100) << 4 | (temp % 100 / 10) ;
- 323   1          AHT10Value.humyL = temp % 100 % 10 << 4;
+ 306   1          Byte_6th = ZSSC_I2C_RD_Byte();//ÎÂ¶È×Ö½Ú
+ 307   1          Send_NOT_ACK();
+ 308   1          Stop_I2C();
+ 309   1      
+ 310   1          RetuData = (RetuData | Byte_2th) << 8;
+ 311   1          RetuData = (RetuData | Byte_3th) << 8;
+ 312   1          RetuData = (RetuData | Byte_4th);
+ 313   1          RetuData = RetuData >> 4;
+ 314   1      
+ 315   1          temp = (RetuData * 1000 / 1024 / 1024); //¼ÆËãµÃµ½Êª¶ÈÖµ£¨·Å´óÁË10±¶,Èç¹ûc1=523£¬±íÊ¾ÏÖÔÚÊª¶ÈÎª52.3%£©
+ 316   1          AHT10Value.humyH = (temp / 100) << 4 | (temp % 100 / 10) ;
+ 317   1          AHT10Value.humyL = temp % 100 % 10 << 4;
+ 318   1      
+ 319   1          RetuData = 0;
+ 320   1          RetuData = (RetuData | Byte_4th) << 8;
+ 321   1          RetuData = (RetuData | Byte_5th) << 8;
+ 322   1          RetuData = (RetuData | Byte_6th);
+ 323   1          RetuData = RetuData & 0xfffff;
  324   1      
- 325   1          RetuData = 0;
- 326   1          RetuData = (RetuData | Byte_4th) << 8;
- 327   1          RetuData = (RetuData | Byte_5th) << 8;
- 328   1          RetuData = (RetuData | Byte_6th);
- 329   1          RetuData = RetuData & 0xfffff;
- 330   1      
- 331   1          temp = (RetuData * 2000 / 1024 / 1024 - 500); //¼ÆËãµÃµ½ÎÂ¶ÈÖµ£¨·Å´óÁË10±¶£¬Èç¹ût1=245£¬±íÊ¾ÏÖÔÚÎÂ¶ÈÎª
+ 325   1          temp = (RetuData * 2000 / 1024 / 1024 - 500); //¼ÆËãµÃµ½ÎÂ¶ÈÖµ£¨·Å´óÁË10±¶£¬Èç¹ût1=245£¬±íÊ¾ÏÖÔÚÎÂ¶ÈÎª
              -24.5¡æ£©
- 332   1          AHT10Value.tempH = ((temp / 100) << 4) | (temp % 100 / 10) ;
- 333   1          AHT10Value.tempL = temp % 100 % 10 << 4;
- 334   1      }
- 335          
- 336          
- 337          uint8_t AHT10_Init(void) { //³õÊ¼»¯AHT10
- 338   1          uint8_t count;
- 339   1      
- 340   1          Init_I2C_Sensor_Port();
- 341   1          //SensorDelay_us(11038);
- 342   1          delay_us(11038);
- 343   1      
- 344   1          I2C_Start();
- 345   1          ZSSC_I2C_WR_Byte(0x70);
+ 326   1          AHT10Value.tempH = ((temp / 100) << 4) | (temp % 100 / 10) ;
+ 327   1          AHT10Value.tempL = temp % 100 % 10 << 4;
+ 328   1      }
+ 329          
+ 330          
+ 331          uint8_t AHT10_Init(void) { //³õÊ¼»¯AHT10
+ 332   1          uint8_t count;
+ 333   1      
+ 334   1          memset(&AHT10Value, 0, sizeof(AHT10Value));
+ 335   1          Init_I2C_Sensor_Port();
+ 336   1          delay_us(11038);
+ 337   1      
+ 338   1          I2C_Start();
+ 339   1          ZSSC_I2C_WR_Byte(0x70);
+ 340   1          Receive_ACK();
+ 341   1          ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 342   1          Receive_ACK();
+ 343   1          ZSSC_I2C_WR_Byte(0x08);
+ 344   1          Receive_ACK();
+ 345   1          ZSSC_I2C_WR_Byte(0x00);
  346   1          Receive_ACK();
- 347   1          ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
- 348   1          Receive_ACK();
- 349   1          ZSSC_I2C_WR_Byte(0x08);
- 350   1          Receive_ACK();
- 351   1          ZSSC_I2C_WR_Byte(0x00);
- 352   1          Receive_ACK();
- 353   1          Stop_I2C();
- 354   1      
- 355   1          delay_ms(500);//ÑÓÊ±0.5S
- 356   1          while(JH_Read_Cal_Enable() == 0) { //ÐèÒªµÈ´ý×´Ì¬×ÖstatusµÄBit[3]=1Ê±²ÅÈ¥¶ÁÊý¾Ý¡£Èç¹ûBit[3]²»µÈÓÚ1 £¬·
+ 347   1          Stop_I2C();
+ 348   1      
+ 349   1          delay_ms(500);//ÑÓÊ±0.5S
+ 350   1          while(JH_Read_Cal_Enable() == 0) { //ÐèÒªµÈ´ý×´Ì¬×ÖstatusµÄBit[3]=1Ê±²ÅÈ¥¶ÁÊý¾Ý¡£Èç¹ûBit[3]²»µÈÓÚ1 £¬·
              -¢Èí¼þ¸´Î»0xBA¸øAHT10£¬ÔÙÖØÐÂ³õÊ¼»¯AHT10£¬Ö±ÖÁBit[3]=1
- 357   2      
- 358   2              JH_Send_BA();  //¸´Î»
- 359   2              delay_ms(100);
- 360   2              //SensorDelay_us(11038);
- 361   2              delay_us(11038);
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 7   
+ 351   2      
+ 352   2              JH_Send_BA();  //¸´Î»
+ 353   2              delay_ms(100);
+ 354   2              delay_us(11038);
+ 355   2      
+ 356   2              I2C_Start();
+ 357   2              ZSSC_I2C_WR_Byte(0x70);
+ 358   2              Receive_ACK();
+ 359   2              ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
+ 360   2              Receive_ACK();
+ 361   2              ZSSC_I2C_WR_Byte(0x08);
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 7   
 
- 362   2      
- 363   2              I2C_Start();
- 364   2              ZSSC_I2C_WR_Byte(0x70);
- 365   2              Receive_ACK();
- 366   2              ZSSC_I2C_WR_Byte(0xe1);//Ð´ÏµÍ³ÅäÖÃ¼Ä´æÆ÷
- 367   2              Receive_ACK();
- 368   2              ZSSC_I2C_WR_Byte(0x08);
- 369   2              Receive_ACK();
- 370   2              ZSSC_I2C_WR_Byte(0x00);
- 371   2              Receive_ACK();
- 372   2              Stop_I2C();
- 373   2              count++;
- 374   2              if(count >= 10)return 0;
- 375   2              delay_ms(500);
- 376   2          }
- 377   1          return 1;
- 378   1      }
- 379          
- 380          void AHT10_test(void) {
- 381   1          uint8_t temp[5];
- 382   1          uint8_t humidity[5];
- 383   1          static uint8_t ret = 0;
- 384   1      
- 385   1          //  memset(temp, 0, 5);
- 386   1          //memset(humidity, 0, 5);
- 387   1          temp[2] = '.';
- 388   1          humidity[2] = '.';
- 389   1          if (ret == 0) {
- 390   2              ret = AHT10_Init(); //³õÊ¼»¯
- 391   2              if(ret == 0) {
- 392   3                  //PutString("AHT10³õÊ¼»¯Ê§°Ü\r\n");
- 393   3                  while(1);
- 394   3              }
- 395   2              //PutString("AHT³õÊ¼»¯³É¹¦\r\n");
- 396   2          }
- 397   1          //while(1)
- 398   1          {
- 399   2      
- 400   2              //DisableIrq(); //ÓÉÓÚÊÇÄ£ÄâI2C,Îª¶ÁÈ¡Êý¾Ý¸ü×¼È· £¬¶ÁÈ¡Ö®Ç°½ûÖ¹ÖÐ¶Ï
- 401   2              Read_AHT10();  //¶ÁÈ¡ÎÂ¶ÈºÍÊª¶È £¬ ¿É¼ä¸ô1.5S¶ÁÒ»´Î
- 402   2              //EnableIrq(); //»Ö¸´ÖÐ¶Ï
- 403   2      
- 404   2              temp[0] = AHT10Value.tempH  ;
- 405   2              temp[1] = AHT10Value.tempL ;
- 406   2              humidity[0] = AHT10Value.humyH;
- 407   2              humidity[1] = AHT10Value.humyL;
- 408   2      
- 409   2              /*   PutString("AHT10-ÎÂ¶È:");
- 410   2                 PutString(temp);
- 411   2                 PutString("    ");
- 412   2                 PutString("Êª¶È:");
- 413   2                 PutString(humidity);
- 414   2                 PutString("\r\n");
- 415   2                  */
- 416   2              delay_ms(1500); //ÑÓÊ±1.5S
- 417   2              //Îª¶ÁÈ¡µÄÊý¾Ý¸üÎÈ¶¨£¬»¹¿ÉÒÔÊ¹ÓÃÆ½¾ùÖµÂË²¨»òÕß´°¿ÚÂË²¨£¬»òÕßÇ°Ãæ¶ÁÈ¡µÄÖµÓëºóÃæµÄÖµÏà²î²»ÄÜÌ«´ó¡£
- 418   2          }
- 419   1      }
+ 362   2              Receive_ACK();
+ 363   2              ZSSC_I2C_WR_Byte(0x00);
+ 364   2              Receive_ACK();
+ 365   2              Stop_I2C();
+ 366   2              count++;
+ 367   2              if(count >= 10)return 0;
+ 368   2              delay_ms(500);
+ 369   2          }
+ 370   1          return 1;
+ 371   1      }
+ 372          
+ 373          void AHT10_test(void) {
+ 374   1          uint8_t temp[5];
+ 375   1          uint8_t humidity[5];
+ 376   1          static uint8_t ret = 0;
+ 377   1      
+ 378   1          //  memset(temp, 0, 5);
+ 379   1          //memset(humidity, 0, 5);
+ 380   1          temp[2] = '.';
+ 381   1          humidity[2] = '.';
+ 382   1          if (ret == 0) {
+ 383   2              ret = AHT10_Init(); //³õÊ¼»¯
+ 384   2              if(ret == 0) {
+ 385   3                  //PutString("AHT10³õÊ¼»¯Ê§°Ü\r\n");
+ 386   3                  while(1);
+ 387   3              }
+ 388   2              //PutString("AHT³õÊ¼»¯³É¹¦\r\n");
+ 389   2          }
+ 390   1          //while(1)
+ 391   1          {
+ 392   2      
+ 393   2              //DisableIrq(); //ÓÉÓÚÊÇÄ£ÄâI2C,Îª¶ÁÈ¡Êý¾Ý¸ü×¼È· £¬¶ÁÈ¡Ö®Ç°½ûÖ¹ÖÐ¶Ï
+ 394   2              Read_AHT10();  //¶ÁÈ¡ÎÂ¶ÈºÍÊª¶È £¬ ¿É¼ä¸ô1.5S¶ÁÒ»´Î
+ 395   2              //EnableIrq(); //»Ö¸´ÖÐ¶Ï
+ 396   2      
+ 397   2              temp[0] = AHT10Value.tempH  ;
+ 398   2              temp[1] = AHT10Value.tempL ;
+ 399   2              humidity[0] = AHT10Value.humyH;
+ 400   2              humidity[1] = AHT10Value.humyL;
+ 401   2      
+ 402   2              /*   PutString("AHT10-ÎÂ¶È:");
+ 403   2                 PutString(temp);
+ 404   2                 PutString("    ");
+ 405   2                 PutString("Êª¶È:");
+ 406   2                 PutString(humidity);
+ 407   2                 PutString("\r\n");
+ 408   2                  */
+ 409   2              delay_ms(1500); //ÑÓÊ±1.5S
+ 410   2              //Îª¶ÁÈ¡µÄÊý¾Ý¸üÎÈ¶¨£¬»¹¿ÉÒÔÊ¹ÓÃÆ½¾ùÖµÂË²¨»òÕß´°¿ÚÂË²¨£¬»òÕßÇ°Ãæ¶ÁÈ¡µÄÖµÓëºóÃæµÄÖµÏà²î²»ÄÜÌ«´ó¡£
+ 411   2          }
+ 412   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1552    ----
-C51 COMPILER V9.54   AHT10                                                                 08/13/2019 14:54:27 PAGE 8   
-
+   CODE SIZE        =   1608    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =      5      35
@@ -455,6 +446,8 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
+
+C51 COMPILER V9.54   AHT10                                                                 08/15/2019 15:51:52 PAGE 8   
 
 
 C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

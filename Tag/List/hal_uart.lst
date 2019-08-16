@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   HAL_UART                                                              08/13/2019 14:54:28 PAGE 1   
+C51 COMPILER V9.54   HAL_UART                                                              08/15/2019 15:51:54 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE HAL_UART
@@ -62,7 +62,7 @@ line level    source
   51   2              TI0 = 0;
   52   2              if (uart_tx_cnt > 1) {
   53   3                  S0BUF = uart_tx[uart_tx_rp];
-C51 COMPILER V9.54   HAL_UART                                                              08/13/2019 14:54:28 PAGE 2   
+C51 COMPILER V9.54   HAL_UART                                                              08/15/2019 15:51:54 PAGE 2   
 
   54   3                  uart_tx_rp = (uart_tx_rp + 1) % UART_NBUF;
   55   3              }
@@ -126,7 +126,7 @@ line level    source
  113   1      }
  114          
  115          bool hal_uart_tx_complete() {
-C51 COMPILER V9.54   HAL_UART                                                              08/13/2019 14:54:28 PAGE 3   
+C51 COMPILER V9.54   HAL_UART                                                              08/15/2019 15:51:54 PAGE 3   
 
  116   1          if(uart_tx_cnt == 0) {
  117   2              return true;
